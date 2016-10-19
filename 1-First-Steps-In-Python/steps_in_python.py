@@ -4,7 +4,7 @@ from math import sqrt, factorial
 
 # A function for counting the digits of a number
 def sum_of_digits(number) -> int:
-    return sum([int(dig) for dig in list(str(abs(number)))])
+    return sum([int(dig) for dig in str(abs(number))])
 
 print(sum_of_digits(-25))
 
