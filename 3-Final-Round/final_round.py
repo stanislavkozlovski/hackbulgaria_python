@@ -296,7 +296,9 @@ message_to_numbers(messsage)
 This function takes a string - the message and returns the minimal keystrokes that you need to write that message
 """
 
-letters_to_key_combinations = {letter: str(k)*(idx+1) for k, v in key_combinations_to_letters.items() for idx, letter in enumerate(v) }
+# Invert the dictionary
+letters_to_key_combinations = {letter: str(k)*(idx+1) for k, v in key_combinations_to_letters.items()
+                               for idx, letter in enumerate(v)}
 
 def message_to_numbers(message: str):
     """ loop through the message and return it in keystrokes"""
@@ -359,12 +361,14 @@ def friday_years(start_year: int, end_year: int):
         if calendar.isleap(year):
             first_day = datetime.datetime(year, 1, 1)  # type: datetime
             second_day = datetime.datetime(year, 1, 2)  # type: datetime
+
             if first_day.weekday() == 5 or second_day.weekday() == 5:
                 friday_years_ += 1
         else:
             # non leap year
             # January 1st, Year
             day = datetime.datetime(year, 1, 1)  # type: datetime
+
             if day.weekday() == 5:
                 # january 1st is friday
                 # meaning we have 53 fridays this year
