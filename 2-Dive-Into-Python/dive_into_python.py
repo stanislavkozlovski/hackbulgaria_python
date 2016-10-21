@@ -182,25 +182,7 @@ Test examples
 """
 
 def max_consecutive(items: list):
-    max_consecutive_nums = 0
-    last_num = items[0]
-    curr_streak = 1
-
-    for num in items[1:]:  # from index 1 onwards
-        if num != last_num:
-            # streak has ended
-
-            # reset the streak to 1, because the number has changed and
-            # because we're counting the current number
-            curr_streak = 1
-        else:
-            curr_streak += 1
-
-        if curr_streak > max_consecutive_nums:
-            max_consecutive_nums = curr_streak
-        last_num = num
-
-    return max_consecutive_nums
+    return max([len(gr) for gr in group(items)])
 
 print('-'*20)
 print("MAX CONSECUTIVE")

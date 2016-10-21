@@ -24,7 +24,7 @@ gas_stations(320, 90, [50, 80, 140, 180, 220, 290])
 """
 
 def gas_stations(distance: int, tank_size: int, stations: list):
-    gas_stations_in_router = []
+    gas_stations_in_route = []
     distance_traveled = 0
     while True:
         if distance_traveled + tank_size >= distance:
@@ -32,10 +32,10 @@ def gas_stations(distance: int, tank_size: int, stations: list):
 
         # get the furthest gas station we would be able to get to with a full tank
         gas_station = max([i for i in stations if i < distance_traveled + tank_size])
-        gas_stations_in_router.append(gas_station)
-        distance_traveled += (gas_station - distance_traveled)  # increase the distance we've traveled accordingly
+        gas_stations_in_route.append(gas_station)
+        distance_traveled = gas_station  # increase the distance we've traveled accordingly
 
-    return gas_stations_in_router
+    return gas_stations_in_route
 
 print(gas_stations(320, 90, [50, 80, 140, 220, 290]))
 print(gas_stations(390, 80, [70, 90, 140, 210, 240, 280, 350]))
