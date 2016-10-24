@@ -49,11 +49,11 @@ Google "how to get current date in python"
 
 Good luck!
 """
-from os.path import exists
 from datetime import datetime
 import csv
 
 CSV_FILE_PATH = 'foods.csv'
+
 
 def main():
     today = datetime.now()
@@ -71,12 +71,9 @@ def main():
             meal = command[5:]
             grams = get_quantity_in_grams(quantity)
 
-
-            print("I don't have {} in the calories database".format(meal))
             calories_per_100g = int(input("How much calories per 100g?>"))
 
             save_to_csv(date_str, meal, grams, calories_per_100g)
-
 
             print("Ok this it a total of {calories} calories for this meal.".format(
                 calories=calories_per_100g * (grams/100)
@@ -84,11 +81,7 @@ def main():
         elif command[:4] == "list":
             date = command[5:]
 
-            with open(CSV_FILE_PATH, mode='r', encoding='utf-8') as _:
-                reader = csv.reader(_)
-                csv_values = list(reader)
-
-            foods_eaten_at_that_date, _ = get_date_foods(date, csv_values)
+            foods_eaten_at_that_date, _ = get_date_foods(date)
             if not foods_eaten_at_that_date:
                 print("You did not eat anything on {}".format(date))
             else:
@@ -119,25 +112,30 @@ def save_to_csv(date_str: str, food: str, grams: int, calories_per_100g: int):
 
     with open(CSV_FILE_PATH, mode='w', encoding='utf-8') as _:
         writer = csv.writer(_)
+
         eaten_foods, idx = get_date_foods(date_str, old_values)
         # append the date to the list
         eaten_foods.insert(0, date_str)
         # add the food to the list
-        eaten_foods.extend([food, str(grams), str(calories_per_100g)])
-        print(old_values)
-        if idx == None:
+        eaten_foods.extend([food, grams, calories_per_100g])
+
+        if idx is None:
             old_values.append(eaten_foods)
         else:
             old_values[idx] = eaten_foods  # update the old values
-        print(old_values)
+
         writer.writerows(old_values)
 
 
-def get_date_foods(date_str: str, csv_values: list):
+def get_date_foods(date_str: str, csv_values=None):
     """
     this function returns a list of all the foods we've eaten at a given date
     returns a list with the associated date and it's index
     """
+    if not csv_values:
+        with open(CSV_FILE_PATH, mode='r', encoding='utf-8') as _:
+            reader = csv.reader(_)
+            csv_values = list(reader)
 
     for idx, list_ in enumerate(csv_values):
         if list_[0] == date_str:
@@ -145,13 +143,6 @@ def get_date_foods(date_str: str, csv_values: list):
 
     return [], None
 
-
-def convert_csv_to_dict():
-    with open(CSV_FILE_PATH, mode='r') as infile:
-        reader = csv.reader(infile)
-        foods_calories_dict = {rows[0]: {''} for rows in reader}
-
-    return foods_calories_dict
 
 if __name__ == "__main__":
     main()
