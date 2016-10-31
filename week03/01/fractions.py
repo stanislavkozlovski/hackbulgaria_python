@@ -45,6 +45,11 @@ class Fraction:
         return self.__str__()
 
     def __eq__(self, other):
+        if isinstance(other, int):
+            return self.value == other
+        if not isinstance(other, Fraction):
+            return False
+
         return self.value == other.value
 
     def __add__(self, other):
@@ -132,3 +137,8 @@ print(a == b) # True
 print(a + b) # 1
 print(a - b) # 0
 print(a * b) # 1 / 4
+
+fraction1 = Fraction(1, 2)
+fraction2 = Fraction(2, 4)
+
+print((fraction1 + fraction2) == 1)
