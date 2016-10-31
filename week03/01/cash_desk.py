@@ -21,12 +21,13 @@ __eq__ and __hash__
 If amount is negative number, raise an ValueError error.
 If type of amount isn't int, raise an TypeError error.
 """
+import operator
 
 
 class Bill:
 
     def __init__(self, value: int):
-        self.value = value
+        self.value = self.validate_value(value)
 
     def __str__(self):
         return "A {}$ bill".format(self.value)
@@ -35,20 +36,31 @@ class Bill:
         return self.__str__()
 
     def __int__(self):
-        try:
-            int_val = int(self.value)
-        except ValueError as e:
-            raise TypeError(e)
-        if int_val < 0:
-            raise ValueError("The Bill's value cannot be negative!")
-
-        return int_val
+        return int(self.value)
 
     def __eq__(self, other):
         return self.value == other.value
 
     def __hash__(self):
         return hash(self.__str__())
+
+    def __gt__(self, other):
+        return self.value > other.value
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+    def validate_value(self, value):
+
+        if not isinstance(value, int):
+            raise TypeError()
+
+        int_val = int(value)
+
+        if int_val < 0:
+            raise ValueError("The Bill's value cannot be negative!")
+
+        return int_val
 
 
 a = Bill(10)
@@ -102,7 +114,7 @@ class BatchBill():
 
     def total(self):
         """ returns the total amount of dollars we have in the batch"""
-        return sum(bill for bill in self.bills)
+        return sum([int(bill) for bill in self.bills])
 
 print('-'*20)
 print('BATCH BILL')
@@ -132,7 +144,8 @@ inspect() - prints a table representation of the money - for each bill, how many
 
 class CashDesk():
     # dict with Key: a Bill object and value the count of bills
-    money = {}
+    def __init__(self):
+        self.money = {}
 
     def take_money(self, money):
         if isinstance(money, Bill):
@@ -146,11 +159,19 @@ class CashDesk():
                 self.money[bill] += 1
 
     def total(self):
-        return sum(int(bill) for bill in self.money.keys())
+        return sum([int(bill) * self.money[bill] for bill in self.money.keys()])
 
     def inspect(self):
-        for bill, count in self.money.items():
-            print("{}$ bills - {}".format(bill.value, count))
+        message = []
+        message.append('We have a total of {}$ in the desk'
+                       .format(sum([bill.value * self.money[bill] for bill in self.money.keys()])))
+        message.append('We have the following count of bills, sorted in ascending order:')
+        # sort by the bill's value
+        for bill, count in sorted(self.money.items(), key=operator.itemgetter(0)):
+            message.append("{}$ bills - {}".format(bill.value, count))
+
+        #print(message)
+        return "\n".join(message)
 
 print('-'*20)
 print('CASH DESK')
@@ -166,7 +187,15 @@ desk.take_money(batch)
 desk.take_money(Bill(10))
 
 print(desk.total()) # 390
-desk.inspect()
+#desk.inspect()
+
+
+bill = Bill(10)
+batch = BatchBill([Bill(5), Bill(10), Bill(15)])
+desdk = CashDesk()
+desdk.take_money(bill)
+desdk.take_money(batch)
+print(desdk.inspect())
 
 # We have a total of 390$ in the desk
 # We have the following count of bills, sorted in ascending order:
