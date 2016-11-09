@@ -1,4 +1,4 @@
-#from .dungeons_and_pythons import Fight, Enemy, Hero, Spell
+from dungeons_and_pythons import Fight, Enemy, Hero, Spell
 
 # our Dungeon class that holds the map of the dungeon
 class Dungeon:
@@ -24,13 +24,15 @@ class Dungeon:
         initial_attack = None
 
         if by == 'spell':
-            spell = self.hero.attack(by='spell')  # type: Spell
-            if self.enemy_in_range(spell.cast_range):
+            spell = self.hero.attack(by='spell')
+            if self.enemy_in_range(spell.cast_range) and spell.name != 'Empty':
                 initial_attack = spell
+            elif self.enemy_in_range(range_=1):
+                initial_attack = self.hero.attack(by='weapon')
         elif self.enemy_in_range(range_=1):
             initial_attack = self.hero.attack(by='weapon')
-
-        Fight(hero=self.hero, enemy=Enemy("Badguy", "Mcgee", 100, 100, 20), initial_attack=initial_attack)
+        if initial_attack is not None:
+            Fight(hero=self.hero, enemy=Enemy("Badguy", "Mcgee", 100, 100, 20), initial_attack=initial_attack)
 
     def move_hero(self, direction: str):
         directions = {'up': (-1, 0),
@@ -48,15 +50,17 @@ class Dungeon:
             or self._map[new_x_coord][new_y_coord] == '#'):
             return False
 
+        # update map
+        self._map[self.hero.x_coord][self.hero.y_coord] = '.'
+        self._map[new_x_coord][new_y_coord] = 'H'
         self.hero.set_coordinates(new_x_coord, new_y_coord)
 
         if self._map[new_x_coord][new_y_coord] == 'E':
-            # start fight
-            pass
+            self.hero_attack(by='spell')
         elif self._map[new_x_coord][new_y_coord] == 'T':
             # roll dice and get treasure
             import random
-            treasure_idx = random.randint(0, len(self._treasures))
+            treasure_idx = random.randint(0, len(self._treasures)-1)
             treasure = self._treasures[treasure_idx]
             self._treasures.remove(treasure)
             return treasure
@@ -66,11 +70,11 @@ class Dungeon:
     def enemy_in_range(self, range_: int):
         # check all the ways to find an enemy in the range given
         start_y_position = self.hero.y_coord - range_ if self.hero.y_coord - range_ >= 0 else 0
-        end_y_position = self.hero.y_coord + range if len(self._map[self.hero.x_coord]) < self.hero.y_coord + range_  \
+        end_y_position = self.hero.y_coord + range_ if len(self._map[self.hero.x_coord]) < self.hero.y_coord + range_  \
                                                     else len(self._map[self.hero.x_coord])
 
-        start_x_position = self.hero.x_coord - range_ if self.hero.y_coord - range >= 0 else 0
-        end_x_position = self.hero.x_coord + range if len(self._map) < self.hero.x_coord + range_ \
+        start_x_position = self.hero.x_coord - range_ if self.hero.y_coord - range_ >= 0 else 0
+        end_x_position = self.hero.x_coord + range_ if len(self._map) < self.hero.x_coord + range_ \
                                                     else len(self._map)
         for new_y in range(start_y_position, self.hero.y_coord):
             if self._map[self.hero.x_coord][new_y] == 'E':
