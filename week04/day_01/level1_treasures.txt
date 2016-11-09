@@ -1,0 +1,4 @@
+mana potion
+health potion
+weapon
+spell
