@@ -4,7 +4,7 @@ This module holds our classes for in-game creatures and the hero
 from .spells import Spell
 
 class Entity:
-    def __init__(self, name: str, title: str, health: int, mana: int):
+    def __init__(self, name: str, title: str, health: int, mana: int, x_coord: int=0, y_coord: int=0):
         self.name = name
         self. title = title
         self.max_health = health
@@ -12,8 +12,8 @@ class Entity:
         self._health = health
         self._mana = mana
         self.spells = []  # type: [Spell]
-        self.x_coord = 0
-        self.y_coord = 0
+        self.x_coord = x_coord
+        self.y_coord = y_coord
 
     def set_coordinates(self, x, y):
         self.x_coord = x
@@ -24,6 +24,9 @@ class Entity:
 
     def learn(self, spell: Spell):
         self.spells.append(spell)
+
+    def is_in_range(self, x, y, range: int):
+        return abs(self.x_coord - x) <= range and abs(self.y_coord - y) <= range
 
     def get_attack_damage(self, by: str):
         """ get the damage we would deal in an attack by calculating
@@ -143,30 +146,42 @@ class Hero(Entity):
 
 
 class Enemy(Entity):
-    def __init__(self, name: str, title: str, health: int, mana: int, damage: int):
+    def __init__(self, name: str, title: str, health: int, mana: int, damage: int, x_coord: int, y_coord: int):
         super().__init__(name, title, health, mana)
+        self.x_coord = x_coord
+        self.y_coord = y_coord
         self.damage = damage
 
-    def get_attack_damage(self, by: str='Weapon'):
-        if by == 'Spell':
-            raise NotImplementedError
-        else:
-            return self.damage
-
     def attack(self, victim: Hero):
-        damage_blow = self.get_attack_damage()
-        victim.take_damage(damage_blow)
-        victim_health = victim.health
-        if victim_health > 0:
-            print('Enemy hits hero for {dmg} dmg. Hero health is {hero_health}'.format(
-                dmg=damage_blow,
-                hero_health=victim_health
-            ))
+        # see if we should attack by spell or weapon by comparing their damage
+        spell = self.get_attack_damage(by='spell')
+        if spell and spell.damage >= self.get_attack_damage(by='weapon'):
+            # spell damage is higher, attack by spell
+            self.cast_spell(spell)  # use the mana for the spell
+            victim.take_damage(spell.damage)
+            victim_health = victim.health
+            attack_message = 'Enemy casts a {spell_name}, hits Hero for {dmg} dmg.'.format(
+                spell_name=spell.name, dmg=spell.damage)
         else:
-            print('Hero is dead!')
+            # normal attack
+            if victim.is_in_range(x=self.x_coord, y=self.y_coord, range=1):
+                damage_blow = self.get_attack_damage(by='weapon')  # type: int
+                victim.take_damage(damage_blow)
+                victim_health = victim.health
+                attack_message = 'Enemy hits with {wep_name} for {dmg} dmg.'.format(
+                    wep_name=self.weapon.name, dmg=damage_blow)
+            else:
+                self.move_toward(victim)
+                return
+
+        print('{attack_message} Hero health is {victim_health}'.format(
+            attack_message=attack_message, victim_health=victim_health if victim_health >= 0 else 0
+        ))
+        if victim_health <= 0:
+            print('Enemy is dead!')
             exit()
 
-    def move(self, hero: Hero):
+    def move_toward(self, hero: Hero):
         # here the enemy moves toward the hero to fight him, if the hero
         # engaged him from range
         if self.x_coord != hero.x_coord:

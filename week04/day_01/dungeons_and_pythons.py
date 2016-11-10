@@ -22,11 +22,12 @@ class Fight():
         # the enemy either moves to the hero or attacks him
         if enemy.x_coord != hero.x_coord and enemy.y_coord != hero.y_coord:
             # move enemy
-            enemy.move(hero)
+            enemy.move_toward(hero)
         else:
             enemy.attack(victim=hero)
 
 def sample_game_run():
+    # TOOD: TESTS AND FURTHER REFINEMENT!
     h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regen_rate=2)
     w = Weapon(name="The Axe of Destiny", damage=20)
     h.equip(w)
@@ -40,6 +41,9 @@ def sample_game_run():
     map.print_map()
     map.hero_attack(by="spell")
     map.move_hero("down")
+    map.move_hero("down")
+    map.move_hero("right")
+    map.move_hero("right")
     map.move_hero("down")
     map.print_map()
     map.hero_attack(by="spell")
