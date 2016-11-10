@@ -100,7 +100,7 @@ def get_largest_palindrome(n: int):
     while n > 0:
         n -= 1
         if str(n) == str(n)[::-1]:
-            return str(n)
+            return n
     return "No largest palindrome available!"
 
 print('-'*20)

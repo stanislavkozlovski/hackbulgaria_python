@@ -41,6 +41,7 @@ and run the function, we will have:
  (2, 2): 26}
 We can see that if we drop the bomb at (1, 1) or (2, 1), we will do the most damage!
 """
+from pprint import pprint
 
 
 def main():
@@ -50,26 +51,28 @@ def main():
         [7, 8, 9]
     ]
 
-    damage, coords = matrix_bombing_plan(matrix)
-    print("Max damage: {}".format(damage))
-    print("Best coordinates to bomb: {}".format(coords))
+    sums_after_bombing = matrix_bombing_plan(matrix)
+    pprint(sums_after_bombing)
 
 
 def matrix_bombing_plan(m: list):
+    matrix_sum = get_matrix_sum(m)  # hold the sum of the original matrix
     # neighbour will hold the neighbours of each Key: Tuple, Value: List of Tuples (the neighbour of the key)
     neighbours = fill_neighbours(m)  # type: dict
+    # result will hold positions in the matrix and it's sum after the bombing at those coordinates
+    result = {}
 
-    max_damage = 0
-    best_bomb_coord = None
     for row in range(len(m)):
         for col in range(len(m[row])):
             damage_done = bomb_matrix(m, row, col, neighbours)
-            if damage_done >= max_damage:
-                max_damage = damage_done
-                best_bomb_coord = (row, col)
+            # the new sum will be the damage done subtracted from the original matrix sum
+            result[(row, col)] = matrix_sum - damage_done
 
-    return (max_damage, best_bomb_coord)
+    return result
 
+
+def get_matrix_sum(m: list):
+    return sum(sum(row) for row in m)
 
 def bomb_matrix(matrix: list, row, col, neighbours: dict) -> int:
     """ given the matrix and coordinates, bomb the matrix,

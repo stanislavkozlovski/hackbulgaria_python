@@ -31,5 +31,12 @@ Output:
 ANAGRAMS
 
 """
-word_1, word_2 = input().lower().split()
-print("ANAGRAMS") if set(word_1) == set(word_2) else print("NOT ANAGRAMS")
+from collections import Counter
+
+
+def is_anagram(word_1: str, word_2: str):
+    # word_1, word_2 = input().lower().split()
+    #print("ANAGRAMS") if set(word_1) == set(word_2) else print("NOT ANAGRAMS")
+    return Counter(word_1.lower()) == Counter(word_2.lower())
+
+print(is_anagram("TOP_CODER","COTO_PRODE"))

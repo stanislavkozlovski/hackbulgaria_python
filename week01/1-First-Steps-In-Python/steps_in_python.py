@@ -11,7 +11,7 @@ print(sum_of_digits(-25))
 
 # Create list with the digits of a number
 def to_digits(number) -> list:
-    return list(str(number))
+    return [int(x) for x in str(number)]
 print(to_digits(123413))
 
 
@@ -23,22 +23,23 @@ print(to_number([1,2,3,0,2,3]))
 
 # Count the vowels in a string
 def count_vowels(string):
-    vowels = Counter("aeiouy")
-    return sum(vowels.values())
+    vowels = Counter(string.lower())
+    return sum([vowel_count for vowel, vowel_count in vowels.items() if vowel in "aeiouy"])
 print(count_vowels("love the game"))
 
 
 # Count the consonants in a string
 def count_consonants(string):
-    consonants = Counter("bcdfghjklmnpqrstvwxz")
-    return sum(consonants.values())
+    consonants = Counter(string.lower())
+    return sum([consonant_count for consonant, consonant_count in consonants.items() if consonant in "bcdfghjklmnpqrstvwxz"])
 print(count_consonants("love the game"))
 
 
 # Check if a given number is prime
 def prime_number(number):
+    if number == 2: return True
     return any([number % num != 0 for num in range(2, int(sqrt(number)) + 1)])
-print(prime_number(7))
+print(prime_number(2))
 
 
 # Sum of the factorials of the digits in the number
@@ -50,10 +51,10 @@ print(fact_digits(999))
 # fibonacci sequence
 def fibonacci(number):
     fibonacci_numbers = [0, 1]
-    for i in range(2, number):
+    for i in range(2, number+1):
         fibonacci_numbers.append(fibonacci_numbers[i-1] + fibonacci_numbers[i-2])
 
-    return fibonacci_numbers
+    return fibonacci_numbers[1:]
 print(fibonacci(10))
 
 

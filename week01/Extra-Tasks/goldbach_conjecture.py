@@ -45,10 +45,9 @@ def goldbach(n):
     # iterate through the primes list and then through the primes list where each prime is less than
     # half of N. That way we can get each combination that equals N and won't have any repeating combinations
     for prime_1 in primes:
-        for prime_2 in filter(lambda x: x < n//2, primes):
+        for prime_2 in filter(lambda x: x <= n//2, primes):
             if prime_1 + prime_2 == n:
                 conjecture.append((prime_2, prime_1))
 
-    return conjecture
+    return sorted(conjecture, key=lambda x: x[0])
 
-print(sorted(goldbach(100), key=lambda x: x[0]))

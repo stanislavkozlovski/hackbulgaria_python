@@ -35,9 +35,9 @@ def is_credit_card_valid(number: int):
     # get the sum of it's digits
     sum_of_new_num = sum(int(dig) for dig in new_num)
     if sum_of_new_num % 10 == 0:
-        return "Valid!"
+        return True#"Valid!"
     else:
-        return "Invalid!"
+        return False#"Invalid!"
 
 print(is_credit_card_valid(79927398713))
 print(is_credit_card_valid(79927398715))
