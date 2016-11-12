@@ -1,4 +1,4 @@
-# one matrix implementation
+# implementation using one matrix
 
 
 def build_matrix():
@@ -31,14 +31,14 @@ def build_matrix():
     return matrix
 
 
-def game_turn(matrix):
+def game_generation(matrix):
     # iterate the matrix and keep a list of cells that should be revived or killed
-    cells_to_revive, cells_to_die = get_cells_to_die_and_revive()
+    cells_to_revive, cells_to_die = get_cells_to_die_and_revive(matrix)
 
     update_matrix(matrix, cells_to_revive, cells_to_die)
 
 
-def get_cells_to_die_and_revive():
+def get_cells_to_die_and_revive(matrix):
     # iterate through the matrix and knowing the rules, return a list of cells that need to be revived and that need to die
     cells_to_revive = []
     cells_to_die = []
@@ -93,8 +93,8 @@ def print_matrix(matrix):
 def main():
     matrix = build_matrix()
     while True:
-        game_turn(matrix)
-        input('Enter any key to see another turn of the game!')
+        game_generation(matrix)
+        input('Enter any key to see another generation of the game!')
 
 
 if __name__ == '__main__':
