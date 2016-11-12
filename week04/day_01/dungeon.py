@@ -94,25 +94,25 @@ class Dungeon:
         # check all the ways to find an enemy in the range given
         start_y_position = self.hero.y_coord - range_ if self.hero.y_coord - range_ >= 0 else 0
         end_y_position = self.hero.y_coord + range_ if len(self._map[self.hero.x_coord]) > self.hero.y_coord + range_  \
-                                                    else len(self._map[self.hero.x_coord])
+                                                    else len(self._map[self.hero.x_coord]) - 1
 
         start_x_position = self.hero.x_coord - range_ if self.hero.y_coord - range_ >= 0 else 0
         end_x_position = self.hero.x_coord + range_ if len(self._map) > self.hero.x_coord + range_ \
-                                                    else len(self._map)
+                                                    else len(self._map) - 1
         # range_ left from hero's Y position
-        for new_y in range(start_y_position, self.hero.y_coord+1):
+        for new_y in range(start_y_position, self.hero.y_coord):
             if self._map[self.hero.x_coord][new_y] == 'E':
                 return self.hero.x_coord, new_y
         # range_ right from hero's Y position
-        for new_y in range(self.hero.y_coord, end_y_position):
+        for new_y in range(self.hero.y_coord, end_y_position+1):
             if self._map[self.hero.x_coord][new_y] == 'E':
                 return self.hero.x_coord, new_y
         # range_ down from hero's X position
-        for new_x in range(self.hero.x_coord, end_x_position):
+        for new_x in range(self.hero.x_coord, end_x_position+1):
             if self._map[new_x][self.hero.y_coord] == 'E':
                 return new_x, self.hero.y_coord
         # range_ up from hero's X position
-        for new_x in range(start_x_position, self.hero.x_coord+1):
+        for new_x in range(start_x_position, self.hero.x_coord):
             if self._map[new_x][self.hero.y_coord] == 'E':
                 return new_x, self.hero.y_coord
 
