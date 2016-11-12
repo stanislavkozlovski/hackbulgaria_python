@@ -25,8 +25,29 @@ class Entity:
     def learn(self, spell: Spell):
         self.spells.append(spell)
 
-    def is_in_range(self, x, y, range: int):
-        return abs(self.x_coord - x) <= range and abs(self.y_coord - y) <= range
+    def is_in_range(self, x, y, range_: int):
+        return abs(self.x_coord - x) <= range_ and abs(self.y_coord - y) <= range_
+
+    def move_toward(self, entity: 'Hero' or 'Enemy'):
+        # here the entity moves toward the victim entity to fight him whenever the range is insufficient
+
+        if self.x_coord != entity.x_coord:
+            if self.x_coord > entity.x_coord:
+                direction = 'up'
+                self.x_coord -= 1
+            else:
+                direction = 'down'
+                self.x_coord += 1
+        else:
+            # y_coords
+            if self.y_coord > entity.y_coord:
+                direction = 'to the left'
+                self.y_coord -= 1
+            else:
+                direction = 'to the right'
+                self.y_coord += 1
+
+        return direction
 
     def get_attack_damage(self, by: str):
         """ get the damage we would deal in an attack by calculating
@@ -49,7 +70,6 @@ class Entity:
 
     def attack(self, victim):
         raise NotImplementedError
-
 
     def cast_spell(self, spell: Spell):
         self._mana -= spell.mana_cost
@@ -110,12 +130,17 @@ class Hero(Entity):
             attack_message = 'Hero casts a {spell_name}, hits Enemy for {dmg} dmg.'.format(
                 spell_name=spell.name, dmg=spell.damage)
         else:
-            # normal attack
-            damage_blow = self.get_attack_damage(by='weapon')  # type: int
-            victim.take_damage(damage_blow)
-            victim_health = victim.health
-            attack_message = 'Hero hits with {wep_name} for {dmg} dmg.'.format(
-                wep_name=self.weapon.name, dmg=damage_blow)
+            if victim.is_in_range(x=self.x_coord, y=self.y_coord, range_=1):
+                # normal attack
+                damage_blow = self.get_attack_damage(by='weapon')  # type: int
+                victim.take_damage(damage_blow)
+                victim_health = victim.health
+                attack_message = 'Hero hits with {wep_name} for {dmg} dmg.'.format(
+                    wep_name=self.weapon.name, dmg=damage_blow)
+            else:
+                # move toward the enemy
+                self.move_toward(victim)
+                return
 
         print('{attack_message} Enemy health is {victim_health}'.format(
             attack_message=attack_message, victim_health=victim_health if victim_health >= 0 else 0
@@ -144,6 +169,13 @@ class Hero(Entity):
                 print('Enemy is dead!')
                 exit()
 
+    def move_toward(self, entity: 'Enemy'):
+        direction = super().move_toward(entity)
+
+        print('Hero moves one square {dir} in order to get to the enemy. This is his move.'.format(
+            dir=direction
+        ))
+
 
 class Enemy(Entity):
     def __init__(self, name: str, title: str, health: int, mana: int, damage: int, x_coord: int, y_coord: int):
@@ -164,7 +196,7 @@ class Enemy(Entity):
                 spell_name=spell.name, dmg=spell.damage)
         else:
             # normal attack
-            if victim.is_in_range(x=self.x_coord, y=self.y_coord, range=1):
+            if victim.is_in_range(x=self.x_coord, y=self.y_coord, range_=1):
                 damage_blow = self.get_attack_damage(by='weapon')  # type: int
                 victim.take_damage(damage_blow)
                 victim_health = victim.health
@@ -181,24 +213,8 @@ class Enemy(Entity):
             print('Enemy is dead!')
             exit()
 
-    def move_toward(self, hero: Hero):
-        # here the enemy moves toward the hero to fight him, if the hero
-        # engaged him from range
-        if self.x_coord != hero.x_coord:
-            if self.x_coord > hero.x_coord:
-                direction = 'up'
-                self.x_coord -= 1
-            else:
-                direction = 'down'
-                self.x_coord += 1
-        else:
-            # y_coords
-            if self.y_coord > hero.y_coord:
-                direction = 'to the left'
-                self.y_coord -= 1
-            else:
-                direction = 'to the right'
-                self.y_coord += 1
+    def move_toward(self, entity: Hero):
+        direction = super().move_toward(entity)
 
         print('Enemy moves one square {dir} in order to get to the hero. This is his move.'.format(
             dir=direction
