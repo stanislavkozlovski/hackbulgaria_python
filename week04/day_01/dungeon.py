@@ -1,4 +1,5 @@
 import random
+from operator import add
 
 from .spells import Spell
 from .entities import Hero, Enemy
@@ -7,6 +8,11 @@ from .items import Weapon
 
 # our Dungeon class that holds the map of the dungeon
 class Dungeon:
+    # the values you need to add to your x,y coordinates when you want to move in a certain direction
+    DIRECTION_VALUES = {'up': (-1, 0),
+                      'down': (1, 0),
+                      'left': (0, -1),
+                      'right': (0, 1)}
 
     def __init__(self, path_to_level: str, hero: Hero):
         self.path_to_level = path_to_level
@@ -51,32 +57,32 @@ class Dungeon:
             Fight(hero=self.hero, enemy=enemy, initial_attack=initial_attack)
 
     def move_hero(self, direction: str):
-        directions = {'up': (-1, 0),
-                      'down': (1, 0),
-                      'left': (0, -1),
-                      'right': (0, 1)}
-
-        row_dir, col_dir = directions[direction]
-
-        new_x_coord = self.hero.x_coord + row_dir
-        new_y_coord = self.hero.y_coord + col_dir
+        # add the current coords to the values of the direction to get the new coordinates
+        new_x_coord, new_y_coord = map(add, (self.hero.x_coord, self.hero.y_coord), self.DIRECTION_VALUES[direction])
         # check if out of bounds
         if (new_x_coord < 0 or new_x_coord >= len(self._map)
             or new_y_coord < 0 or new_y_coord >= len(self._map[new_x_coord])
-            or self._map[new_x_coord][new_y_coord] == '#'):
+            or self._map[new_x_coord][new_y_coord] == '#'):  # if an obstacle is in the way
             return False
 
         if self._map[new_x_coord][new_y_coord] == 'E':
             self.hero_attack(by='spell')
         elif self._map[new_x_coord][new_y_coord] == 'T':
-            # roll dice and get treasure
-            treasure_idx = random.randint(0, len(self._treasures)-1)
-            treasure = self._treasures[treasure_idx]
-            self._treasures.remove(treasure)
+            treasure = self.__get_treasure()
+            print('Found treasure - {}!'.format(treasure))
 
         self.update_map(new_x_coord, new_y_coord)
 
         return True
+
+    def __get_treasure(self):
+        """ This function gets a random treasure from the loaded treasures for the specific map"""
+        # roll dice and get treasure
+        treasure_idx = random.randint(0, len(self._treasures) - 1)
+        treasure = self._treasures[treasure_idx]
+        self._treasures.remove(treasure)
+
+        return treasure
 
     def update_map(self, x, y):
         """ This function updates the map whenever the character moves from one position to another"""
