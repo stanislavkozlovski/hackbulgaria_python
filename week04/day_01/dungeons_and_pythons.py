@@ -26,6 +26,7 @@ class Fight():
         else:
             enemy.attack(victim=hero)
 
+
 def sample_game_run():
     # TOOD: TESTS AND FURTHER REFINEMENT!
     h = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regen_rate=2)
@@ -42,6 +43,7 @@ def sample_game_run():
     map.hero_attack(by="spell")
     map.move_hero("down")
     map.move_hero("down")
+    map.print_map()
     map.move_hero("right")
     map.move_hero("right")
     map.move_hero("down")
