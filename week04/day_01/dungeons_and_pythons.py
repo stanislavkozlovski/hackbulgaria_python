@@ -59,6 +59,19 @@ def sample_game_run():
     map.print_map()
     map.hero_attack(by="spell")
     map.print_map()
+    map.move_hero("up")
+    map.move_hero("up")
+    map.move_hero("up")
+    map.move_hero("right")
+    map.move_hero("right")
+    map.move_hero("right")
+    map.move_hero("right")
+    map.hero_attack(by="spell")
+    map.print_map()
+    map.move_hero("down")
+    map.move_hero("down")
+    map.move_hero("down")
+    map.move_hero("down")
 
 
 def main():

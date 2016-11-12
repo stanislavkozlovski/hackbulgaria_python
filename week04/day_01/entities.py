@@ -197,8 +197,8 @@ class Hero(Entity):
 class Enemy(Entity):
     def __init__(self, name: str, title: str, health: int, mana: int, damage: int, x_coord: int, y_coord: int):
         super().__init__(name, title, health, mana)
-        self.x_coord = x_coord
-        self.y_coord = y_coord
+        self.orig_x_coord = self.x_coord = x_coord
+        self.orig_y_coord = self.y_coord = y_coord
         self.damage = damage
 
     def attack(self, victim: Hero):

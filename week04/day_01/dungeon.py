@@ -55,6 +55,9 @@ class Dungeon:
             w = Weapon(name="The Axe of Destiny", damage=20)
             enemy.equip(w)
             Fight(hero=self.hero, enemy=enemy, initial_attack=initial_attack)
+            # if we get to this line, it means that the Hero has won the fight and
+            # that the enemy is dead, therefore we should remove it from the map
+            self.__remove_enemy(enemy)
 
     def move_hero(self, direction: str):
         # add the current coords to the values of the direction to get the new coordinates
@@ -74,6 +77,9 @@ class Dungeon:
         self.update_map(new_x_coord, new_y_coord)
 
         return True
+
+    def __remove_enemy(self, enemy: Enemy):
+        self._map[enemy.orig_x_coord][enemy.orig_y_coord] = '.'
 
     def __get_treasure(self):
         """ This function gets a random treasure from the loaded treasures for the specific map"""
@@ -96,7 +102,7 @@ class Dungeon:
         end_y_position = self.hero.y_coord + range_ if len(self._map[self.hero.x_coord]) > self.hero.y_coord + range_  \
                                                     else len(self._map[self.hero.x_coord]) - 1
 
-        start_x_position = self.hero.x_coord - range_ if self.hero.y_coord - range_ >= 0 else 0
+        start_x_position = self.hero.x_coord - range_ if self.hero.x_coord - range_ >= 0 else 0
         end_x_position = self.hero.x_coord + range_ if len(self._map) > self.hero.x_coord + range_ \
                                                     else len(self._map) - 1
         # range_ left from hero's Y position
