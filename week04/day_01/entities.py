@@ -103,9 +103,18 @@ class Entity:
     @property
     def health(self) -> int:
         return self._health
+
+    @health.setter
+    def health(self, new_value: int):
+        self._health = new_value
+
     @property
     def mana(self) -> int:
         return self._mana
+
+    @mana.setter
+    def mana(self, new_value: int):
+        self._mana = new_value
 
     def is_alive(self) -> bool:
         return self._health > 0
@@ -118,6 +127,14 @@ class Hero(Entity):
     def __init__(self, name: str, title: str, health: int, mana: int, mana_regen_rate: int):
         super().__init__(name, title, health, mana)
         self.mana_renegeration_rate = mana_regen_rate
+
+    def leave_combat(self):
+        """ Called whenever we leave combat, meaning right after a fight. Therefore we regenerate our hero"""
+        self.__regen()
+
+    def __regen(self):
+        self.health = self.max_health
+        self.mana = self.max_mana
 
     def attack(self, victim: 'Enemy'):
         # see if we should attack by spell or weapon by comparing their damage
@@ -147,7 +164,7 @@ class Hero(Entity):
         ))
         if victim_health <= 0:
             print('Enemy is dead!')
-            exit()
+            return True
 
     def initial_attack(self, victim: 'Enemy', initial_attack: Spell or int):
         if initial_attack:
@@ -210,7 +227,7 @@ class Enemy(Entity):
             attack_message=attack_message, victim_health=victim_health if victim_health >= 0 else 0
         ))
         if victim_health <= 0:
-            print('Enemy is dead!')
+            print('Hero is dead!')
             exit()
 
     def move_toward(self, entity: Hero):

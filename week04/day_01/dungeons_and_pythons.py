@@ -16,7 +16,11 @@ class Fight():
             self.__enemy_turn(hero, enemy)
 
             # hero attack
-            hero.attack(victim=enemy)
+            killing_blow = hero.attack(victim=enemy)
+
+            if killing_blow:
+                hero.leave_combat()
+                break
 
     def __enemy_turn(self, hero: Hero, enemy: Enemy):
         # the enemy either moves to the hero or attacks him
@@ -48,7 +52,13 @@ def sample_game_run():
     map.move_hero("right")
     map.move_hero("down")
     map.print_map()
+    map.move_hero("up")
+    map.move_hero("right")
+    map.move_hero("right")
+    map.move_hero("right")
+    map.print_map()
     map.hero_attack(by="spell")
+    map.print_map()
 
 
 def main():
