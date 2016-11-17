@@ -1,7 +1,8 @@
 class Node:
-    def __init__(self, value, index: int, next_node: 'Node'):
+    def __init__(self, value, index: int, next_node: 'Node'=None, prev_node: 'Node'=None):
         self.value = value
         self.next = next_node
+        self.prev = prev_node
         self.index = index
 
 class LinkedList:
@@ -15,11 +16,11 @@ class LinkedList:
             old_tail = self.tail
             self.list_size += 1
             # our tail is now the latest element
-            new_tail = Node(data, next_node=None, index=old_tail.index+1)
+            new_tail = Node(data, next_node=None, prev_node=old_tail, index=old_tail.index+1,)
             old_tail.next = new_tail  # our tail now has a next element
             self.tail = new_tail  # replace tail
         elif self.head: # self.tail is None
-            self.tail = Node(data, next_node=None, index=1)
+            self.tail = Node(data, next_node=None, prev_node=self.head, index=1)
             self.head.next = self.tail
             self.list_size += 1
         else: # adding first element
@@ -65,6 +66,12 @@ class LinkedList:
         self.list_size -= 1
         return True
 
+    def remove_last(self):
+        """ remove the last element in the linked list"""
+        # make the new tail the previous element
+        self.tail = self.tail.prev
+        self.tail.next = None
+
     def pprint(self):
         node = self.head
         while True:
@@ -103,29 +110,35 @@ class LinkedList:
             prev_node = self.get_index(index-1)
             node_at_index = prev_node.next  # the element at index we're replacing
 
-            new_node = Node(value=data, index=index, next_node=node_at_index)  # new node points to the original element
+            new_node = Node(value=data, index=index, next_node=node_at_index, prev_node=prev_node)  # new node points to the original element
+            node_at_index.prev=new_node  # original node is now after our new node
             self.__modify_indexes_from_node_to_end(node_at_index.next, 1) # increment the indexes of each node after
             prev_node.next = new_node  # prev node now points to the new node
             self.list_size += 1
 
     def add_first(self, data):
-        # update the indexes of each node after
         if self.head and self.tail:
-            temp_node = self.head
+            old_head = self.head
             # fix indexes of nodes onwards
-            self.__modify_indexes_from_node_to_end(temp_node, 1)
-
-            new_head = Node(value=data, index=0, next_node=self.head)
-            self.head = new_head
+            self.__modify_indexes_from_node_to_end(old_head, 1)
+            new_head = Node(value=data, index=0, next_node=old_head, prev_node=None)
+            old_head.prev = new_head
+            self.head = new_head  # change head
             self.list_size += 1
         elif self.head:  # Tail is empty
-            self.tail = self.head  # type: Node
-            self.head = Node(value=data, index=0, next_node=self.tail)
+            self.tail = self.head  # our head becomes our tail
+            # create new head
+            self.head = Node(value=data, index=0, next_node=self.tail, prev_node=None)
+            self.tail.prev = self.head
         else:
             # adding the first ever element
-            self.head = Node(value=data, index=0, next_node=self.tail)
+            self.head = Node(value=data, index=0, next_node=self.tail, prev_node=None)
             self.tail = None
             self.list_size += 1
+
+    def add_last(self, data):
+        """ Add an element at the end"""
+        self.add_element(data)
 
     def __modify_indexes_from_node_to_end(self, node, change):
         """
