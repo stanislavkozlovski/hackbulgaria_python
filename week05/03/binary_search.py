@@ -1,16 +1,16 @@
-# arr = [1,2,3,4,5,6,7,8,9,10]
-#
-# def binary_search(arr, start, end, element):
-#     mid = (start+end) // 2
-#     mid_el = arr[mid]
-#
-#     if mid_el == element:
-#         return mid
-#
-#     if mid_el > element:
-#         return binary_search(arr, start, mid, element)
-#     else:
-#         return binary_search(arr, mid, end, element)
+arr = [1,2,3,4,5,6,7,8,9,10]
+
+def binary_search(arr, start, end, element):
+    mid = (start+end) // 2
+    mid_el = arr[mid]
+
+    if mid_el == element:
+        return mid
+
+    if mid_el > element:
+        return binary_search(arr, start, mid, element)
+    else:
+        return binary_search(arr, mid, end, element)
 #
 # print(binary_search(arr, 0, 10, element=9))
 
@@ -29,20 +29,10 @@ def find_turning_point(arr, start, end):
     mid = (start+end) // 2
     mid_el = arr[mid]
 
-    if (mid - 1 >= 0 and mid + 1 < len(arr)
-        and arr[mid-1] < mid_el and arr[mid+1] < mid_el):
-        return mid  # turning point
-    elif mid - 1 < 0 and mid_el > arr[mid+1]:
-        return mid  # turning point at start - [4,1,2]
-    elif mid + 1 >= len(arr) and mid_el < arr[mid-1]:
-        return mid  # turning point at end - [1,4,3]
+    if arr[mid-1] < mid_el and arr[mid+1] < mid_el:  # turning point
+        return mid+1
 
-    if mid-1 >= 0 and mid_el > arr[mid-1]:  # still increasing, so search right
+    if mid - 1 >= 0 and mid_el > arr[mid-1]:  # still increasing, so search right
         return find_turning_point(arr, mid, end)
-
-    if mid-1 >= 0 and mid_el < arr[mid-1]: # still decreasing, so search left
-        return find_turning_point(arr, start, mid)
-
-
-test = [1,4,3]
-print(find_turning_point(test, 0, len(test)))
+    else:
+        return find_turning_point(arr, start, mid)  # still decreasing, so search left
