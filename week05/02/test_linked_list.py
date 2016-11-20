@@ -1,5 +1,5 @@
 import unittest
-from linked_list import LinkedList
+from recursive_linked_list import LinkedList
 
 
 class LinkedListTest(unittest.TestCase):
