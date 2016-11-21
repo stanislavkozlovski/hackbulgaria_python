@@ -18,14 +18,17 @@ class Tree:
         """ Adds a child to the given parent.
         Assumes that the parent exists"""
         wanted_parent = self.__find(parent, self.root)
+
+        # check if there isn't a child with that value already
         child_exists = self.__find(child, self.root)
         if child_exists:
             raise Exception('A child with value {} already exists!'.format(child))
+        
         wanted_parent.add_child(Node(child, parent=wanted_parent))
         self.nodes += 1
 
     def __find(self, x, parent: 'Node'):
-        """ Searched the tree for a value and returns it's index"""
+        """ Searched the tree for a value and returns its index"""
         found = None
         if parent.value == x:
             return parent
@@ -81,20 +84,23 @@ class Tree:
         lst = [self.root.value]
 
         def __fill_consecutive_tree_levels(parent=self.root):
+            """ Fills a list of consecutive connections in it, in other words,
+                traverses a tree from left to right                       """
             for child in parent.children:
                 lst.append(child.value)
-                __fill_consecutive_tree_levels(parent=child)
+                __fill_consecutive_tree_levels(parent=child)  # call recursively
+
         __fill_consecutive_tree_levels()
         return lst
 
-
-tr = Tree(3)
-tr.add_child(3,5)
-print(tr.find(5))
-print(tr.find(10))
-print(tr.height())
-tr.add_child(5, 3)
-tr.add_child(5,4)
-print(tr.height())
-print(tr.tree_levels())
-print(tr.consecutive_tree_levels())
+#
+# tr = Tree(3)
+# tr.add_child(3,5)
+# print(tr.find(5))
+# print(tr.find(10))
+# print(tr.height())
+# tr.add_child(5, 3)
+# tr.add_child(5,4)
+# print(tr.height())
+# print(tr.tree_levels())
+# print(tr.consecutive_tree_levels())
