@@ -2,7 +2,7 @@ from song import Song
 from random import randrange
 from datetime import timedelta
 import json
-from os import path
+import os
 from prettytable import PrettyTable
 
 
@@ -74,7 +74,9 @@ class Playlist:
 
     def save(self):
         """ Saves the playlist to a .json file """
-        file_path = path.join('./playlist-data', self.name.replace(' ', '-'))
+        if not os.path.isdir('./playlist-data'):
+            os.mkdir('./playlist-data')
+        file_path = path.join('./playlist-data', self.name.replace(' ', '-') + '.json')
         populated_artists_dict = {}
         for artist, songs in self.artists.items():
             # convert the list of song classes to a list of dictionaries, representing the classes
@@ -89,7 +91,7 @@ class Playlist:
 
     @staticmethod
     def load(file_name: str):
-        file_path = path.join('./playlist-data', file_name)
+        file_path = os.path.join('./playlist-data', file_name)
         songs = []  # read the songs from our json file
         with open(file_path) as json_data:
             artists = json.load(json_data)  # type: dict
