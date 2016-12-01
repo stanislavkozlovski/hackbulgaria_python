@@ -1,18 +1,17 @@
 import re
 import json
 
-class InvalidEmailError(Exception):
-    pass
-class PandaAlreadyThereError(Exception):
-    pass
-class PandasAlreadyFriendsError(Exception):
-    pass
+from custom_exceptions import InvalidEmailError, PandaAlreadyThereError, PandasAlreadyFriendsError
+VALID_EMAIL_PATTERN = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+
+
+
 
 class Panda:
     def __init__(self, name: str, email: str, gender: str):
-        self.__name = name
-        if not re.search(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+        if not re.search(VALID_EMAIL_PATTERN, email):
             raise InvalidEmailError('Invalid Email!')
+        self.__name = name
         self.__email = email
         self.__gender = gender
 
@@ -34,6 +33,7 @@ class Panda:
     def name(self):
         return self.__name
 
+    # unconventional names below but what can you do
     def isMale(self):
         return self.__gender.lower() == 'male'
 

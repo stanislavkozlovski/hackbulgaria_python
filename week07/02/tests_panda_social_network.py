@@ -1,5 +1,6 @@
 import unittest
-from panda_social_network import Panda, InvalidEmailError, PandaAlreadyThereError, PandasAlreadyFriendsError, PandaSocialNetwork
+from panda_social_network import Panda, PandaSocialNetwork
+from custom_exceptions import InvalidEmailError, PandaAlreadyThereError, PandasAlreadyFriendsError
 
 class PandaTests(unittest.TestCase):
     def setUp(self):
