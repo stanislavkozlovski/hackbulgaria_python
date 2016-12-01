@@ -23,7 +23,7 @@ class Tree:
         child_exists = self.__find(child, self.root)
         if child_exists:
             raise Exception('A child with value {} already exists!'.format(child))
-        
+
         wanted_parent.add_child(Node(child, parent=wanted_parent))
         self.nodes += 1
 

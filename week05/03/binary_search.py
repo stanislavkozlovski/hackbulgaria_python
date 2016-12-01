@@ -30,7 +30,7 @@ def find_turning_point(arr, start, end):
     mid_el = arr[mid]
 
     if arr[mid-1] < mid_el and arr[mid+1] < mid_el:  # turning point
-        return mid+1
+        return 'Turning point is {} on index {}.'.format(arr[mid+1], mid+1)
 
     if mid - 1 >= 0 and mid_el > arr[mid-1]:  # still increasing, so search right
         return find_turning_point(arr, mid, end)

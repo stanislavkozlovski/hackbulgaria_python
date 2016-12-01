@@ -73,10 +73,11 @@ class Playlist:
         print(pretty_table)
 
     def save(self):
+        # TODO: Refactor
         """ Saves the playlist to a .json file """
         if not os.path.isdir('./playlist-data'):
             os.mkdir('./playlist-data')
-        file_path = path.join('./playlist-data', self.name.replace(' ', '-') + '.json')
+        file_path = os.path.join('./playlist-data', self.name.replace(' ', '-') + '.json')
         populated_artists_dict = {}
         for artist, songs in self.artists.items():
             # convert the list of song classes to a list of dictionaries, representing the classes

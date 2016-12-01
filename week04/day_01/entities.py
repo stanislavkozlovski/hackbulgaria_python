@@ -3,6 +3,7 @@ This module holds our classes for in-game creatures and the hero
 """
 from .spells import Spell
 
+
 class Entity:
     def __init__(self, name: str, title: str, health: int, mana: int, x_coord: int=0, y_coord: int=0):
         self.name = name

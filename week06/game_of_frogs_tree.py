@@ -15,6 +15,7 @@ def number_of_frogs(count: int):
     right_node = create_children(tree, expected_value)
     print(build_path(right_node))  # get the done path
 
+
 def build_path(start_node):
     path = []
     while True:
