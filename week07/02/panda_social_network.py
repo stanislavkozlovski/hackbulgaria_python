@@ -152,7 +152,7 @@ class PandaSocialNetwork:
 
     @staticmethod
     def load(file_name):
-        loaded_social_network = SocialNetwork()
+        loaded_social_network = PandaSocialNetwork()
         with open(file_name, 'r', encoding='utf-8') as data:
             loaded_data = json.loads(data.readline())
         # we now have a dictionary, but our Panda 'class' dictionaries are strings, so we need to convert those too
@@ -160,7 +160,7 @@ class PandaSocialNetwork:
         for panda in loaded_data['pandas']:
             # the panda is still a string, so we fix the quotes and convert it to a dict
             panda = json.loads(panda.replace("'", '"'))
-            loaded_social_network.add_panda(Panda(name=panda['name'], gender=panda['gender'], email=panda['email']))
+            loaded_social_network.add_panda(Panda(name=panda['_Panda__name'], gender=panda['_Panda__gender'], email=panda['_Panda__email']))
         # add each relationship to the social network
         for person, friends in loaded_data['relationships'].items():
             """
@@ -169,13 +169,12 @@ class PandaSocialNetwork:
                             representing the friends of our person
             """
             panda = json.loads(person.replace("'", '"'))
-            panda = Panda(name=panda['name'], gender=panda['gender'], email=panda['email'])
+            panda = Panda(name=panda['_Panda__name'], gender=panda['_Panda__gender'], email=panda['_Panda__email'])
             for friend in friends:
                 panda_friend = json.loads(friend.replace("'", '"'))
-                panda_friend = Panda(name=panda_friend['name'], gender=panda_friend['gender'], email=panda_friend['email'])
+                panda_friend = Panda(name=panda_friend['_Panda__name'], gender=panda_friend['_Panda__gender'], email=panda_friend['_Panda__email'])
                 if not loaded_social_network.are_friends(panda, panda_friend):
                     loaded_social_network.make_friends(panda, panda_friend)
-
 
         return loaded_social_network
 
