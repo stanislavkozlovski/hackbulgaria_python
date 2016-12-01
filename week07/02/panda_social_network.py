@@ -10,37 +10,38 @@ class PandasAlreadyFriendsError(Exception):
 
 class Panda:
     def __init__(self, name: str, email: str, gender: str):
-        self.name = name
+        self.__name = name
         if not re.search(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
             raise InvalidEmailError('Invalid Email!')
-        self.email = email
-        self.gender = gender
+        self.__email = email
+        self.__gender = gender
 
     def __str__(self):
-        return 'Panda - {}'.format(self.name)
+        return 'Panda - {}'.format(self.__name)
 
     def __eq__(self, other):
-        return (self.email.lower() == other.email.lower()) and (self.name.lower() == other.name.lower()) and (self.gender.lower() == other.gender.lower())
+        return (self.__email.lower() == other.email().lower()) and (self.__name.lower() == other.name().lower()) and (self.__gender.lower() == other.gender().lower())
 
     def __hash__(self):
-        return hash(self.email + self.name + self.gender)
+        return hash(self.__email + self.__name + self.__gender)
 
     def gender(self):
-        return self.gender
+        return self.__gender
 
     def email(self):
-        return self.email
+        return self.__email
 
     def name(self):
-        return self.name
+        return self.__name
 
-    def is_male(self):
-        return self.gender.lower() == 'male'
+    def isMale(self):
+        return self.__gender.lower() == 'male'
 
-    def is_female(self):
-        return self.gender.lower() == 'female'
+    def isFemale(self):
+        return self.__gender.lower() == 'female'
 
-class SocialNetwork:
+
+class PandaSocialNetwork:
     def __init__(self):
         self.pandas = []
         self.relationships = {}
