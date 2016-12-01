@@ -104,16 +104,15 @@ class PandaSocialNetwork:
                         nodes.append(friend)
                         visited.add(friend)
 
-            return level
         connection_level = BFS(panda1, panda2)
         if not connection_level:
-            return False
+            return -1
         return connection_level
 
     def are_connected(self, panda1, panda2):
         return bool(self.connection_level(panda1, panda2))
 
-    def how_many_gender_in_network(self, level, panda, gender):
+    def how_many_gender_in_network(self, searched_level, panda, gender):
         """ Find how many pandas with the given gender there are in the Panda's network, LEVEL levels deep"""
         from collections import deque
         visited = set()
@@ -121,20 +120,25 @@ class PandaSocialNetwork:
         def BFS(panda):
             nodes = deque()
             nodes.append(panda)
+            nodes.append('LEVEL UP')
+            visited.add(panda)
             level = 1
             panda_count = 0
             while nodes:
                 panda = nodes.popleft()
                 if str(panda) == 'LEVEL UP':
                     level += 1
+                    nodes.append('LEVEL UP')
+                    if len(nodes) == 1:
+                        break
                     continue
-                nodes.append('LEVEL UP')
-
+                if level > searched_level:
+                    break  # no need to go deeper
                 for friend in self.relationships[panda]:
                     if friend not in visited:
                         nodes.append(friend)
                         visited.add(friend)
-                        if friend.gender == gender:
+                        if friend.gender() == gender:
                             panda_count += 1
 
             return panda_count
