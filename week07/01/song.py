@@ -11,6 +11,7 @@ class Song:
             hours=int(self.song_length(hours=True)),
             minutes=int(self.song_length(minutes=True)),
             seconds=int(self.song_length(seconds=True)))  # type: timedelta
+        self.length = self.construct_str_length()
 
     def __str__(self):
         return "{artist} - {title} from {album} - {length}".format(
@@ -38,4 +39,19 @@ class Song:
                 return split_len[-3]
         else:
             return self.length
+
+    def construct_str_length(self):
+        """ This function converts our length str to a more pretty one
+            ex: 00:04:37 => 4:37"""
+        modified_length = str(int(self.length.replace(':', '')))  # 000437 => 437
+        new_str = []
+        if len(modified_length) % 2 == 0:
+            start = 0
+        else:
+            start = 1
+            new_str.append(modified_length[0])
+        for idx in range(start, len(modified_length), 2):
+            new_str.append(modified_length[idx:idx+2])
+
+        return ':'.join(new_str)
 
