@@ -1,5 +1,7 @@
 import os
-import mutagen
+from mutagen.mp3 import MP3
+from mutagen.oggvorbis import OggVorbis
+from datetime import timedelta
 
 from song import Song
 from playlist import Playlist
@@ -34,39 +36,34 @@ class MusicCrawler:
 
     def generate_playlist(self):
         """ Generate a Playlist class object of songs we've crawled and return it """
-        pass
+        self.convert_paths_to_songs()  # turns our songs list into a list of Song objects
+        playlist = Playlist('New Playlist')
+        print(self.songs)
+        playlist.add_songs(self.songs)
+
+        return playlist
 
     def convert_paths_to_songs(self):
         """ Convert our list of song paths to Song class objects """
-        #     def __init__(self, title: str, artist: str, album: str, length: str):
         song_objects = []
         for song_path in self.songs:
             if song_path.endswith('.mp3'):
                 song = MP3(song_path)  # to get the MP3 tags
-                duration_str = timedelta(int(song.info.length))
-                if 'day' in duration_str:
-                    raise Exception('Duration is too long!')
-                hours, minutes, seconds = duration_str.split(':')
-                song_obj = Song(title=song[MUTAGEN_SONG_TITLE_KEY], artist=song[MUTAGEN_ARTIST_KEY],
-                     album=song[MUTAGEN_ALBUM_KEY], length='{h}:{m}:{s}'.format(h=hours, m=minutes, s=seconds))
-                song_objects.append(song_obj)
+                title, artist, album = (str(song[MUTAGEN_SONG_TITLE_KEY]), str(song[MUTAGEN_ARTIST_KEY]),
+                                        str(song[MUTAGEN_ALBUM_KEY]))
             elif song_path.endswith('.ogg'):
-                pass
+                song = OggVorbis(song_path)  # to get the tags
+                song_tags = {key: val for key, val in song.tags}  # the tags are originally a list of tuples
+                title, artist, album = str(song_tags['title']), str(song_tags['artist']), str(song_tags['album'])
             else:
                 raise Exception('Invalid file type!')
-        self.songs = song_objects
 
-from mutagen.mp3 import MP3
-drake = MusicCrawler('./music_crawler_test').songs[0]
-print(drake)
-song = MP3(drake)
-print(song.info.length)
-from datetime import timedelta
-duration_str = str(timedelta(seconds=int(song.info.length)))
-print(duration_str)
-if 'day' in duration_str:
-    raise Exception('Duration is too long!')
-h, m, s = duration_str.split(':')
-print(h)
-print(m)
-print(s)
+            duration_str = str(timedelta(seconds=int(song.info.length)))
+            if 'day' in duration_str:
+                raise Exception('Duration is too long!')
+            hours, minutes, seconds = duration_str.split(':')
+            song_obj = Song(title=title, artist=artist,
+                            album=album, length='{h}:{m}:{s}'.format(h=hours, m=minutes, s=seconds))
+            song_objects.append(song_obj)
+
+        self.songs = song_objects
