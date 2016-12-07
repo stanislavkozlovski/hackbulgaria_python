@@ -51,3 +51,27 @@ WHERE starsin.starname IS NULL;
 SELECT moviestar.name
 FROM moviestar
 WHERE moviestar.name NOT IN (SELECT DISTINCT starsin.starname FROM starsin);
+
+/* aktiori, adres na studio na film v koito e uchastval*/
+SELECT studio_and_names.starname, studio.address
+FROM (
+	SELECT movie.studioname, movie_.starname
+	FROM movie
+	INNER JOIN
+		(SELECT starsin.starname, starsin.movietitle
+		FROM starsin) as movie_
+	ON movie.title = movie_.movietitle) as studio_and_names
+LEFT JOIN studio
+ON studio_and_names.studioname == studio.name;
+
+/*imena na aktiori, rodeni predi 1950 i v filmi predi 2000*/
+SELECT DISTINCT star.name
+FROM movie
+INNER JOIN
+	(SELECT DISTINCT moviestar.name, starsin.movietitle
+	FROM moviestar
+	INNER JOIN (SELECT DISTINCT starsin.starname, starsin.movietitle
+				FROM starsin) as starsin
+	WHERE moviestar.birthdate < "1950-01-01") as star
+ON movie.title = star.movietitle
+WHERE movie.year < 2000;
