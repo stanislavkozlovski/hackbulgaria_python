@@ -28,6 +28,13 @@ def add_patient():
                    [patient_name, patient_lastname, patient_age, patient_gender])
     connection.commit()
 
+def add_doctor():
+    doctor_name = input(">Doctor name: ")
+    doctor_lastname = input(">Doctor lastname: ")
+    cursor.execute("INSERT INTO doctors (FIRSTNAME, LASTNAME) VALUES (?, ?)",
+                   [doctor_name, doctor_lastname])
+    connection.commit()
+
 
 def create_tables():
     cursor.executescript(CREATE_TABLES_SCRIPT)
