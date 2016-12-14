@@ -28,11 +28,28 @@ def add_patient():
                    [patient_name, patient_lastname, patient_age, patient_gender])
     connection.commit()
 
+
 def add_doctor():
     doctor_name = input(">Doctor name: ")
     doctor_lastname = input(">Doctor lastname: ")
     cursor.execute("INSERT INTO doctors (FIRSTNAME, LASTNAME) VALUES (?, ?)",
                    [doctor_name, doctor_lastname])
+    connection.commit()
+
+
+def add_hospital_stay():
+    patient_name = input(">Patient's name ")
+    patient = cursor.execute("SELECT * FROM patients WHERE patients.firstName = ?", [patient_name]).fetchone()
+    if not patient:
+        print("Such a patient does not exist!")
+        return
+
+    room = int(input(">Room number: "))
+    start_date = input(">Entry date: ")
+    end_date = input(">Exit date: (leave blank if still in)") or None
+    injury = input(">Enter the reason for the stay: ")
+    cursor.execute("INSERT INTO hospital_stay (ROOM, STARTDATE, ENDDATE, INJURY, PATIENT) VALUES (?, ?, ?, ?, ?)",
+                   [room, start_date, end_date, injury, patient[0]])
     connection.commit()
 
 
