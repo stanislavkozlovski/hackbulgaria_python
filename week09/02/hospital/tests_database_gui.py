@@ -42,11 +42,13 @@ class DatabaseTests(unittest.TestCase):
         )
         try:
             sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
             self.db.add_patient()
             patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
             self.assertEqual(patient, (1, patient_name, patient_lastname, patient_age, patient_gender, patient_doctor))
         finally:
             sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
     def test_add_doctor(self):
         doctor_name = "Doctor"
@@ -57,11 +59,30 @@ class DatabaseTests(unittest.TestCase):
         )
         try:
             sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
             self.db.add_doctor()
             doctor = db.cursor.execute("SELECT * FROM DOCTORS").fetchone()
             self.assertEqual(doctor, (1, doctor_name, doctor_lastname))
         finally:
             sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_add_hospital_stay(self):
+        self.test_add_patient()  # to add the patient Vasko
+        patient_name = "Vasko"
+        user_input = "{patient_name}\n{room}\n{startdate}\n{enddate}\n{injury}".format(
+            patient_name=patient_name, room=205, startdate="10-12-2016", enddate="12-12-2016",
+            injury="Too much programming. :O"
+        )
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
+            self.db.add_hospital_stay()
+            hospital_stay = db.cursor.execute("SELECT * FROM HOSPITAL_STAY").fetchone()
+            self.assertEqual(hospital_stay, (1, 205, "10-12-2016", "12-12-2016", "Too much programming. :O", 1))
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
 if __name__ == '__main__':
     unittest.main()
