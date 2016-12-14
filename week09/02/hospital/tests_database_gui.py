@@ -3,15 +3,15 @@ import sqlite3
 import sys
 from io import StringIO
 import database_gui as db
-DROP_TABLES_SCRIPT = """DROP TABLE IF EXISTS PATIENTS;
-DROP TABLE IF EXISTS HOSPITAL_STAY;
-DROP TABLE IF EXISTS DOCTORS;"""
+from database_scripts import CREATE_TABLES_SCRIPT, DROP_TABLES_SCRIPT
 
 
 class DatabaseTests(unittest.TestCase):
     def setUp(self):
         db.connection = sqlite3.connect(db.DB_PATH + '_test')
         db.cursor = db.connection.cursor()
+        # create the db
+        db.cursor.executescript(CREATE_TABLES_SCRIPT)
         self.db = db
 
     def tearDown(self):
@@ -35,7 +35,7 @@ class DatabaseTests(unittest.TestCase):
         patient_lastname = "Vasilev"
         patient_age = 15
         patient_gender = "male"
-        patient_doctor = 1
+        patient_doctor = None
         user_input = "{name}\n{lastname}\n{age}\n{gender}\n{doctor}".format(
             name=patient_name, lastname=patient_lastname, age=patient_age,
             gender=patient_gender, doctor=patient_doctor
@@ -43,7 +43,7 @@ class DatabaseTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(user_input)
             self.db.add_patient()
-            patient = db.cursor.fetchone("SELECT * FROM PATIENTS")
+            patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
             self.assertEqual(patient, (1, patient_name, patient_lastname, patient_age, patient_gender, patient_doctor))
         finally:
             sys.stdin = sys.__stdin__
