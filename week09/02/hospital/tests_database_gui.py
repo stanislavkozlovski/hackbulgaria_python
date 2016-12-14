@@ -42,7 +42,7 @@ class DatabaseTests(unittest.TestCase):
         )
         try:
             sys.stdin = StringIO(user_input)
-            self.db.add_doctor()
+            self.db.add_patient()
             patient = db.cursor.fetchone("SELECT * FROM PATIENTS")
             self.assertEqual(patient, (1, patient_name, patient_lastname, patient_age, patient_gender, patient_doctor))
         finally:
