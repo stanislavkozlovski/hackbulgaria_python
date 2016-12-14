@@ -14,7 +14,19 @@ def main():
 
 
 def command_controller(command: str):
+    if command == "add_patient":
+        add_patient()
     pass
+
+
+def add_patient():
+    patient_name = input(">Patient name: ")
+    patient_lastname = input(">Patient lastname: ")
+    patient_age = input(">Patient age: ")
+    patient_gender = input(">Patient gender (male or female): ")
+    cursor.execute("INSERT INTO patients (FIRSTNAME, LASTNAME, AGE, GENDER) VALUES (?, ?, ?, ?)",
+                   [patient_name, patient_lastname, patient_age, patient_gender])
+    connection.commit()
 
 
 def create_tables():
