@@ -48,5 +48,20 @@ class DatabaseTests(unittest.TestCase):
         finally:
             sys.stdin = sys.__stdin__
 
+    def test_add_doctor(self):
+        doctor_name = "Doctor"
+        doctor_lastname = "McDoctorFace"
+        user_input = "{name}\n{lastname}".format(
+            name=doctor_name,
+            lastname=doctor_lastname
+        )
+        try:
+            sys.stdin = StringIO(user_input)
+            self.db.add_doctor()
+            doctor = db.cursor.execute("SELECT * FROM DOCTORS").fetchone()
+            self.assertEqual(doctor, (1, doctor_name, doctor_lastname))
+        finally:
+            sys.stdin = sys.__stdin__
+
 if __name__ == '__main__':
     unittest.main()
