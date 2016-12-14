@@ -14,9 +14,17 @@ def main():
 
 
 def command_controller(command: str):
-    if command == "add_patient":
-        add_patient()
-    pass
+    AVAILABLE_COMMANDS = {
+        # key: name of the command
+        # value: the function for the command
+        "add_patient": add_patient,
+        "add_doctor": add_doctor,
+        "add_hospital_stay": add_hospital_stay
+    }
+    print("Available commands:\n\t{commands}".format(
+        commands="\n\t".join(AVAILABLE_COMMANDS.keys())))
+    if command in AVAILABLE_COMMANDS.keys():
+        AVAILABLE_COMMANDS[command]()
 
 
 def add_patient():
