@@ -216,7 +216,35 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_update_hospital_stay(self):
+        end_date = "20-12-2019"
+        user_input = "{name}\n{field_to_update}\n{new_value}\n".format(
+            name=self.patient_name, field_to_update="enddate", new_value=end_date
+        )
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
+            self.db.update_hospital_stay()
+            hospital_stay = db.cursor.execute("SELECT * FROM HOSPITAL_STAY").fetchone()
+            self.assertFalse(hospital_stay is None)
+            self.assertEqual(hospital_stay['enddate'], end_date)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
+    def test_update_hospital_stay_invalid_patient(self):
+        """ Should just print No such patient and return from the function """
+        user_input = "{name}\n".format(
+            name="INVALID $ PATIENT")
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.update_hospital_stay()
+            self.assertTrue("No such patient" in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
 
 
