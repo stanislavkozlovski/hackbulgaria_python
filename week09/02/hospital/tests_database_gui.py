@@ -104,9 +104,11 @@ class DatabaseAddTests(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
 
-class DatabaseUpdateTests(unittest.TestCase):
+class DatabaseModifyTests(unittest.TestCase):
+    """ Tests that modify the database - update/delete """
     def setUp(self):
         db.connection = sqlite3.connect(db.DB_PATH + '_test')
+        db.connection.row_factory = sqlite3.Row
         db.cursor = db.connection.cursor()
         # create the db
         db.cursor.executescript(CREATE_TABLES_SCRIPT)
@@ -146,6 +148,63 @@ class DatabaseUpdateTests(unittest.TestCase):
         VALUES (?, ?, ?, ?, ?, ?)""", [
             1, self.room_id, self.start_date, self.end_date, self.injury, self.patient_ID
         ])
+
+    def test_update_patient_age(self):
+        new_age = 30
+        user_input = "{name}\n{field_to_update}\n{new_value}\n".format(
+            name=self.patient_name, field_to_update="age", new_value=new_age
+        )
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
+            self.db.update_patient()
+            patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
+            self.assertEqual(patient['age'], new_age)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_update_invalid_patient(self):
+        new_age = 30
+        user_input = "{name}\n{field_to_update}\n{new_value}\n".format(
+            name="REMY BOYZZ", field_to_update="age", new_value=new_age
+        )
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.update_patient()
+            # assert error message
+            self.assertEqual(output.getvalue(), "Such a patient does not exist!")
+            patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
+            self.assertNotEqual(patient['age'], new_age)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
