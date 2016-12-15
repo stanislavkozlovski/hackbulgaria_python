@@ -541,12 +541,11 @@ class DatabaseListTests(unittest.TestCase):
             end_date="2017-01-01"
         )
         expected_output = """+----+-----------+----------+-----+--------+--------+
-        | ID | FIRSTNAME | LASTNAME | AGE | GENDER | DOCTOR |
-        +----+-----------+----------+-----+--------+--------+
-        | 3  |     Cs    | Science  |  30 |  Male  |   3    |
-        | 4  |  Workout  | TheDream |  50 |  Male  |   3    |
-        +----+-----------+----------+-----+--------+--------+
-        """
+| ID | FIRSTNAME | LASTNAME | AGE | GENDER | DOCTOR |
++----+-----------+----------+-----+--------+--------+
+| 3  |     Cs    | Science  |  30 |  Male  |   3    |
+| 4  |  Workout  | TheDream |  50 |  Male  |   3    |
++----+-----------+----------+-----+--------+--------+"""
         output = StringIO()
         try:
             sys.stdin = StringIO(user_input)
@@ -556,6 +555,39 @@ class DatabaseListTests(unittest.TestCase):
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
+
+    def test_list_patients_from_to_invalid_date(self):
+        user_input = "{start_date}\n{end_date}\n".format(
+            start_date="2016-13-31",
+            end_date="2017-01-01"
+        )
+        expected_output = """Invalid date!"""
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.list_patients_from_to_date()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_list_patients_from_to_date_no_patients(self):
+        user_input = "{start_date}\n{end_date}\n".format(
+        start_date = "2056-10-31",
+        end_date = "2067-01-01"
+        )
+        expected_output = """There are no patients in that timeframe."""
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.list_patients_from_to_date()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
 
 if __name__ == '__main__':
     unittest.main()
