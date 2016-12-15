@@ -143,6 +143,22 @@ def update_hospital_stay():
     connection.commit()
 
 
+def delete_hospital_stay():
+    patient_name = input(">Patient's name ")
+    patient = _find_patient_by_name(patient_name)
+    if not patient:
+        print("Such a patient does not exist!")
+        return
+    hospital_stay = _find_hospital_stay_by_patient_id(patient['id'])
+    if not hospital_stay:
+        print("There are no records for the patient staying in the hospital.")
+        return
+
+    cursor.execute("DELETE FROM HOSPITAL_STAY WHERE HOSPITAL_STAY.ID = ?",
+                   [hospital_stay['id']])
+    connection.commit()
+
+
 def _find_patient_by_name(patient_name):
     return cursor.execute("SELECT * FROM patients WHERE patients.firstName = ?", [patient_name]).fetchone()
 

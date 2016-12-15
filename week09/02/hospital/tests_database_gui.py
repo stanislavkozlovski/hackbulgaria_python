@@ -333,7 +333,7 @@ class DatabaseModifyTests(unittest.TestCase):
 
     def test_delete_invalid_hospital_stay(self):
         user_input = "{patient_name}\n".format(
-            patient_name=self.patient_name
+            patient_name="Copy paste driven development does not work"
         )
         output = StringIO()
         try:
