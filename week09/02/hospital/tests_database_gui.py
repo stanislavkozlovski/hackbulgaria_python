@@ -6,7 +6,7 @@ import database_gui as db
 from database_scripts import CREATE_TABLES_SCRIPT, DROP_TABLES_SCRIPT
 
 
-class DatabaseTests(unittest.TestCase):
+class DatabaseAddTests(unittest.TestCase):
     def setUp(self):
         db.connection = sqlite3.connect(db.DB_PATH + '_test')
         db.cursor = db.connection.cursor()
@@ -102,6 +102,50 @@ class DatabaseTests(unittest.TestCase):
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
+
+
+class DatabaseUpdateTests(unittest.TestCase):
+    def setUp(self):
+        db.connection = sqlite3.connect(db.DB_PATH + '_test')
+        db.cursor = db.connection.cursor()
+        # create the db
+        db.cursor.executescript(CREATE_TABLES_SCRIPT)
+        self.db = db
+        # Create all the entities
+        self.create_doctor()
+        self.create_patient()
+        self.create_hospital_stay()
+
+    def create_doctor(self):
+        self.doctor_ID = 1
+        self.doctor_name = "Larry"
+        self.doctor_lastname = "McGee"
+        db.cursor.execute("INSERT INTO doctors (ID, FIRSTNAME, LASTNAME) VALUES (?, ?, ?)",
+                   [self.doctor_ID, self.doctor_name, self.doctor_lastname])
+        db.connection.commit()
+
+    def create_patient(self):
+        self.patient_ID = 1
+        self.patient_name = "Mark"
+        self.patient_lastname = "Zckbrg"
+        self.patient_age = 25
+        self.patient_gender = "male"
+        db.cursor.execute("INSERT INTO patients (ID, FIRSTNAME, LASTNAME, AGE, GENDER, DOCTOR) VALUES (?, ?, ?, ?, ?, ?)",
+                       [self.patient_ID, self.patient_name,
+                        self.patient_lastname, self.patient_age,
+                        self.patient_gender, self.doctor_ID])
+        db.connection.commit()
+
+    def create_hospital_stay(self):
+        self.room_id = 205
+        self.start_date = "10-10-2010"
+        self.end_date = "11-10-2010"
+        self.injury = "Schizophrenia"
+        db.cursor.execute("""
+        INSERT INTO hospital_stay  (ID, ROOM, STARTDATE, ENDDATE, INJURY, PATIENT)
+        VALUES (?, ?, ?, ?, ?, ?)""", [
+            1, self.room_id, self.start_date, self.end_date, self.injury, self.patient_ID
+        ])
 
 if __name__ == '__main__':
     unittest.main()
