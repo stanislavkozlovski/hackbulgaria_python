@@ -316,6 +316,38 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_delete_hospital_stay(self):
+        user_input = "{patient_name}\n".format(
+            patient_name=self.patient_name
+        )
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
+            self.db.delete_hospital_stay()
+            # assert that the hospital stay is not in the DB
+            hospital_stay = db.cursor.execute("SELECT * FROM HOSPITAL_STAY").fetchone()
+            self.assertTrue(hospital_stay is None)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_delete_invalid_hospital_stay(self):
+        user_input = "{patient_name}\n".format(
+            patient_name=self.patient_name
+        )
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.delete_hospital_stay()
+            # assert that an error message has been printer
+            self.assertTrue("Such a patient does not exist!" in output.getvalue())
+            # assert that the one hospital stay has not been deleted
+            hospital_stay = db.cursor.execute("SELECT * FROM HOSPITAL_STAY").fetchone()
+            self.assertTrue(hospital_stay is not None)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
 
 
