@@ -241,7 +241,7 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdin = StringIO(user_input)
             sys.stdout = output
             self.db.update_hospital_stay()
-            self.assertTrue("No such patient" in output.getvalue())
+            self.assertTrue("Such a patient does not exist!" in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__

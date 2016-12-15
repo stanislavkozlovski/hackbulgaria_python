@@ -87,6 +87,7 @@ def update_doctor():
 
     cursor.execute("UPDATE DOCTORS SET {} = ? WHERE DOCTORS.FIRSTNAME = ?".format(field),
                    [new_value, doctor_name])
+    connection.commit()
 
 
 def add_hospital_stay():
@@ -105,6 +106,32 @@ def add_hospital_stay():
     connection.commit()
 
 
+def update_hospital_stay():
+    patient_name = input(">Patient's name ")
+    patient = _find_patient_by_name(patient_name)
+    if not patient:
+        print("Such a patient does not exist!")
+        return
+    hospital_stay = _find_hospital_stay_by_patient_id(patient['id'])
+    if not hospital_stay:
+        print("There are no records for the patient staying in the hospital.")
+        return
+    print("Pick a field to update: \n\t{fields}".format(
+        fields='\n\t'.join(hospital_stay.keys())
+    ))
+    field = input().upper()
+    while field not in hospital_stay.keys():
+        print("Invalid key!")
+        field = input().upper()
+    new_value = input("New value: ")
+    if new_value.isnumeric():
+        new_value = int(new_value)
+    
+    cursor.execute("UPDATE HOSPITAL_STAY SET {} = ? WHERE HOSPITAL_STAY.ID = ?".format(field),
+                   [new_value, hospital_stay['id']])
+    connection.commit()
+
+
 def _find_patient_by_name(patient_name):
     return cursor.execute("SELECT * FROM patients WHERE patients.firstName = ?", [patient_name]).fetchone()
 
@@ -113,6 +140,10 @@ def _find_doctor_by_name(doctor_name):
     return cursor.execute("SELECT * FROM doctors WHERE doctors.firstName = ?",
                           [doctor_name]).fetchone()
 
+
+def _find_hospital_stay_by_patient_id(patient_id):
+    return cursor.execute("SELECT * FROM hospital_stay WHERE hospital_stay.patient = ?",
+                          [patient_id]).fetchone()
 
 def create_tables():
     cursor.executescript(CREATE_TABLES_SCRIPT)
