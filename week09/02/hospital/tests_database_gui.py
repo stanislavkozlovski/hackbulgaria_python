@@ -177,12 +177,44 @@ class DatabaseModifyTests(unittest.TestCase):
             # assert error message
             self.assertTrue("Such a patient does not exist!" in output.getvalue())
             patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
-            self.assertNotEqual(patient['age'], new_age)
+            self.assertNotEqual(patient['age'], new_age)  # assert that the one patient's name has not changed
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_update_doctor_lastname(self):
+        new_lastname = "NEWMAN"
+        user_input = "{name}\n{field_to_update}\n{new_value}\n".format(
+            name=self.doctor_name, field_to_update="lastname", new_value=new_lastname
+        )
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
+            self.db.update_doctor()
+            doctor = db.cursor.execute("SELECT * FROM DOCTORS").fetchone()
+            self.assertEqual(doctor['lastname'], new_lastname)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
+    def test_update_invalid_doctor(self):
+        new_lastname = "NEWMAN"
+        user_input = "{name}\n{field_to_update}\n{new_value}\n".format(
+            name="INVALID_DOCTOR", field_to_update="lastname", new_value=new_lastname
+        )
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.update_doctor()
+            # assert the error message
+            self.assertTrue("Such a doctor does not exist!" in output.getvalue())
+            doctor = db.cursor.execute("SELECT * FROM DOCTORS").fetchone()
+            # assert that the one doctor's lastname has not change
+            self.assertNotEqual(doctor['lastname'], new_lastname)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
 
 
