@@ -488,5 +488,19 @@ class DatabaseListTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_list_doctor_patients_invalid_doctor(self):
+        user_input = "{doctor_name}\n".format(doctor_name="INVALIDDOCTORMAN")
+        expected_output = "Such a doctor does not exist!"
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.list_patients_of_a_doctor()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+
 if __name__ == '__main__':
     unittest.main()
