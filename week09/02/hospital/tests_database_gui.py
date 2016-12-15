@@ -301,7 +301,7 @@ class DatabaseModifyTests(unittest.TestCase):
 
     def test_delete_invalid_doctor(self):
         user_input = "{doctor_name}\n".format(
-            doctor_name=self.doctor_name)
+            doctor_name="INVALID DOC")
         output = StringIO()
         try:
             sys.stdin = StringIO(user_input)
