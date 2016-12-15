@@ -118,6 +118,11 @@ class DatabaseModifyTests(unittest.TestCase):
         self.create_patient()
         self.create_hospital_stay()
 
+    def tearDown(self):
+        db.cursor.executescript(DROP_TABLES_SCRIPT)
+        db.connection.commit()
+        db.connection.close()
+
     def create_doctor(self):
         self.doctor_ID = 1
         self.doctor_name = "Larry"
@@ -246,25 +251,39 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_delete_patient(self):
+        user_input = "{patient_name}\n".format(
+            patient_name=self.patient_name
+        )
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
+            self.db.delete_patient()
+            # try to get the patient
+            patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
+            self.assertTrue(patient is None)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
+    def test_delete_invalid_patient(self):
+        user_input = "{patient_name}\n".format(
+            patient_name="NOBODY"
+        )
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.delete_patient()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            # assert there is an error message
+            self.assertTrue("Such a patient does not exist!" in output.getvalue())
+            # there should be a patient in the db
+            patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
+            self.assertTrue(patient is not None)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
 if __name__ == '__main__':
     unittest.main()
