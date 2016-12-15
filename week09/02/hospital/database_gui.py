@@ -68,6 +68,27 @@ def add_doctor():
     connection.commit()
 
 
+def update_doctor():
+    doctor_name = input(">Doctor's name ")
+    doctor = _find_doctor_by_name(doctor_name)
+    if not doctor:
+        print("Such a doctor does not exist!")
+        return
+    print("Pick a field to update: \n\t{fields}".format(
+        fields='\n\t'.join(doctor.keys())
+    ))
+    field = input().upper()
+    while field not in doctor.keys():
+        print("Invalid key!")
+        field = input().upper()
+    new_value = input("New value: ")
+    if new_value.isnumeric():
+        new_value = int(new_value)
+
+    cursor.execute("UPDATE DOCTORS SET {} = ? WHERE DOCTORS.FIRSTNAME = ?".format(field),
+                   [new_value, doctor_name])
+
+
 def add_hospital_stay():
     patient_name = input(">Patient's name ")
     patient = _find_patient_by_name(patient_name)
@@ -86,6 +107,11 @@ def add_hospital_stay():
 
 def _find_patient_by_name(patient_name):
     return cursor.execute("SELECT * FROM patients WHERE patients.firstName = ?", [patient_name]).fetchone()
+
+
+def _find_doctor_by_name(doctor_name):
+    return cursor.execute("SELECT * FROM doctors WHERE doctors.firstName = ?",
+                          [doctor_name]).fetchone()
 
 
 def create_tables():
