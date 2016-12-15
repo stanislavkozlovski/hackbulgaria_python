@@ -95,6 +95,22 @@ def list_doctors():
     print(table)
 
 
+def list_patients_of_a_doctor():
+    doctor_name = input(">Doctor's name ")
+    doctor = _find_doctor_by_name(doctor_name)
+    if not doctor:
+        print("Such a doctor does not exist!")
+        return
+    patients = _find_doctor_patients(doctor['id'])
+    if not patients:
+        print("The doctor has no patients.")
+        return
+    table = prettytable.PrettyTable([key for key in patients[0].keys()])
+    for patient in patients:
+        table.add_row(patient)
+    print(table)
+
+
 def add_doctor():
     doctor_name = input(">Doctor name: ")
     doctor_lastname = input(">Doctor lastname: ")
@@ -191,6 +207,11 @@ def _find_patient_by_name(patient_name):
 def _find_doctor_by_name(doctor_name):
     return cursor.execute("SELECT * FROM doctors WHERE doctors.firstName = ?",
                           [doctor_name]).fetchone()
+
+
+def _find_doctor_patients(doctor_id):
+    return cursor.execute("SELECT * FROM patients WHERE patients.doctor = ?",
+                          [doctor_id]).fetchall()
 
 
 def _find_hospital_stay_by_patient_id(patient_id):
