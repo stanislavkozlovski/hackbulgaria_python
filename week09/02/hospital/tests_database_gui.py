@@ -535,5 +535,27 @@ class DatabaseListTests(unittest.TestCase):
         finally:
             sys.stdout = sys.__stdout__
 
+    def test_list_patients_from_to_date(self):
+        user_input = "{start_date}\n{end_date}\n".format(
+            start_date="2016-10-31",
+            end_date="2017-01-01"
+        )
+        expected_output = """+----+-----------+----------+-----+--------+--------+
+        | ID | FIRSTNAME | LASTNAME | AGE | GENDER | DOCTOR |
+        +----+-----------+----------+-----+--------+--------+
+        | 3  |     Cs    | Science  |  30 |  Male  |   3    |
+        | 4  |  Workout  | TheDream |  50 |  Male  |   3    |
+        +----+-----------+----------+-----+--------+--------+
+        """
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.list_patients_from_to_date()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
 if __name__ == '__main__':
     unittest.main()
