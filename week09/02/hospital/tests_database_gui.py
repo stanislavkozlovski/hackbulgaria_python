@@ -285,5 +285,57 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_delete_doctor(self):
+        user_input = "{doctor_name}\n".format(
+            doctor_name=self.doctor_name)
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = StringIO()
+            self.db.delete_doctor()
+            # assert that there are no doctors in the DB
+            doctor = db.cursor.execute("SELECT * FROM DOCTORS").fetchone()
+            self.assertTrue(doctor is None)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_delete_invalid_doctor(self):
+        user_input = "{doctor_name}\n".format(
+            doctor_name=self.doctor_name)
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.delete_doctor()
+            # assert that an error message has been printer
+            self.assertTrue("Such a doctor does not exist!" in output.getvalue())
+            # assert that there is a doctor in the DB
+            doctor = db.cursor.execute("SELECT * FROM DOCTORS").fetchone()
+            self.assertTrue(doctor is not None)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     unittest.main()
