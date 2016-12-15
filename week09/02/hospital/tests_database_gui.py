@@ -501,6 +501,22 @@ class DatabaseListTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_list_patients_by_injury(self):
+        expected_output = """+---------------+----------------------------------+
+|     INJURY    | GROUP_CONCAT(patients.firstname) |
++---------------+----------------------------------+
+|      ADHD     |             Mase,Cs              |
+|      BPD      |             Workout              |
+| Schizophrenia |              Chase               |
++---------------+----------------------------------+
+"""
+        output = StringIO()
+        try:
+            sys.stdout = output
+            self.db.list_patients_by_injury()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdout = sys.__stdout__
 
 if __name__ == '__main__':
     unittest.main()
