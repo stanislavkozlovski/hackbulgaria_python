@@ -518,5 +518,22 @@ class DatabaseListTests(unittest.TestCase):
         finally:
             sys.stdout = sys.__stdout__
 
+    def test_list_doctors_and_injuries_they_treat(self):
+        expected_output = """+---------------+---------------------------------+
+|     INJURY    | GROUP_CONCAT(doctors.firstname) |
++---------------+---------------------------------+
+|      ADHD     |            Doc1,Roc3            |
+|      BPD      |               Roc3              |
+| Schizophrenia |               Doc1              |
++---------------+---------------------------------+
+"""
+        output = StringIO()
+        try:
+            sys.stdout = output
+            self.db.list_doctors_and_injuries_they_treat()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdout = sys.__stdout__
+
 if __name__ == '__main__':
     unittest.main()
