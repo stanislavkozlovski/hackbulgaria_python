@@ -350,9 +350,51 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
 
+class DatabaseListTests(unittest.TestCase):
+    """
+    Test the functions that list more than one record
+    """
+    def setUp(self):
+        db.connection = sqlite3.connect(db.DB_PATH + '_test')
+        db.connection.row_factory = sqlite3.Row
+        db.cursor = db.connection.cursor()
+        # create the db
+        db.cursor.executescript(CREATE_TABLES_SCRIPT)
+        self.db = db
+        # Create all the entities
+        self.create_doctors()
+        self.create_patients()
+        self.create_hospital_stays()
 
+    def tearDown(self):
+        db.cursor.executescript(DROP_TABLES_SCRIPT)
+        db.connection.commit()
+        db.connection.close()
 
+    def create_doctors(self):
+        db.cursor.executemany("INSERT INTO doctors (ID, FIRSTNAME, LASTNAME) VALUES (?, ?, ?)",
+                          [[1, "Doc1", "Lastname1"], [2, "Moc2", "Lastname2"], [3, "Roc3", "Lastname3"]])
+        db.connection.commit()
 
+    def create_patients(self):
+        db.cursor.executemany(
+            "INSERT INTO patients (ID, FIRSTNAME, LASTNAME, AGE, GENDER, DOCTOR) VALUES (?, ?, ?, ?, ?, ?)",
+            [[1, "Chase", "Girl", 18, "Female", 1],
+             [2, "Mase", "Man", 20, "Male", 1],
+             [3, "Cs", "Science", 30, "Male", 3],
+             [4, "Workout", "TheDream", 50, "Male", 3]])
+        db.connection.commit()
+
+    def create_hospital_stays(self):
+        db.cursor.executemany("""
+          INSERT INTO hospital_stay  (ID, ROOM, STARTDATE, ENDDATE, INJURY, PATIENT)
+          VALUES (?, ?, ?, ?, ?, ?)""", [
+            [1, 205, "10-10-2016", "12-10-2016", "Schizophrenia", 1],
+            [2, 204, "14-10-2016", "20-11-2016", "ADHD", 2],
+            [3, 200, "01-11-2016", "02-11-2016", "ADHD", 3],
+            [4, 199, "30-12-2016", "01-01-2017", "BPD", 4]
+        ])
+        db.connection.commit()
 
 
 
