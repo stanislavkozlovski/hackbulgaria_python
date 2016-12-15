@@ -1,4 +1,5 @@
 import sqlite3
+import prettytable
 from database_scripts import CREATE_TABLES_SCRIPT
 DB_PATH = "new_hospital2.db"
 
@@ -29,6 +30,18 @@ def command_controller(command: str):
 
     if command in AVAILABLE_COMMANDS.keys():
         AVAILABLE_COMMANDS[command]()
+
+
+def list_patients():
+    patients = cursor.execute("SELECT * FROM PATIENTS").fetchall()
+    if not patients:
+        print("There are no patients in the database!")
+        return
+    patient_keys = patients[0].keys()
+    table = prettytable.PrettyTable([key for key in patient_keys])
+    for patient in patients:
+        table.add_row(patient)
+    print(table)
 
 
 def add_patient():
