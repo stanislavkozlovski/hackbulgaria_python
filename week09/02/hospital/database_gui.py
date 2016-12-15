@@ -83,6 +83,18 @@ def delete_patient():
     connection.commit()
 
 
+def list_doctors():
+    doctors = cursor.execute("SELECT * FROM DOCTORS").fetchall()
+    if not doctors:
+        print("There are no doctors in the database!")
+        return
+    doctor_keys = doctors[0].keys()
+    table = prettytable.PrettyTable([key for key in doctor_keys])
+    for doctor in doctors:
+        table.add_row(doctor)
+    print(table)
+
+
 def add_doctor():
     doctor_name = input(">Doctor name: ")
     doctor_lastname = input(">Doctor lastname: ")
