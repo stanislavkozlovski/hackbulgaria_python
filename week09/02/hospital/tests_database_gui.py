@@ -427,13 +427,13 @@ class DatabaseListTests(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
     def test_list_doctors(self):
-        expected_output = """+----+-----------+----------+
-| ID | FIRSTNAME | LASTNAME |
-+----+-----------+----------+
-| 1  |   Doc1    | Lastname1|
-| 2  |   Moc2    | Lastname2|
-| 3  |   Roc3    | Lastname3|
-+----+-----------+----------+
+        expected_output = """+----+-----------+-----------+
+| ID | FIRSTNAME |  LASTNAME |
++----+-----------+-----------+
+| 1  |    Doc1   | Lastname1 |
+| 2  |    Moc2   | Lastname2 |
+| 3  |    Roc3   | Lastname3 |
++----+-----------+-----------+
 """
         output = StringIO()
         try:
@@ -444,6 +444,9 @@ class DatabaseListTests(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
     def test_list_doctors_no_doctors(self):
+        # delete all the doctors
+        self.db.cursor.execute("DELETE FROM DOCTORS")
+        self.db.connection.commit()
         expected_output = "There are no doctors in the database!"
         output = StringIO()
         try:
