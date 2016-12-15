@@ -426,19 +426,32 @@ class DatabaseListTests(unittest.TestCase):
         finally:
             sys.stdout = sys.__stdout__
 
+    def test_list_doctors(self):
+        expected_output = """+----+-----------+----------+
+| ID | FIRSTNAME | LASTNAME |
++----+-----------+----------+
+| 1  |   Doc1    | Lastname1|
+| 2  |   Moc2    | Lastname2|
+| 3  |   Roc3    | Lastname3|
++----+-----------+----------+
+"""
+        output = StringIO()
+        try:
+            sys.stdout = output
+            db.list_doctors()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdout = sys.__stdout__
 
-
-
-
-
-
-
-
-
-
-
-
-
+    def test_list_doctors_no_doctors(self):
+        expected_output = "There are no doctors in the database!"
+        output = StringIO()
+        try:
+            sys.stdout = output
+            db.list_doctors()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdout = sys.__stdout__
 
 
 if __name__ == '__main__':
