@@ -456,6 +456,37 @@ class DatabaseListTests(unittest.TestCase):
         finally:
             sys.stdout = sys.__stdout__
 
+    def test_list_doctor_patients(self):
+        user_input ="{doctor_name}\n".format(doctor_name="Roc3")
+        expected_output = """+----+-----------+----------+-----+--------+--------+
+| ID | FIRSTNAME | LASTNAME | AGE | GENDER | DOCTOR |
++----+-----------+----------+-----+--------+--------+
+| 3  |     Cs    | Science  |  30 |  Male  |   3    |
+| 4  |  Workout  | TheDream |  50 |  Male  |   3    |
++----+-----------+----------+-----+--------+--------+
+"""
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.list_patients_of_a_doctor()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_list_doctor_patients_no_patients(self):
+        user_input = "{doctor_name}\n".format(doctor_name="Moc2")
+        expected_output = "The doctor has no patients."
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.list_patients_of_a_doctor()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
 if __name__ == '__main__':
     unittest.main()
