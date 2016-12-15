@@ -111,6 +111,20 @@ def list_patients_of_a_doctor():
     print(table)
 
 
+def list_patients_by_injury():
+    groups = cursor.execute("""SELECT hospital_stay.injury , GROUP_CONCAT(patients.firstname)
+FROM hospital_stay
+JOIN patients
+ON patients.id = hospital_stay.patient
+GROUP BY hospital_stay.injury;
+""").fetchall()
+
+    table = prettytable.PrettyTable([key for key in groups[0].keys()])
+    for group in groups:
+        table.add_row(group)
+    print(table)
+
+
 def add_doctor():
     doctor_name = input(">Doctor name: ")
     doctor_lastname = input(">Doctor lastname: ")
