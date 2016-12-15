@@ -19,7 +19,10 @@ def command_controller(command: str):
         # value: the function for the command
         "add_patient": add_patient,
         "add_doctor": add_doctor,
-        "add_hospital_stay": add_hospital_stay
+        "add_hospital_stay": add_hospital_stay,
+        "update_patient": update_patient,
+        "update_doctor": update_doctor,
+        "update_hospital_stay": update_hospital_stay
     }
     print("Available commands:\n\t{commands}".format(
         commands="\n\t".join(AVAILABLE_COMMANDS.keys())))
@@ -145,6 +148,7 @@ def __get_field_from_user(row_object: sqlite3.Row):
         print("Invalid key!")
         field = input().upper()
     return field
+
 
 def create_tables():
     cursor.executescript(CREATE_TABLES_SCRIPT)
