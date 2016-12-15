@@ -71,7 +71,7 @@ class DatabaseAddTests(unittest.TestCase):
         self.test_add_patient()  # to add the patient Vasko
         patient_name = "Vasko"
         user_input = "{patient_name}\n{room}\n{startdate}\n{enddate}\n{injury}".format(
-            patient_name=patient_name, room=205, startdate="10-12-2016", enddate="12-12-2016",
+            patient_name=patient_name, room=205, startdate="2016-12-10", enddate="2016-12-12",
             injury="Too much programming. :O"
         )
         try:
@@ -79,7 +79,7 @@ class DatabaseAddTests(unittest.TestCase):
             sys.stdout = StringIO()
             self.db.add_hospital_stay()
             hospital_stay = db.cursor.execute("SELECT * FROM HOSPITAL_STAY").fetchone()
-            self.assertEqual(hospital_stay, (1, 205, "10-12-2016", "12-12-2016", "Too much programming. :O", 1))
+            self.assertEqual(hospital_stay, (1, 205, "2016-12-10", "2016-12-12", "Too much programming. :O", 1))
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
@@ -145,8 +145,8 @@ class DatabaseModifyTests(unittest.TestCase):
 
     def create_hospital_stay(self):
         self.room_id = 205
-        self.start_date = "10-10-2010"
-        self.end_date = "11-10-2010"
+        self.start_date = "2010-10-10"
+        self.end_date = "2010-10-11"
         self.injury = "Schizophrenia"
         db.cursor.execute("""
         INSERT INTO hospital_stay  (ID, ROOM, STARTDATE, ENDDATE, INJURY, PATIENT)
@@ -222,7 +222,7 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
     def test_update_hospital_stay(self):
-        end_date = "20-12-2019"
+        end_date = "2019-12-20"
         user_input = "{name}\n{field_to_update}\n{new_value}\n".format(
             name=self.patient_name, field_to_update="enddate", new_value=end_date
         )
@@ -389,10 +389,10 @@ class DatabaseListTests(unittest.TestCase):
         db.cursor.executemany("""
           INSERT INTO hospital_stay  (ID, ROOM, STARTDATE, ENDDATE, INJURY, PATIENT)
           VALUES (?, ?, ?, ?, ?, ?)""", [
-            [1, 205, "10-10-2016", "12-10-2016", "Schizophrenia", 1],
-            [2, 204, "14-10-2016", "20-11-2016", "ADHD", 2],
-            [3, 200, "01-11-2016", "02-11-2016", "ADHD", 3],
-            [4, 199, "30-12-2016", "01-01-2017", "BPD", 4]
+            [1, 205, "2016-10-10", "2016-10-12", "Schizophrenia", 1],
+            [2, 204, "2016-10-14", "2016-11-20", "ADHD", 2],
+            [3, 200, "2016-11-01", "2016-11-02", "ADHD", 3],
+            [4, 199, "2016-12-30", "2017-01-01", "BPD", 4]
         ])
         db.connection.commit()
 
