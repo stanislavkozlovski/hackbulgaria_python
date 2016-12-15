@@ -44,13 +44,9 @@ def update_patient():
     if not patient:
         print("Such a patient does not exist!")
         return
-    print("Pick a field to update: \n\t{fields}".format(
-        fields='\n\t'.join(patient.keys())))
 
-    field = input().upper()
-    while field not in patient.keys():
-        print("Invalid key!")
-        field = input().upper()
+    field = __get_field_from_user(patient)
+
     new_value = input("New value: ")
     if new_value.isnumeric():
         new_value = int(new_value)
@@ -74,13 +70,9 @@ def update_doctor():
     if not doctor:
         print("Such a doctor does not exist!")
         return
-    print("Pick a field to update: \n\t{fields}".format(
-        fields='\n\t'.join(doctor.keys())
-    ))
-    field = input().upper()
-    while field not in doctor.keys():
-        print("Invalid key!")
-        field = input().upper()
+
+    field = __get_field_from_user(doctor)
+
     new_value = input("New value: ")
     if new_value.isnumeric():
         new_value = int(new_value)
@@ -116,17 +108,11 @@ def update_hospital_stay():
     if not hospital_stay:
         print("There are no records for the patient staying in the hospital.")
         return
-    print("Pick a field to update: \n\t{fields}".format(
-        fields='\n\t'.join(hospital_stay.keys())
-    ))
-    field = input().upper()
-    while field not in hospital_stay.keys():
-        print("Invalid key!")
-        field = input().upper()
+    field = __get_field_from_user(hospital_stay)
     new_value = input("New value: ")
     if new_value.isnumeric():
         new_value = int(new_value)
-    
+
     cursor.execute("UPDATE HOSPITAL_STAY SET {} = ? WHERE HOSPITAL_STAY.ID = ?".format(field),
                    [new_value, hospital_stay['id']])
     connection.commit()
@@ -144,6 +130,21 @@ def _find_doctor_by_name(doctor_name):
 def _find_hospital_stay_by_patient_id(patient_id):
     return cursor.execute("SELECT * FROM hospital_stay WHERE hospital_stay.patient = ?",
                           [patient_id]).fetchone()
+
+
+def __get_field_from_user(row_object: sqlite3.Row):
+    """
+    Prompts the user to enter the field he wants to update,
+    listing the available fields from the object
+    """
+    print("Pick a field to update: \n\t{fields}".format(
+        fields='\n\t'.join(row_object.keys())
+    ))
+    field = input().upper()
+    while field not in row_object.keys():
+        print("Invalid key!")
+        field = input().upper()
+    return field
 
 def create_tables():
     cursor.executescript(CREATE_TABLES_SCRIPT)
