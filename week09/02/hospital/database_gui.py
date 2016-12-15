@@ -1,5 +1,6 @@
 import sqlite3
 import prettytable
+from datetime import datetime
 from database_scripts import CREATE_TABLES_SCRIPT
 DB_PATH = "new_hospital2.db"
 
@@ -138,6 +139,36 @@ GROUP BY hospital_stay.injury;
     table = prettytable.PrettyTable([key for key in doctors_and_injuries[0].keys()])
     for doctor_injury_pair in doctors_and_injuries:
         table.add_row(doctor_injury_pair)
+    print(table)
+
+
+def list_patients_from_to_date():
+    start_date = input(">Start date ")
+    end_date = input(">End date ")
+    # validate the dates
+    try:
+        if len(start_date) != 10 or len(end_date) != 10:
+            print("LEN")
+            raise Exception()
+        start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+        end_dt = datetime.strptime(end_date, '%Y-%m-%d')
+        if start_dt >= end_dt:
+            raise Exception()
+    except:
+        print("Invalid date! (The format must be - yyyy-mm-dd!)")
+        return
+    patients = cursor.execute("""SELECT patients.*
+FROM patients
+JOIN hospital_stay
+ON hospital_stay.patient = patients.id
+WHERE hospital_stay.startdate > ? AND hospital_stay.startdate < ?;""",
+                              [start_date, end_date]).fetchall()
+    if not patients:
+        print("There are no patients in that timeframe.")
+        return
+    table = prettytable.PrettyTable([key for key in patients[0].keys()])
+    for patient in patients:
+        table.add_row(patient)
     print(table)
 
 
