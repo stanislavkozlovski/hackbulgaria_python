@@ -23,6 +23,7 @@ def command_controller(command: str):
     }
     print("Available commands:\n\t{commands}".format(
         commands="\n\t".join(AVAILABLE_COMMANDS.keys())))
+
     if command in AVAILABLE_COMMANDS.keys():
         AVAILABLE_COMMANDS[command]()
 
@@ -47,7 +48,7 @@ def add_doctor():
 
 def add_hospital_stay():
     patient_name = input(">Patient's name ")
-    patient = cursor.execute("SELECT * FROM patients WHERE patients.firstName = ?", [patient_name]).fetchone()
+    patient = _find_patient_by_name(patient_name)
     if not patient:
         print("Such a patient does not exist!")
         return
@@ -59,6 +60,10 @@ def add_hospital_stay():
     cursor.execute("INSERT INTO hospital_stay (ROOM, STARTDATE, ENDDATE, INJURY, PATIENT) VALUES (?, ?, ?, ?, ?)",
                    [room, start_date, end_date, injury, patient[0]])
     connection.commit()
+
+
+def _find_patient_by_name(patient_name):
+    return cursor.execute("SELECT * FROM patients WHERE patients.firstName = ?", [patient_name]).fetchone()
 
 
 def create_tables():

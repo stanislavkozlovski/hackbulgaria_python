@@ -84,5 +84,24 @@ class DatabaseTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_add_hospital_stay_invalid_patient(self):
+        """ Add a hospital stay to a patient that does not exist.
+            Nothing should happen """
+        user_input = "{patient_name}\n".format(patient_name="NOBODY")
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.db.add_hospital_stay()
+            # assert error message
+            self.assertTrue("Such a patient does not exist!" in output.getvalue())
+
+            potential_hospital_stay = db.cursor.execute("SELECT * FROM HOSPITAL_STAY").fetchone()
+            # assert that no hospital stay was saved to the db
+            self.assertEqual(potential_hospital_stay, None)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
 if __name__ == '__main__':
     unittest.main()
