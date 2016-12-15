@@ -396,6 +396,36 @@ class DatabaseListTests(unittest.TestCase):
         ])
         db.connection.commit()
 
+    def test_list_patients(self):
+        expected_output = """+----+-----------+----------+-----+--------+--------+
+| ID | FIRSTNAME | LASTNAME | AGE | GENDER | DOCTOR |
++----+-----------+----------+-----+--------+--------+
+| 1  |   Chase   |   Girl   |  18 | Female |   1    |
+| 2  |    Mase   |   Man    |  20 |  Male  |   1    |
+| 3  |     Cs    | Science  |  30 |  Male  |   3    |
+| 4  |  Workout  | TheDream |  50 |  Male  |   3    |
++----+-----------+----------+-----+--------+--------+
+"""
+        output = StringIO()
+        try:
+            sys.stdout = output
+            db.list_patients()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdout = sys.__stdout__
+
+    def test_list_patients_no_patients(self):
+        expected_output = "There are no patients in the database!"
+        self.db.cursor.execute("DELETE FROM PATIENTS")
+        self.db.connection.commit()
+        output = StringIO()
+        try:
+            sys.stdout = output
+            db.list_patients()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdout = sys.__stdout__
+
 
 
 
