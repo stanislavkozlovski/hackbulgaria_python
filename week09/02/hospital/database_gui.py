@@ -58,6 +58,7 @@ def update_patient():
                    [new_value, patient_name])
     connection.commit()
 
+
 def delete_patient():
     patient_name = input(">Patient's name ")
     patient = _find_patient_by_name(patient_name)
@@ -92,6 +93,17 @@ def update_doctor():
 
     cursor.execute("UPDATE DOCTORS SET {} = ? WHERE DOCTORS.FIRSTNAME = ?".format(field),
                    [new_value, doctor_name])
+    connection.commit()
+
+
+def delete_doctor():
+    doctor_name = input(">Doctor's name ")
+    doctor = _find_doctor_by_name(doctor_name)
+    if not doctor:
+        print("Such a doctor does not exist!")
+        return
+    cursor.execute("DELETE FROM DOCTORS WHERE DOCTORS.ID = ?",
+                   [doctor['id']])
     connection.commit()
 
 
