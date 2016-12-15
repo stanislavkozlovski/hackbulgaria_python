@@ -38,6 +38,28 @@ def add_patient():
     connection.commit()
 
 
+def update_patient():
+    patient_name = input(">Patient's name ")
+    patient = _find_patient_by_name(patient_name)
+    if not patient:
+        print("Such a patient does not exist!")
+        return
+    print("Pick a field to update: \n\t{fields}".format(
+        fields='\n\t'.join(patient.keys())))
+
+    field = input().upper()
+    while field not in patient.keys():
+        print("Invalid key!")
+        field = input().upper()
+    new_value = input("New value: ")
+    if new_value.isnumeric():
+        new_value = int(new_value)
+
+    cursor.execute("UPDATE PATIENTS SET {} = ? WHERE PATIENTS.FIRSTNAME = ?".format(field),
+                   [new_value, patient_name])
+    connection.commit()
+
+
 def add_doctor():
     doctor_name = input(">Doctor name: ")
     doctor_lastname = input(">Doctor lastname: ")
@@ -74,6 +96,7 @@ def create_tables():
 
 if __name__ == '__main__':
     connection = sqlite3.connect(DB_PATH)
+    connection.row_factory = sqlite3.Row
     try:
         cursor = connection.cursor()
         main()

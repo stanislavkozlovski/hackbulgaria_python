@@ -175,7 +175,7 @@ class DatabaseModifyTests(unittest.TestCase):
             sys.stdout = output
             self.db.update_patient()
             # assert error message
-            self.assertEqual(output.getvalue(), "Such a patient does not exist!")
+            self.assertTrue("Such a patient does not exist!" in output.getvalue())
             patient = db.cursor.execute("SELECT * FROM PATIENTS").fetchone()
             self.assertNotEqual(patient['age'], new_age)
         finally:
