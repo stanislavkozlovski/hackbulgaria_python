@@ -125,6 +125,22 @@ GROUP BY hospital_stay.injury;
     print(table)
 
 
+def list_doctors_and_injuries_they_treat():
+    doctors_and_injuries = cursor.execute("""SELECT hospital_stay.injury , GROUP_CONCAT(doctors.firstname)
+FROM hospital_stay
+	JOIN patients
+	ON patients.id = hospital_stay.patient
+		JOIN doctors
+		ON patients.doctor = doctors.id
+GROUP BY hospital_stay.injury;
+""").fetchall()
+
+    table = prettytable.PrettyTable([key for key in doctors_and_injuries[0].keys()])
+    for doctor_injury_pair in doctors_and_injuries:
+        table.add_row(doctor_injury_pair)
+    print(table)
+
+
 def add_doctor():
     doctor_name = input(">Doctor name: ")
     doctor_lastname = input(">Doctor lastname: ")
