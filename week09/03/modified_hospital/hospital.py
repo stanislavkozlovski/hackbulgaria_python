@@ -52,7 +52,7 @@ def register_user():
     age = int(age)
     # create a salt for the user and hash his password
     user_salt = uuid.uuid4().hex
-    hashed_password = hashlib.sha512(password + user_salt).hexdigest()
+    hashed_password = hashlib.sha512((password + user_salt).encode()).hexdigest()
     user = (username, hashed_password, user_salt, age)
 
     if DOCTOR_TITLE in username:
