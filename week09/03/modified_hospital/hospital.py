@@ -39,7 +39,7 @@ def register_user():
               "and must contain one uppercase character, one lowercase and one digit!")
         password = getpass.getpass(prompt=">Password\n")
 
-    confirm_password = getpass.getpass(prompt=">Password\n")
+    confirm_password = getpass.getpass(prompt=">Confirm Password\n")
 
     while password != confirm_password:
         print("Password do not match!")
@@ -67,13 +67,13 @@ def register_doctor(user: tuple):
     :param user: (username, hashed_password, user_salt, age)
     :return: the Doctor record
     """
-    title = input(">Academic title:\n\t\n{}".format(
-        '\t\n'.join(DOCTOR_RANKS)
+    title = input(">Academic title:\n\t{}\n".format(
+        '\n\t'.join(DOCTOR_RANKS)
     ))
     while title not in DOCTOR_RANKS:
         print('Invalid title!')
-        title = input(">Academic title:\n\t\n{}".format(
-            '\t\n'.join(DOCTOR_RANKS)
+        title = input(">Academic title:\n\t{}\n".format(
+            '\n\t'.join(DOCTOR_RANKS)
         ))
 
     user = __create_user(user)
