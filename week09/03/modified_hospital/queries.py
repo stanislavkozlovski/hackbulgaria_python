@@ -81,6 +81,11 @@ CREATE_DOCTOR_RECORD = '''
     VALUES (?, ?);
 '''
 
+CREATE_PATIENT_RECORD = '''
+    INSERT INTO patient (ID, DOCTOR_ID)
+    VALUES (?, ?);
+'''
+
 
 GET_USER_BY_USERNAME = '''
     SELECT *
@@ -91,6 +96,12 @@ GET_USER_BY_USERNAME = '''
 GET_DOCTOR_BY_ID = '''
     SELECT *
     FROM doctor
+    WHERE id = ?;
+'''
+
+GET_PATIENT_BY_ID = '''
+    SELECT *
+    FROM patient
     WHERE id = ?;
 '''
 
