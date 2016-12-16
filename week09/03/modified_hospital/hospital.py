@@ -4,12 +4,11 @@ import sys
 import getpass
 import hashlib, uuid
 
-
-from settings import DB_NAME, DOCTOR_TITLE, DOCTOR_RANKS
+import settings
 from validator import validate_password
 
 
-connection = sqlite3.connect(DB_NAME)
+connection = sqlite3.connect(settings.DB_NAME)
 connection.row_factory = sqlite3.Row
 cursor = connection.cursor()
 
@@ -56,7 +55,7 @@ def register_user():
     hashed_password = hashlib.sha512((password + user_salt).encode()).hexdigest()
     user = (username, hashed_password, user_salt, age)
 
-    if DOCTOR_TITLE in username:
+    if settings.DOCTOR_TITLE in username:
         return register_doctor(user)
     else:
         return register_patient(user)
@@ -68,16 +67,16 @@ def register_doctor(user: tuple):
     :return: the Doctor record
     """
     title = input(">Academic title:\n\t{}\n".format(
-        '\n\t'.join(DOCTOR_RANKS)
+        '\n\t'.join(settings.DOCTOR_RANKS)
     ))
-    while title not in DOCTOR_RANKS:
+    while title not in settings.DOCTOR_RANKS:
         print('Invalid title!')
         title = input(">Academic title:\n\t{}\n".format(
-            '\n\t'.join(DOCTOR_RANKS)
+            '\n\t'.join(settings.DOCTOR_RANKS)
         ))
 
     user = __create_user(user)
-    doctor = (user['id'], title)
+    doctor = (user[settings.USER_ID_KEY], title)
     doctor = __create_doctor(doctor)
     return doctor
 
@@ -89,7 +88,7 @@ def register_patient(user: tuple):
     """
     doctor_objects = __get_doctors()
     doctors = ["{id}) {name}, {title}".format(
-        id=(ids + 1), name=doctor['username'], title=doctor['academic_title'])
+        id=(ids + 1), name=doctor[settings.USER_USERNAME_KEY], title=doctor[settings.DOCTOR_TITLE_KEY])
                for ids, doctor in enumerate(doctor_objects)]
     doctor_choice = input(">Choose a doctor to cure your diseases:\n\t{}\n".format(
         '\n\t'.join(doctors)
@@ -101,7 +100,7 @@ def register_patient(user: tuple):
         ))
 
     user = __create_user(user)
-    user_id = user['id']
+    user_id = user[settings.USER_ID_KEY]
 
     doctor_choice = int(doctor_choice) - 1
     doctor_id = doctor_objects[doctor_choice]['doctorId']
