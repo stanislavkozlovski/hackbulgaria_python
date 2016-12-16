@@ -29,6 +29,17 @@ def create_tables(drop_old=False):
     connection.commit()
 
 
+def login_user():
+    username = input(">Username\n")
+    user = __get_user_by_username(username)
+    if not user:
+        print("A user with that username does not exist!")
+        username = input(">Username\n")
+        user = __get_user_by_username(username)
+    # TODO
+    hashed_password = getpass.getpass(prompt=">Password\n")
+
+
 def register_user():
     username = input(">Username\n")
     password = getpass.getpass(prompt=">Password\n")
@@ -121,8 +132,12 @@ def __create_user(user: tuple):
     )
     connection.commit()
     # Return the user record
+    return __get_user_by_username(user[0])
+
+
+def __get_user_by_username(username: str):
     return cursor.execute(queries.GET_USER_BY_USERNAME,
-                          [user[0]]).fetchone()
+                          [username]).fetchone()
 
 
 def __create_doctor(doctor: tuple):
