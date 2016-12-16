@@ -69,3 +69,27 @@ CREATE_VISITATION_TABLE = '''
         FOREIGN KEY (DOCTOR_ID) REFERENCES DOCTOR(ID)
     );
 '''
+
+CREATE_USER_RECORD = '''
+    INSERT INTO user (USERNAME, PASSWORD, SALT, AGE)
+    VALUES (?, ?, ?, ?);
+'''
+
+
+CREATE_DOCTOR_RECORD = '''
+    INSERT INTO doctor (ID, ACADEMIC_TITLE)
+    VALUES (?, ?);
+'''
+
+
+GET_USER_BY_USERNAME = '''
+    SELECT *
+    FROM user
+    WHERE username = ?;
+'''
+
+GET_DOCTOR_BY_ID = '''
+    SELECT *
+    FROM doctor
+    WHERE id = ?;
+'''
