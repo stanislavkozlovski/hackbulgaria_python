@@ -87,7 +87,28 @@ def register_patient(user: tuple):
     :param user: (username, hashed_password, user_salt, age)
     :return:
     """
-    pass
+    doctor_objects = __get_doctors()
+    doctors = ["{id}) {name}, {title}".format(
+        id=(ids + 1), name=doctor['username'], title=doctor['academic_title'])
+               for ids, doctor in enumerate(doctor_objects)]
+    doctor_choice = input(">Choose a doctor to cure your diseases:\n\t{}\n".format(
+        '\n\t'.join(doctors)
+    ))
+    while not doctor_choice.isdigit() or not (0 < int(doctor_choice) <= len(doctors)):
+        print("Invalid Choice!")
+        doctor_choice = input(">Choose a doctor to cure your diseases:\n\t{}\n".format(
+            '\n\t'.join(doctors)
+        ))
+
+    user = __create_user(user)
+    user_id = user['id']
+
+    doctor_choice = int(doctor_choice) - 1
+    doctor_id = doctor_objects[doctor_choice]['doctorId']
+
+    patient = (user_id, doctor_id)
+    patient = __create_patient(patient)
+    return patient
 
 
 def __create_user(user: tuple):
@@ -115,7 +136,17 @@ def __create_doctor(doctor: tuple):
                           [doctor[0]])
 
 
-def __get_doctors()
+def __create_patient(patient: tuple):
+    """
+    Given a tuple holding the patient's information, add him to the database and return his record
+    """
+    cursor.execute(queries.CREATE_PATIENT_RECORD, patient)
+    connection.commit()
+    return cursor.execute(queries.GET_PATIENT_BY_ID,
+                          [patient[0]])
+
+
+def __get_doctors():
     return cursor.execute(queries.GET_ALL_DOCTORS).fetchall()
 
 
