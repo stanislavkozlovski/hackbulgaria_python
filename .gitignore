@@ -1,10 +1,13 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+# virtual environment
+venv/
+.idea/
 
 # C extensions
 *.so
-
+Northwind.sl3
 # Distribution / packaging
 bin/
 build/
