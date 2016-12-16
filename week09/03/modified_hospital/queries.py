@@ -93,3 +93,10 @@ GET_DOCTOR_BY_ID = '''
     FROM doctor
     WHERE id = ?;
 '''
+
+GET_ALL_DOCTORS = '''
+    SELECT *
+    FROM doctor
+    JOIN user
+    ON user.id = doctor.id;
+'''

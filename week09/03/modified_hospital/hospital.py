@@ -115,6 +115,10 @@ def __create_doctor(doctor: tuple):
                           [doctor[0]])
 
 
+def __get_doctors()
+    return cursor.execute(queries.GET_ALL_DOCTORS).fetchall()
+
+
 def main():
     print("""Welcome to Hospital Manager!
 Choose:
