@@ -2,8 +2,7 @@ import sqlite3
 import queries
 import sys
 import getpass
-import hashlib, uuid
-
+import bcrypt
 import settings
 from validator import validate_password
 
@@ -11,6 +10,11 @@ from validator import validate_password
 connection = sqlite3.connect(settings.DB_NAME)
 connection.row_factory = sqlite3.Row
 cursor = connection.cursor()
+
+
+def hash_password(password, salt):
+    """ Generate a hash using the bcrypt algorithm """
+    return bcrypt.hashpw(password, salt)
 
 
 def create_tables(drop_old=False):
@@ -62,8 +66,8 @@ def register_user():
 
     age = int(age)
     # create a salt for the user and hash his password
-    user_salt = uuid.uuid4().hex
-    hashed_password = hashlib.sha512((password + user_salt).encode()).hexdigest()
+    user_salt = bcrypt.gensalt()
+    hashed_password = hash_password(password, user_salt)
     user = (username, hashed_password, user_salt, age)
 
     if settings.DOCTOR_TITLE in username:
