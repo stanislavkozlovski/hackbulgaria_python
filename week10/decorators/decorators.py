@@ -1,7 +1,7 @@
-
 import maya
 import timeit
 from time import sleep
+from functools import wraps
 
 """
 Make a decorator accepts that takes as many arguments as the function takes.
@@ -40,19 +40,26 @@ letter_to_num = dict(zip("ABCDEFGHIJKLMNOPQRSTUVWXYZ", range(26)))
 num_to_letter = {val: key for key, val in letter_to_num.items()}  # turned around
 
 
-def encrypt(key):
+def caesar_cipher(text, key):
+    upper_plaintext = text.upper()
+    # encipher
+    cipher_text = ''
+    for c in upper_plaintext:
+        if c.isalpha():
+            cipher_text += num_to_letter[(letter_to_num[c] + key) % 26]  # get the position after adding the key
+        else:
+            cipher_text += c  # if it's not a letter, don't change it
+
+    return cipher_text
+
+
+def encrypt(*args):
+    key = args[0]
     def _encipher(func):
+        @wraps(func)
         def func_wrapper(*args):
             plaintext = func(*args)
-            upper_plaintext = plaintext.upper()
-            # encipher
-            cipher_text = ''
-            for c in upper_plaintext:
-                if c.isalpha():
-                    cipher_text += num_to_letter[(letter_to_num[c] + key) % 26]  # get the position after adding the key
-                else:
-                    cipher_text += c  # if it's not a letter, don't change it
-            return cipher_text
+            return caesar_cipher(plaintext, key)
         return func_wrapper
     return _encipher
 
@@ -70,7 +77,8 @@ Make a decorator log that takes a file_name and writes in to this file a log. Ne
 """
 
 
-def log(filename):
+def log(*args):
+    filename = args[0]
     def _log(func):
         def func_wrapper():
             with open(filename, 'a') as f:
@@ -97,7 +105,8 @@ This decorator should log the time needed for the decorated function to execute.
 """
 
 
-def performance(file_name):
+def performance(*args):
+    file_name = args[0]
     def _performance(func):
         def func_wrapper():
             start = timeit.default_timer()
