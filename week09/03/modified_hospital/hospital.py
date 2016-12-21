@@ -100,6 +100,26 @@ def change_patient_doctor(patient):
     cursor.execute(queries.UPDATE_PATIENT_DOCTOR, [doctor['userId'], patient['id']])
 
 
+def change_username_or_age(patient):
+    print("Type 'username' or 'age' in regards to what you want to change.")
+    choice = input()
+    while choice not in ['username', 'age']:
+        print('Invalid choice!')
+        choice = input()
+
+    if choice == 'username':
+        new_username = input()
+        cursor.execute(queries.UPDATE_PATIENT_USERNAME, [new_username, patient['id']])
+        pass
+    else:
+        # change age
+        new_age = input()
+        while not new_age.isdigit():
+            print('Invalid age!')
+            new_age = input()
+        cursor.execute(queries.UPDATE_PATIENT_AGE, [new_age, patient['id']])
+
+
 def register_user():
     username = input(">Username\n")
     password = getpass.getpass(prompt=">Password\n")

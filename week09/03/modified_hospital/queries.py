@@ -122,6 +122,16 @@ SELECT user.username, user.age, user.id as userId, doctor.id as doctorId, doctor
     WHERE user.username != ?;
 '''
 
+UPDATE_PATIENT_USERNAME = '''
+UPDATE user
+SET username = ?
+WHERE user.id = ?'''
+
+UPDATE_PATIENT_AGE = '''
+UPDATE user
+SET age = ?
+WHERE user.id = ?'''
+
 UPDATE_PATIENT_DOCTOR = '''
 UPDATE patient
 SET doctor_id = ?
