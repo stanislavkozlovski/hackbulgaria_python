@@ -68,6 +68,12 @@ def login_patient(patient):
     pass
 
 
+def see_doctor_academic_title(patient):
+    # get the patient's doctor
+    doctor = cursor.execute(queries.GET_DOCTOR_BY_ID, [patient['DOCTOR_ID']]).fetchone()
+    print("Your Doctor's academic title is {}".format(doctor['academic_title']))
+
+
 def change_patient_doctor(patient):
     # get the patient's doctor
     doctor = cursor.execute(queries.GET_DOCTOR_BY_ID, [patient['DOCTOR_ID']]).fetchone()
