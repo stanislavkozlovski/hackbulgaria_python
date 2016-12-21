@@ -4,9 +4,33 @@ FROM movie
 ORDER BY RATING DESC;"""
 
 
+GET_MOVIE_BY_ID = """
+SELECT *
+FROM movie
+WHERE movie.id = ?"""
+
+GET_MOVIE_PROJECTIONS_ORDERED_BY_DATE = """
+SELECT *
+FROM PROJECTIONS
+JOIN MOVIE
+ON movie.id = projections.movie_id
+WHERE movie.id = ?
+ORDER BY proj_date;"""
 
 
+GET_MOVIE_PROJECTIONS_ORDERED_BY_DATE_IN_DATE= """
+SELECT *
+FROM PROJECTIONS
+JOIN MOVIE
+ON movie.id = projections.movie_id
+WHERE movie.id = ? AND projections.proj_date = ?
+ORDER BY proj_date;"""
 
+
+GET_RESERVATIONS_BY_PROJECTION_ID = """
+SELECT *
+FROM RESERVATIONS
+WHERE RESERVATIONS.projection_id = ?;"""
 
 
 CREATE_TABLES = """DROP TABLE IF EXISTS MOVIE;
