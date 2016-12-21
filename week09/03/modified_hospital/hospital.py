@@ -60,11 +60,38 @@ def login_patient(patient):
     valid_choices = settings.PATIENT_VALID_CHOICES
     menu = settings.PATIENT_MENU_TEXT.format(name=patient['name'])
     print(menu)
+
     choice = input()
     while choice not in valid_choices:
         print('The valid choices are {}'.format(', '.join(valid_choices)))
         choice = input()
     pass
+
+
+def change_patient_doctor(patient):
+    # get the patient's doctor
+    doctor = cursor.execute(queries.GET_DOCTOR_BY_ID, [patient['DOCTOR_ID']]).fetchone()
+    # show the available doctors
+    available_doctors = cursor.execute(queries.GET_ALL_DOCTORS_EXCEPT_NAME, [doctor['username']]).fetchall()
+    print("Available doctors to choose: \n\t{doctors}".format(
+        doctors = '\n\t'.join(['{idx}) {doctor_name} - {doctor_title}'.format(
+            idx=idx, doctor_name=doctor['username'], doctor_title=doctor['academic_title']
+        )
+            for idx, doctor in enumerate(available_doctors)])
+    ))
+    # get the choice
+    choice = input()
+    while not choice.isdigit():
+        print('Invalid choice')
+        choice = input()
+    choice = int(choice)
+    while not (0 <= choice < len(available_doctors)):
+        print('Invalid choice')
+        return change_patient_doctor(patient)
+    doctor = available_doctors[choice]
+
+    # update the patient's doctor
+    cursor.execute(queries.UPDATE_PATIENT_DOCTOR, [doctor['userId'], patient['id']])
 
 
 def register_user():

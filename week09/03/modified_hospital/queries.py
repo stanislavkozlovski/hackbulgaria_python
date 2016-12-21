@@ -94,9 +94,11 @@ GET_USER_BY_USERNAME = '''
 '''
 
 GET_DOCTOR_BY_ID = '''
-    SELECT *
+    SELECT user.username, user.age, user.id as userId, doctor.id as doctorId, doctor.academic_title
     FROM doctor
-    WHERE id = ?;
+    JOIN user
+    ON user.id = doctor.id
+    WHERE doctor.id = ?;
 '''
 
 GET_PATIENT_BY_ID = '''
@@ -111,3 +113,16 @@ GET_ALL_DOCTORS = '''
     JOIN user
     ON user.id = doctor.id;
 '''
+
+GET_ALL_DOCTORS_EXCEPT_NAME = '''
+SELECT user.username, user.age, user.id as userId, doctor.id as doctorId, doctor.academic_title
+    FROM doctor
+    JOIN user
+    ON user.id = doctor.id
+    WHERE user.username != ?;
+'''
+
+UPDATE_PATIENT_DOCTOR = '''
+UPDATE patient
+SET doctor_id = ?
+WHERE patient.id = ?;'''
