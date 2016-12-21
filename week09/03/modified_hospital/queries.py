@@ -102,9 +102,11 @@ GET_DOCTOR_BY_ID = '''
 '''
 
 GET_PATIENT_BY_ID = '''
-    SELECT *
+    SELECT user.username, user.age, user.id as userId, patient.doctor_id
     FROM patient
-    WHERE id = ?;
+    JOIN user
+    ON user.id = patient.id
+    WHERE patient.id = ?;
 '''
 
 GET_ALL_DOCTORS = '''

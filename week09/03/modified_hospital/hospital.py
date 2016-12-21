@@ -56,6 +56,18 @@ def login_user():
         pass
 
 
+def login_doctor(doctor):
+    valid_choices = settings.DOCTOR_VALID_CHOICES
+    menu = settings.DOCTOR_MENU_TEXT.format(name=doctor['name'])
+    print(menu)
+
+    choice = input()
+    while choice not in valid_choices:
+        print('The valid choices are {}'.format(', '.join(valid_choices)))
+        choice = input()
+    pass
+
+
 def login_patient(patient):
     valid_choices = settings.PATIENT_VALID_CHOICES
     menu = settings.PATIENT_MENU_TEXT.format(name=patient['name'])

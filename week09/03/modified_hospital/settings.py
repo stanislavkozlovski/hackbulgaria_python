@@ -24,3 +24,15 @@ You have the abilities to:
 7) change your username and/or age
 8) log out"""
 PATIENT_VALID_CHOICES = ['1', '2', '3', '4', '5', '6', '7', '8']
+
+DOCTOR_MENU_TEXT = """Hi, {name},
+You are a {title} doctor in Hospital Manager.
+You have the abilities to:
+1) list all of your patients
+2) add hours for visitation
+3) delete free hours of visitation
+4) see the room and the duration of hospital stays per each of your patients
+5) change your username and/or age
+6) raise into the hospital hierarchy
+7) log out"""
+DOCTOR_VALID_CHOICES = ['1', '2', '3', '4', '5', '6', '7']
