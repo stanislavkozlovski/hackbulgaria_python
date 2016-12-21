@@ -34,14 +34,37 @@ def create_tables(drop_old=False):
 
 
 def login_user():
+    type_of_login = input("> ")
+    while not (type_of_login == '1' or type_of_login == '2'):
+        type_of_login = input("> ")
+
     username = input(">Username\n")
     user = __get_user_by_username(username)
-    if not user:
+    while not user:
         print("A user with that username does not exist!")
         username = input(">Username\n")
         user = __get_user_by_username(username)
-    # TODO
-    hashed_password = getpass.getpass(prompt=">Password\n")
+
+    hashed_password = bcrypt.hashpw(getpass.getpass(prompt=">Password\n"), user['salt'])
+    while user.password != hashed_password:
+        print("Invalid password!")
+        hashed_password = bcrypt.hashpw(getpass.getpass(prompt=">Password\n"), user['salt'])
+
+    if type_of_login == '1':
+        pass
+    elif type_of_login == '2':
+        pass
+
+
+def login_patient(patient):
+    valid_choices = settings.PATIENT_VALID_CHOICES
+    menu = settings.PATIENT_MENU_TEXT.format(name=patient['name'])
+    print(menu)
+    choice = input()
+    while choice not in valid_choices:
+        print('The valid choices are {}'.format(', '.join(valid_choices)))
+        choice = input()
+    pass
 
 
 def register_user():
