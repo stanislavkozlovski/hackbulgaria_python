@@ -7,9 +7,10 @@ from controllers.main import read_spell
 class MainControllerTests(unittest.TestCase):
     def test_show_movies(self):
         expected_output = """Current movies:
+[3] - Her (8.3)
 [1] - The Hunger Games: Catching Fire (7.9)
-[2] - Wreck-It Ralph (7.8)
-[3] - Her (8.3)"""
+[2] - Wreck it-Ralph (7.8)"""
+
         input = "show movies"
         output = StringIO()
         try:
