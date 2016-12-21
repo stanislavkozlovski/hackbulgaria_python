@@ -12,7 +12,7 @@ If any of the arguments does not match the type in the decorator raise a TypeErr
 
 def accepts(*expected_types):
     def _accepts(func):
-        def func_wrapper(*input_args):
+        def func_wrapper(*input_args, **input_kwargs):
             if len(expected_types) != len(input_args):
                 raise TypeError("The decorator must take exactly as many arguments as the function")
             for idx, expected_type in enumerate(expected_types):
@@ -20,7 +20,7 @@ def accepts(*expected_types):
                     raise TypeError("Argument {} of {function_name} is not {wanted_type}!".format(
                         idx, function_name=func.__name__, wanted_type=expected_types[idx].__name__
                     ))
-            func(*input_args)
+            func(*input_args, **input_kwargs)
         return func_wrapper
     return _accepts
 
@@ -53,12 +53,11 @@ def caesar_cipher(text, key):
     return cipher_text
 
 
-def encrypt(*args):
-    key = args[0]
+def encrypt(key):
     def _encipher(func):
         @wraps(func)
-        def func_wrapper(*args):
-            plaintext = func(*args)
+        def func_wrapper(*args, **kwargs):
+            plaintext = func(*args, **kwargs)
             return caesar_cipher(plaintext, key)
         return func_wrapper
     return _encipher
@@ -77,15 +76,15 @@ Make a decorator log that takes a file_name and writes in to this file a log. Ne
 """
 
 
-def log(*args):
-    filename = args[0]
+def log(filename):
     def _log(func):
-        def func_wrapper():
+        def func_wrapper(*args, **kwargs):
             with open(filename, 'a') as f:
                 f.write('{func_name} was called at {date}\n'.format(
                     func_name=func.__name__,
                     date=maya.now().datetime()
                 ))
+            return func(*args, **kwargs)
         return func_wrapper
     return _log
 
@@ -95,7 +94,7 @@ def log(*args):
 def get_lower():
     return "Get get get, get low"
 
-get_lower()
+print(get_lower())
 
 
 """
@@ -105,12 +104,11 @@ This decorator should log the time needed for the decorated function to execute.
 """
 
 
-def performance(*args):
-    file_name = args[0]
+def performance(file_name):
     def _performance(func):
-        def func_wrapper():
+        def func_wrapper(*args, **kwargs):
             start = timeit.default_timer()
-            func()
+            func(*args, **kwargs)
             end = timeit.default_timer()
             with open(file_name, 'a') as f:
                 f.write("{func_name} was called and took {elapsed_time:.2f} seconds to complete\n".format(
