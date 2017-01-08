@@ -52,12 +52,39 @@ class MainControllerTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_show_movie_projections_valid_movie_invalid_date(self):
+        """ There are no movie projections on the given date"""
+        user_input = "show movie projections 1 2014-12-31"
+        expected_output = """Projections for movie 'The Hunger Games: Catching Fire' on date 2014-12-31:"""
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            read_spell()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
     def test_show_movie_projections_invalid_movie(self):
         input = "show movie projections 4"
         expected_output = """Invalid movie id!"""
         output = StringIO()
         try:
             sys.stdin = StringIO(input)
+            sys.stdout = output
+            read_spell()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_show_movie_projections_invalid_date(self):
+        user_input = "show movie projections 1 2014-02-31"
+        expected_output = 'Invalid date! Date should be in the format of YYYY-MM-DD!'
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
             sys.stdout = output
             read_spell()
             self.assertTrue(expected_output in output.getvalue())
