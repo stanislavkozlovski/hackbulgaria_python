@@ -1,10 +1,13 @@
 import unittest
 import sys
 from io import StringIO
-from controllers.main import read_spell
+from controllers.main import read_spell, Cinema
 
 
 class MainControllerTests(unittest.TestCase):
+    def setUp(self):
+        self.cinema = Cinema()
+
     def test_show_movies(self):
         expected_output = """Current movies:
 [3] - Her (8.3)
@@ -16,7 +19,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
@@ -31,7 +34,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(user_input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
@@ -46,7 +49,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(user_input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
@@ -60,7 +63,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(user_input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
@@ -73,7 +76,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
@@ -86,7 +89,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(user_input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
@@ -99,7 +102,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
@@ -112,7 +115,7 @@ class MainControllerTests(unittest.TestCase):
         try:
             sys.stdin = StringIO(input)
             sys.stdout = output
-            read_spell()
+            read_spell(self.cinema)
             self.assertTrue(expected_output in output.getvalue())
         finally:
             sys.stdin = sys.__stdin__
