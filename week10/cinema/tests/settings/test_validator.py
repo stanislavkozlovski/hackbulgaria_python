@@ -1,5 +1,5 @@
 import unittest
-from settings.validator import is_valid_spell, is_valid_date
+from settings.validator import is_valid_spell, is_valid_date, is_valid_ticket_count
 
 
 class ValidatorTests(unittest.TestCase):
@@ -12,6 +12,7 @@ class ValidatorTests(unittest.TestCase):
     def test_is_valid_spell_int(self):
         self.assertFalse(is_valid_spell(5))
 
+    # --------------DATE VALIDATOR--------------
     def test_is_valid_date_valid_date(self):
         self.assertTrue(is_valid_date("2014-10-31"))
 
@@ -36,6 +37,27 @@ class ValidatorTests(unittest.TestCase):
 
     def test_is_valid_date_empty_str(self):
         self.assertFalse(is_valid_date(""))
+
+    # --------------TICKET COUNT VALIDATOR--------------
+    def test_ticket_count_validator_valid_count(self):
+        self.assertTrue(is_valid_ticket_count('5'))
+        self.assertTrue(is_valid_ticket_count('1'))
+        self.assertTrue(is_valid_ticket_count('10'))
+
+    def test_ticket_count_validator_invalid_count(self):
+        """ Valid tickets are between 1 and 10"""
+        self.assertFalse(is_valid_ticket_count('11'))
+        self.assertFalse(is_valid_ticket_count('0'))
+        self.assertFalse(is_valid_ticket_count('-1'))
+        self.assertFalse(is_valid_ticket_count('1434019341049132'))
+
+    def test_ticket_count_validator_invalid_number(self):
+        self.assertFalse(is_valid_ticket_count('1.212'))
+        self.assertFalse(is_valid_ticket_count('1.21e2'))
+        self.assertFalse(is_valid_ticket_count('The Real is on the Rise'))
+        self.assertFalse(is_valid_ticket_count(''))
+        self.assertFalse(is_valid_ticket_count('\n\t\r'))
+        self.assertFalse(is_valid_ticket_count(None))
 
 if __name__ == '__main__':
     unittest.main()
