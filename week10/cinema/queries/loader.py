@@ -1,3 +1,4 @@
+""" This module loads information from the database. """
 from database.main import connection, cursor
 from queries.queries import (GET_ALL_MOVIES_ORDERED_BY_DATE, GET_MOVIE_BY_ID,
                              GET_MOVIE_PROJECTIONS_ORDERED_BY_DATE, GET_MOVIE_PROJECTIONS_ORDERED_BY_DATE_IN_DATE,

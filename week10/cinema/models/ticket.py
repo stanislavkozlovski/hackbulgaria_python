@@ -1,8 +1,9 @@
 class Ticket:
-    def __init__(self, row: int, col: int, movie_name: str, movie_id: int, proj_type:str, date: str, hour: str, owner_id: int):
+    def __init__(self, row: int, col: int, movie_name: str, projection_id: int, proj_type:str, date: str, hour: str, owner_id: int):
         self.row = row
         self.col = col
         self.movie_name = movie_name
+        self.projection_id = projection_id
         self.proj_type = proj_type
         self.owner_id = owner_id
         self.date = date
