@@ -2,11 +2,16 @@ import unittest
 import sys
 from io import StringIO
 from controllers.main import read_spell, Cinema
+from settings.constants import DB_USERS_USERNAME_KEY
 
 
 class MainControllerTests(unittest.TestCase):
     def setUp(self):
         self.cinema = Cinema()
+        self.valid_username = "Rositsa Zlateva"
+        self.valid_username2 = "Slavyana Monkova"
+        self.valid_password = "rosata"
+        self.valid_password2 = "slavyana"
 
     def test_show_movies(self):
         expected_output = """Current movies:
@@ -121,6 +126,60 @@ class MainControllerTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_valid_login(self):
+        user_input = "{name}\n{pwd}".format(name=self.valid_username, pwd=self.valid_password)
+        expected_output = "You have been successfully logged in!"
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.cinema.log_user_in()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_double_log_in_decline_logout(self):
+        """ The cinema should prompt you to log out with your old user """
+        user_input = "{name}\n{pwd}\nNo".format(name=self.valid_username, pwd=self.valid_password)
+        expected_output_1 = "You have been successfully logged in!"
+        expected_output_2 = "You are already logged in as {name}. Would you like to log out?".format(name=self.valid_username)
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.cinema.log_user_in()
+            self.assertTrue(expected_output_1 in output.getvalue())
+            self.assertTrue(expected_output_2 in output.getvalue())
+            # validate that we're still logged in as Rositsa
+            self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_double_log_in_accept_logout(self):
+        """ The cinema should prompt you to log out with your old user. We log out and log in with a new user. """
+        """ The cinema should prompt you to log out with your old user """
+        user_input = "{name}\n{pwd}\nYes\n{new_name}\n{new_pwd}".format(
+            name=self.valid_username, pwd=self.valid_password,
+            new_name=self.valid_username2, new_pwd=self.valid_password2)
+        expected_output_1 = "You have been successfully logged in!"
+        expected_output_2 = "You are already logged in as {name}. Would you like to log out?".format(
+            name=self.valid_username)
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.cinema.log_user_in()
+            self.assertTrue(expected_output_1 in output.getvalue())
+            self.assertTrue(expected_output_2 in output.getvalue())
+            self.assertTrue(expected_output_1 in output.getvalue())
+
+            # validate that we're still logged in as Slavyana
+            self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username2)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
 
 if __name__ == '__main__':
     unittest.main()
