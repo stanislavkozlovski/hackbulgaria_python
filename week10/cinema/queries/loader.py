@@ -1,7 +1,7 @@
 from database.main import connection, cursor
 from queries.queries import (GET_ALL_MOVIES_ORDERED_BY_DATE, GET_MOVIE_BY_ID,
                              GET_MOVIE_PROJECTIONS_ORDERED_BY_DATE, GET_MOVIE_PROJECTIONS_ORDERED_BY_DATE_IN_DATE,
-                             GET_RESERVATIONS_BY_PROJECTION_ID)
+                             GET_RESERVATIONS_BY_PROJECTION_ID, GET_USER_BY_USERNAME_AND_PASSWORD)
 
 
 def get_all_movies_ordered_by_date():
@@ -23,3 +23,7 @@ def get_movie_projections_ordered_by_date(movie_id, date):
 
 def get_reservations_by_projection_id(projection_id):
     return cursor.execute(GET_RESERVATIONS_BY_PROJECTION_ID, [projection_id]).fetchall()
+
+
+def get_user_by_username_and_password(username, password):
+    return cursor.execute(GET_USER_BY_USERNAME_AND_PASSWORD, [username, password]).fetchone()
