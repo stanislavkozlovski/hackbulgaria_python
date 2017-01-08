@@ -1,9 +1,10 @@
+import getpass
 from settings.validator import is_valid_spell, is_valid_date
 from settings.constants import (DB_ID_KEY, DB_MOVIE_NAME_KEY, DB_MOVIE_RATING_KEY,
                                 DB_PROJECTIONS_DATE_KEY, DB_PROJECTIONS_HOUR_KEY,
-                                DB_PROJECTIONS_MOVIE_TYPE_KEY, MOVIE_HALL_CAPACITY)
-from queries.loader import get_all_movies_ordered_by_date, get_movie_by_id, get_movie_projections_ordered_by_date, get_reservations_by_projection_id
-
+                                DB_PROJECTIONS_MOVIE_TYPE_KEY, MOVIE_HALL_CAPACITY, DB_USERS_USERNAME_KEY)
+from queries.loader import (get_all_movies_ordered_by_date, get_movie_by_id, get_movie_projections_ordered_by_date,
+                            get_reservations_by_projection_id, get_user_by_username_and_password)
 
 class Cinema:
     def __init__(self):
@@ -75,3 +76,24 @@ def show_movie_projections(movie_id, date=None):
     print("Projections for movie '{mv_name}'{annexation}:".format(mv_name=movie[DB_MOVIE_NAME_KEY],
                                                                   annexation=date_annexation))
     print('\n'.join(output_lines))
+
+
+def log_user(cinema: Cinema):
+    """ Log in a user to the system"""
+    print('Please log in:')
+    username = input('>Username ')
+    password = getpass.getpass()
+
+    # fetch from the DB
+    user = get_user_by_username_and_password(username, password)
+    while user is None:
+        print("Invalid username/password! Would you like to log in again?(y/n)")
+        choice = input()
+        if choice not in ['y', 'yes', 'Y', 'Yes']:
+            return None  # user has given up on logging in
+
+        username = input('>Username ')
+        password = getpass.getpass()
+        user = get_user_by_username_and_password(username, password)
+    print('You have been successfully logged in as {name}!'.format(name=user[DB_USERS_USERNAME_KEY]))
+    return user
