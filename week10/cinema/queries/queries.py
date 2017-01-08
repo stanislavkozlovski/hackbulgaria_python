@@ -15,7 +15,7 @@ FROM PROJECTIONS
 JOIN MOVIE
 ON movie.id = projections.movie_id
 WHERE movie.id = ?
-ORDER BY proj_date;"""
+ORDER BY proj_date, time;"""
 
 
 GET_MOVIE_PROJECTIONS_ORDERED_BY_DATE_IN_DATE= """
@@ -24,7 +24,7 @@ FROM PROJECTIONS
 JOIN MOVIE
 ON movie.id = projections.movie_id
 WHERE movie.id = ? AND projections.proj_date = ?
-ORDER BY proj_date;"""
+ORDER BY proj_date, time;"""
 
 
 GET_RESERVATIONS_BY_PROJECTION_ID = """
