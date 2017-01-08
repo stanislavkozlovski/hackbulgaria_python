@@ -139,6 +139,19 @@ class MainControllerTests(unittest.TestCase):
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
+    def test_invalid_log_in(self):
+        user_input = "{name}\n{pwd}".format(name=self.valid_username, pwd='aAaa')
+        expected_output = "Invalid username/password!"
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.cinema.log_user_in()
+            self.assertTrue(expected_output in output.getvalue())
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
     def test_double_log_in_decline_logout(self):
         """ The cinema should prompt you to log out with your old user """
         user_input = "{name}\n{pwd}\nNo".format(name=self.valid_username, pwd=self.valid_password)
@@ -177,6 +190,32 @@ class MainControllerTests(unittest.TestCase):
 
             # validate that we're still logged in as Slavyana
             self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username2)
+        finally:
+            sys.stdin = sys.__stdin__
+            sys.stdout = sys.__stdout__
+
+    def test_double_log_in_accept_logout_invalid_log_in(self):
+        """ The cinema should prompt you to log out with your old user. We log out and log in with a new user. """
+        """ The cinema should prompt you to log out with your old user """
+        user_input = "{name}\n{pwd}\nYes\n{new_name}\n{new_pwd}".format(
+            name=self.valid_username, pwd=self.valid_password,
+            new_name=self.valid_username2, new_pwd='aAa')
+        expected_output_1 = "You have been successfully logged in!"
+        expected_output_2 = "You are already logged in as {name}. Would you like to log out?".format(
+            name=self.valid_username)
+        expected_output_3 = "Invalid username/password!"
+
+        output = StringIO()
+        try:
+            sys.stdin = StringIO(user_input)
+            sys.stdout = output
+            self.cinema.log_user_in()
+            self.assertTrue(expected_output_1 in output.getvalue())
+            self.assertTrue(expected_output_2 in output.getvalue())
+            self.assertTrue(expected_output_3 in output.getvalue())
+
+            # validate that we're not logged in
+            self.assertIsNone(self.cinema.user)
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
