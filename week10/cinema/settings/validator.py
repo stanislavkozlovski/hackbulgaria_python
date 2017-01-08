@@ -32,3 +32,14 @@ def is_valid_ticket_count(ticket_count: str):
         return False
     except (ValueError, TypeError):
         return False
+
+
+def is_valid_row_or_col(val: str):
+    """ A valid row/col for a movie seat is 1-10"""
+    try:
+        val = int(val)
+        if 1 <= val <= 10:
+            return True
+        return False
+    except (ValueError, TypeError):
+        return False
