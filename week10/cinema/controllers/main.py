@@ -6,12 +6,25 @@ from settings.constants import (DB_ID_KEY, DB_MOVIE_NAME_KEY, DB_MOVIE_RATING_KE
 from queries.loader import (get_all_movies_ordered_by_date, get_movie_by_id, get_movie_projections_ordered_by_date,
                             get_reservations_by_projection_id, get_user_by_username_and_password)
 
+
 class Cinema:
     def __init__(self):
         self.user = None
 
     def log_user_in(self):
-        raise NotImplementedError()
+        if self.user is not None:
+            print('You are already logged in as {name}. Would you like to log out?(y/n)'.format(
+                name=self.user[DB_USERS_USERNAME_KEY]))
+            choice = input()
+            if choice not in ['y', 'Yes', 'Y', 'YES', 'yes']:
+                return
+            self.user = None  # log out the current user
+
+        user = log_user()
+
+        if user is not None:
+            print('You have been successfully logged in as {name}!'.format(name=user[DB_USERS_USERNAME_KEY]))
+            self.user = user
 
 
 def read_spell(cinema: Cinema):
@@ -78,7 +91,7 @@ def show_movie_projections(movie_id, date=None):
     print('\n'.join(output_lines))
 
 
-def log_user(cinema: Cinema):
+def log_user():
     """ Log in a user to the system"""
     print('Please log in:')
     username = input('>Username ')
@@ -95,5 +108,5 @@ def log_user(cinema: Cinema):
         username = input('>Username ')
         password = getpass.getpass()
         user = get_user_by_username_and_password(username, password)
-    print('You have been successfully logged in as {name}!'.format(name=user[DB_USERS_USERNAME_KEY]))
+
     return user
