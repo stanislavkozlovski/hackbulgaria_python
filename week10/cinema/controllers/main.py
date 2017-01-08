@@ -1,5 +1,5 @@
-import getpass
 from models.ticket import Ticket
+from models.cinema import Cinema
 from settings.validator import is_valid_spell, is_valid_date, is_valid_ticket_count, is_valid_row_or_col
 from settings.constants import (DB_ID_KEY, DB_MOVIE_NAME_KEY, DB_MOVIE_RATING_KEY,
                                 DB_PROJECTIONS_DATE_KEY, DB_PROJECTIONS_HOUR_KEY,
@@ -9,28 +9,6 @@ from settings.decorators import authenticate
 from queries.loader import (get_all_movies_ordered_by_date, get_movie_by_id, get_movie_projections_ordered_by_date,
                             get_reservations_by_projection_id, get_user_by_username_and_password)
 from queries.inserter import create_reservations
-
-class Cinema:
-    def __init__(self):
-        self.user = None
-
-    def has_logged_user(self):
-        return self.user is not None
-
-    def log_user_in(self):
-        if self.user is not None:
-            print('You are already logged in as {name}. Would you like to log out?(y/n)'.format(
-                name=self.user[DB_USERS_USERNAME_KEY]))
-            choice = input()
-            if choice not in ['y', 'Yes', 'Y', 'YES', 'yes']:
-                return
-            self.user = None  # log out the current user
-
-        user = log_user()
-
-        if user is not None:
-            print('You have been successfully logged in as {name}!'.format(name=user[DB_USERS_USERNAME_KEY]))
-            self.user = user
 
 
 def read_spell(cinema: Cinema):
@@ -184,25 +162,7 @@ def make_reservation(cinema: Cinema):
         create_reservations(tickets.values())
 
 
-def log_user():
-    """ Log in a user to the system"""
-    print('Please log in:')
-    username = input('>Username ')
-    password = getpass.getpass()
 
-    # fetch from the DB
-    user = get_user_by_username_and_password(username, password)
-    while user is None:
-        print("Invalid username/password! Would you like to log in again?(y/n)")
-        choice = input()
-        if choice not in ['y', 'yes', 'Y', 'Yes']:
-            return None  # user has given up on logging in
-
-        username = input('>Username ')
-        password = getpass.getpass()
-        user = get_user_by_username_and_password(username, password)
-
-    return user
 cn = Cinema()
 while True:
     read_spell(cn)

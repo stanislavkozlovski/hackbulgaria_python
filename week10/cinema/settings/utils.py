@@ -1,6 +1,8 @@
 """ Utility/helper function """
+import getpass
 from settings.constants import MOVIE_HALL_CAPACITY, DB_RESERVATIONS_COL_KEY, DB_RESERVATIONS_ROW_KEY
 from queries.loader import get_reservations_by_projection_id
+from queries.loader import get_user_by_username_and_password
 
 
 def get_free_spot_count_for_a_projection(projection_id):
@@ -67,3 +69,24 @@ def create_movie_hall_matrix_representation():
         matrix.append([str(row)] + (['-'] * 10))
 
     return matrix
+
+
+def log_user():
+    """ Log in a user to the system"""
+    print('Please log in:')
+    username = input('>Username ')
+    password = getpass.getpass()
+
+    # fetch from the DB
+    user = get_user_by_username_and_password(username, password)
+    while user is None:
+        print("Invalid username/password! Would you like to log in again?(y/n)")
+        choice = input()
+        if choice not in ['y', 'yes', 'Y', 'Yes']:
+            return None  # user has given up on logging in
+
+        username = input('>Username ')
+        password = getpass.getpass()
+        user = get_user_by_username_and_password(username, password)
+
+    return user
