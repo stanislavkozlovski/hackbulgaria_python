@@ -1,8 +1,9 @@
 import getpass
-from settings.validator import is_valid_spell, is_valid_date
+from settings.validator import is_valid_spell, is_valid_date, is_valid_ticket_count
 from settings.constants import (DB_ID_KEY, DB_MOVIE_NAME_KEY, DB_MOVIE_RATING_KEY,
                                 DB_PROJECTIONS_DATE_KEY, DB_PROJECTIONS_HOUR_KEY,
                                 DB_PROJECTIONS_MOVIE_TYPE_KEY, MOVIE_HALL_CAPACITY, DB_USERS_USERNAME_KEY)
+from settings.utils import get_free_spots_for_a_projection
 from queries.loader import (get_all_movies_ordered_by_date, get_movie_by_id, get_movie_projections_ordered_by_date,
                             get_reservations_by_projection_id, get_user_by_username_and_password)
 
@@ -10,6 +11,9 @@ from queries.loader import (get_all_movies_ordered_by_date, get_movie_by_id, get
 class Cinema:
     def __init__(self):
         self.user = None
+
+    def has_logged_user(self):
+        return self.user is not None
 
     def log_user_in(self):
         if self.user is not None:
@@ -46,7 +50,8 @@ def read_spell(cinema: Cinema):
             movie_id = command_args[-2]
         else:
             movie_id = command_args[-1]
-        show_movie_projections(movie_id, date)
+        movie, projections = get_movie_projections(movie_id, date)
+        show_movie_projections(movie, projections, date)
 
 
 def show_movies():
@@ -59,22 +64,14 @@ def show_movies():
     print("Current movies:\n{}".format('\n'.join(output_movies)))
 
 
-def show_movie_projections(movie_id, date=None):
-    movie = get_movie_by_id(movie_id)
-    if not movie:
-        print("Invalid movie id!")
+def show_movie_projections(movie, projections, date=None):
+    if projections is None:
         return
-    elif date and not is_valid_date(date):
-        print('Invalid date! Date should be in the format of YYYY-MM-DD!')
-        return
-    projections = get_movie_projections_ordered_by_date(movie[DB_ID_KEY], date)
-    # for each projection
-    # get the free spots by reading the reservations table
     output_lines = []
     date_annexation = '' if not date else ' on date {}'.format(date)
+    # for each projection get the free spots by reading the reservations table
     for projection in projections:
-        reservations = get_reservations_by_projection_id(projection[DB_ID_KEY])
-        free_spots_count = MOVIE_HALL_CAPACITY - len(reservations)
+        free_spots_count = get_free_spots_for_a_projection(projection[DB_ID_KEY])
         if date:
             output_lines.append("[{id}] - {hour} ({movie_type}) - {free_spots} Free Spots".format(
                 id=projection[DB_ID_KEY], hour=projection[DB_PROJECTIONS_HOUR_KEY],
@@ -89,6 +86,18 @@ def show_movie_projections(movie_id, date=None):
     print("Projections for movie '{mv_name}'{annexation}:".format(mv_name=movie[DB_MOVIE_NAME_KEY],
                                                                   annexation=date_annexation))
     print('\n'.join(output_lines))
+
+
+def get_movie_projections(movie_id, date=None) -> tuple:
+    """ Given a movie_id and an optional date, return the appropriate movie projections """
+    movie = get_movie_by_id(movie_id)
+    if not movie:
+        print("Invalid movie id!")
+        return None, None
+    elif date and not is_valid_date(date):
+        print('Invalid date! Date should be in the format of YYYY-MM-DD!')
+        return None, None
+    return movie, get_movie_projections_ordered_by_date(movie[DB_ID_KEY], date)
 
 
 def log_user():
