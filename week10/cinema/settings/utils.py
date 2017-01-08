@@ -35,6 +35,26 @@ def get_free_spots_for_a_projection(projection_id):
     return movie_hall
 
 
+def print_movie_hall(movie_hall: list):
+    """
+    Given a matrix representing a movie hall, prints in out for the user to view it
+    ex:
+      1 2 3 4 5 6 7 8 9 10
+    1 - - - - - X - - - -
+    2 - - - - - - - - - -
+    3 - - - - - - - - - -
+    4 - - - - - - - - - -
+    5 - - - - - - - - - -
+    6 - - - - - - - - - -
+    7 - - - - - - - - - -
+    8 - - - - - - - - - -
+    9 - - - - - - - - - -
+    10- - - - - - - - - -
+    """
+    for row in movie_hall:
+        print(' '.join(row).rjust(25, ' '))
+
+
 def create_movie_hall_matrix_representation():
     """ Creates a movie hall representation using a 11x11 matrix.
     [[' ', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
@@ -47,4 +67,3 @@ def create_movie_hall_matrix_representation():
         matrix.append([str(row)] + (['-'] * 10))
 
     return matrix
-
