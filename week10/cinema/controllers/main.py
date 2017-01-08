@@ -1,4 +1,4 @@
-from settings.validator import is_valid_spell
+from settings.validator import is_valid_spell, is_valid_date
 from settings.constants import (DB_ID_KEY, DB_MOVIE_NAME_KEY, DB_MOVIE_RATING_KEY,
                                 DB_PROJECTIONS_DATE_KEY, DB_PROJECTIONS_HOUR_KEY,
                                 DB_PROJECTIONS_MOVIE_TYPE_KEY, MOVIE_HALL_CAPACITY)
@@ -16,7 +16,16 @@ def read_spell():
     if user_input == 'show movies':
         show_movies()
     elif 'show movie projections' in user_input:
-        show_movie_projections()
+        command_args = user_input.split()
+        date = None
+        movie_id = None
+        if len(command_args) == 5:
+            # Date has been given
+            date = command_args[-1]
+            movie_id = command_args[-2]
+        else:
+            movie_id = command_args[-1]
+        show_movie_projections(movie_id, date)
 
 
 def show_movies():
@@ -29,12 +38,15 @@ def show_movies():
     print("Current movies:\n{}".format('\n'.join(output_movies)))
 
 
-def show_movie_projections(id):
-    movie = get_movie_by_id(id)
+def show_movie_projections(movie_id, date=None):
+    movie = get_movie_by_id(movie_id)
     if not movie:
         print("Invalid movie id!")
         return
-    projections = get_movie_projections_ordered_by_date(movie[DB_ID_KEY], None)
+    elif date and not is_valid_date(date):
+        print('Invalid date! Date should be in the format of YYYY-MM-DD!')
+        return
+    projections = get_movie_projections_ordered_by_date(movie[DB_ID_KEY], date)
     # for each projection
     # get the free spots by reading the reservations table
     output_lines = []
