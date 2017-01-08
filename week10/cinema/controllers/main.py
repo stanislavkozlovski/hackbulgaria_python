@@ -90,37 +90,21 @@ def make_reservation(cinema: Cinema):
         print('Invalid ticket count! The ticket count should be between 1-10 inclusive.')
         ticket_count = input(">Ticket count: ")
     ticket_count = int(ticket_count)
+
     # show the movies and let the user choose one
-    show_movies()
-    movie_id = input(">Choose a movie: ")
-    movie = get_movie_by_id(movie_id)
-    while not movie:
-        print("Invalid movie id!")
-        movie_id = input(">Choose a movie: ")
-        movie = get_movie_by_id(movie_id)
+    movie_id, to_give_up = movie_choice_prompt()
+    if to_give_up:
+        return
 
     # show the projections for the movie
     movie, projections = get_movie_projections(movie_id)
     if len(projections) == 0:
         print('There are no projections for that movie, we apologize for the inconvenience.')
         return
-    projections_by_id = {str(projection[DB_ID_KEY]): projection for projection in projections}
-    while True:
-        show_movie_projections(movie, projections)
-        projection_id = input(">Choose a projection: ")
-        if projection_id in projections_by_id:
-            # see if there are enough free spots
-            free_spots_count = get_free_spot_count_for_a_projection(projection_id)
-
-            if free_spots_count < ticket_count:
-                print('There are not enough free spots for {} tickets!'.format(ticket_count))
-                print('Please choose another projection')
-                continue
-
-            break
-        print('Invalid projection id!')
-    projection = projections_by_id[projection_id]
-    movie_hall = get_free_spots_for_a_projection(projection_id)
+    # let the user choose a projection and get the movie hall (seats) for the projection
+    projection, movie_hall, to_give_up = projection_choice_prompt(movie, projections, ticket_count)
+    if to_give_up:
+        return
     tickets = {}  # type: {int:Ticket}
     for i in range(ticket_count):
         # loop until the user chooses a valid ticket
@@ -162,7 +146,56 @@ def make_reservation(cinema: Cinema):
         create_reservations(tickets.values())
 
 
+def projection_choice_prompt(movie, projections: list, ticket_count: int):
+    """
+    This function presents the user with the available projections for the given movie and lets him choose
+    the one he wants to make a reservation for.
+    :param movie: A sqlite3 row object for a Movie from the DB tables movies
+    :param projections: A list ot sqlite3 row objects for projections from the DB table projections
+    :param ticket_count: The number of tickets the user wants to buy
+    :return:
+            the projection,
+            the movie hall for the given projection,
+            a boolean indicating if he has given up on his choice
+    """
+    to_give_up = False
+    projections_by_id = {str(projection[DB_ID_KEY]): projection for projection in projections}
+    while True:
+        show_movie_projections(movie, projections)
+        projection_id = input(">Choose a projection: ")
+        if projection_id == 'give up':
+            to_give_up = True
+            return None, None, to_give_up
+        if projection_id in projections_by_id:
+            # see if there are enough free spots
+            free_spots_count = get_free_spot_count_for_a_projection(projection_id)
 
-cn = Cinema()
-while True:
-    read_spell(cn)
+            if free_spots_count < ticket_count:
+                print('There are not enough free spots for {} tickets!'.format(ticket_count))
+                print('Please choose another projection')
+                continue
+
+            break
+        print('Invalid projection id!')
+    projection = projections_by_id[projection_id]
+    movie_hall = get_free_spots_for_a_projection(projection_id)
+    return projection, movie_hall, to_give_up
+
+
+def movie_choice_prompt():
+    """
+    Shows the movies to the user and prompts him for a choice using the movie's id
+    """
+    to_give_up = False
+    show_movies()
+    movie_id = input(">Choose a movie: ")
+    movie = get_movie_by_id(movie_id)
+    while not movie:
+        print("Invalid movie id!")
+        movie_id = input(">Choose a movie: ")
+        if movie_id == "give up":
+            to_give_up = True
+            break
+        movie = get_movie_by_id(movie_id)
+
+    return movie, to_give_up
