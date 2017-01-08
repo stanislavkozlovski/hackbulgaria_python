@@ -21,3 +21,14 @@ def is_valid_date(date):
         return True
     except (ValueError, TypeError):
         return False
+
+
+def is_valid_ticket_count(ticket_count: str):
+    """ A valid ticket count is between 1-10 """
+    try:
+        tickets = int(ticket_count)
+        if 1 <= tickets <= 10:
+            return True
+        return False
+    except (ValueError, TypeError):
+        return False
