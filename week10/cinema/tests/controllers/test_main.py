@@ -128,26 +128,28 @@ class MainControllerTests(unittest.TestCase):
 
     def test_valid_login(self):
         user_input = "{name}\n{pwd}".format(name=self.valid_username, pwd=self.valid_password)
-        expected_output = "You have been successfully logged in!"
+        expected_output = "You have been successfully logged in as Rositsa Zlateva!"
         output = StringIO()
         try:
             sys.stdin = StringIO(user_input)
             sys.stdout = output
             self.cinema.log_user_in()
             self.assertTrue(expected_output in output.getvalue())
+            self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username)
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
 
     def test_invalid_log_in(self):
-        user_input = "{name}\n{pwd}".format(name=self.valid_username, pwd='aAaa')
-        expected_output = "Invalid username/password!"
+        user_input = "{name}\n{pwd}\nNo".format(name=self.valid_username, pwd='aAaa')
+        expected_output = "Invalid username/password! Would you like to log in again?(y/n)"
         output = StringIO()
         try:
             sys.stdin = StringIO(user_input)
             sys.stdout = output
             self.cinema.log_user_in()
             self.assertTrue(expected_output in output.getvalue())
+            self.assertIsNone(self.cinema.user)
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
@@ -155,7 +157,7 @@ class MainControllerTests(unittest.TestCase):
     def test_double_log_in_decline_logout(self):
         """ The cinema should prompt you to log out with your old user """
         user_input = "{name}\n{pwd}\nNo".format(name=self.valid_username, pwd=self.valid_password)
-        expected_output_1 = "You have been successfully logged in!"
+        expected_output_1 = "You have been successfully logged in as Rositsa Zlateva!"
         expected_output_2 = "You are already logged in as {name}. Would you like to log out?".format(name=self.valid_username)
         output = StringIO()
         try:
@@ -163,6 +165,7 @@ class MainControllerTests(unittest.TestCase):
             sys.stdout = output
             self.cinema.log_user_in()
             self.assertTrue(expected_output_1 in output.getvalue())
+            self.cinema.log_user_in()
             self.assertTrue(expected_output_2 in output.getvalue())
             # validate that we're still logged in as Rositsa
             self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username)
@@ -172,12 +175,11 @@ class MainControllerTests(unittest.TestCase):
 
     def test_double_log_in_accept_logout(self):
         """ The cinema should prompt you to log out with your old user. We log out and log in with a new user. """
-        """ The cinema should prompt you to log out with your old user """
         user_input = "{name}\n{pwd}\nYes\n{new_name}\n{new_pwd}".format(
             name=self.valid_username, pwd=self.valid_password,
             new_name=self.valid_username2, new_pwd=self.valid_password2)
-        expected_output_1 = "You have been successfully logged in!"
-        expected_output_2 = "You are already logged in as {name}. Would you like to log out?".format(
+        expected_output_1 = "You have been successfully logged in as Rositsa Zlateva!"
+        expected_output_2 = "You are already logged in as {name}. Would you like to log out?(y/n)".format(
             name=self.valid_username)
         output = StringIO()
         try:
@@ -185,9 +187,9 @@ class MainControllerTests(unittest.TestCase):
             sys.stdout = output
             self.cinema.log_user_in()
             self.assertTrue(expected_output_1 in output.getvalue())
+            self.cinema.log_user_in()
             self.assertTrue(expected_output_2 in output.getvalue())
             self.assertTrue(expected_output_1 in output.getvalue())
-
             # validate that we're still logged in as Slavyana
             self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username2)
         finally:
@@ -197,13 +199,13 @@ class MainControllerTests(unittest.TestCase):
     def test_double_log_in_accept_logout_invalid_log_in(self):
         """ The cinema should prompt you to log out with your old user. We log out and log in with a new user. """
         """ The cinema should prompt you to log out with your old user """
-        user_input = "{name}\n{pwd}\nYes\n{new_name}\n{new_pwd}".format(
+        user_input = "{name}\n{pwd}\nYes\n{new_name}\n{new_pwd}\nNo".format(
             name=self.valid_username, pwd=self.valid_password,
             new_name=self.valid_username2, new_pwd='aAa')
-        expected_output_1 = "You have been successfully logged in!"
-        expected_output_2 = "You are already logged in as {name}. Would you like to log out?".format(
+        expected_output_1 = "You have been successfully logged in as Rositsa Zlateva!"
+        expected_output_2 = "You are already logged in as {name}. Would you like to log out?(y/n)".format(
             name=self.valid_username)
-        expected_output_3 = "Invalid username/password!"
+        expected_output_3 = "Invalid username/password! Would you like to log in again?(y/n)"
 
         output = StringIO()
         try:
@@ -211,6 +213,7 @@ class MainControllerTests(unittest.TestCase):
             sys.stdout = output
             self.cinema.log_user_in()
             self.assertTrue(expected_output_1 in output.getvalue())
+            self.cinema.log_user_in()
             self.assertTrue(expected_output_2 in output.getvalue())
             self.assertTrue(expected_output_3 in output.getvalue())
 
