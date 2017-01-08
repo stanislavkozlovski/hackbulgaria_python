@@ -1,5 +1,5 @@
 import unittest
-from settings.validator import is_valid_spell, is_valid_date, is_valid_ticket_count
+from settings.validator import is_valid_spell, is_valid_date, is_valid_ticket_count, is_valid_row_or_col
 
 
 class ValidatorTests(unittest.TestCase):
@@ -58,6 +58,27 @@ class ValidatorTests(unittest.TestCase):
         self.assertFalse(is_valid_ticket_count(''))
         self.assertFalse(is_valid_ticket_count('\n\t\r'))
         self.assertFalse(is_valid_ticket_count(None))
+
+    # --------------ROW/COL VALIDATOR--------------
+    def test_row_or_col_validator_valid_count(self):
+        self.assertTrue(is_valid_row_or_col('5'))
+        self.assertTrue(is_valid_row_or_col('1'))
+        self.assertTrue(is_valid_row_or_col('10'))
+
+    def test_row_or_col_validator_invalid_count(self):
+        """ Valid tickets are between 1 and 10"""
+        self.assertFalse(is_valid_row_or_col('11'))
+        self.assertFalse(is_valid_row_or_col('0'))
+        self.assertFalse(is_valid_row_or_col('-1'))
+        self.assertFalse(is_valid_row_or_col('1434019341049132'))
+
+    def test_row_or_col_validator_invalid_number(self):
+        self.assertFalse(is_valid_row_or_col('1.212'))
+        self.assertFalse(is_valid_row_or_col('1.21e2'))
+        self.assertFalse(is_valid_row_or_col('The Real is on the Rise'))
+        self.assertFalse(is_valid_row_or_col(''))
+        self.assertFalse(is_valid_row_or_col('\n\t\r'))
+        self.assertFalse(is_valid_row_or_col(None))
 
 if __name__ == '__main__':
     unittest.main()
