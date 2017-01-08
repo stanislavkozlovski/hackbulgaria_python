@@ -50,12 +50,21 @@ def show_movie_projections(movie_id, date=None):
     # for each projection
     # get the free spots by reading the reservations table
     output_lines = []
+    date_annexation = '' if not date else ' on date {}'.format(date)
     for projection in projections:
         reservations = get_reservations_by_projection_id(projection[DB_ID_KEY])
         free_spots_count = MOVIE_HALL_CAPACITY - len(reservations)
-        output_lines.append("[{id}] - {date} {hour} ({movie_type}) - {free_spots} Free Spots".format(
-            id=projection[DB_ID_KEY], date=projection[DB_PROJECTIONS_DATE_KEY],
-            hour=projection[DB_PROJECTIONS_HOUR_KEY], movie_type=projection[DB_PROJECTIONS_MOVIE_TYPE_KEY],
-            free_spots=free_spots_count
-        ))
+        if date:
+            output_lines.append("[{id}] - {hour} ({movie_type}) - {free_spots} Free Spots".format(
+                id=projection[DB_ID_KEY], hour=projection[DB_PROJECTIONS_HOUR_KEY],
+                movie_type=projection[DB_PROJECTIONS_MOVIE_TYPE_KEY], free_spots=free_spots_count
+            ))
+        else:
+            output_lines.append("[{id}] - {date} {hour} ({movie_type}) - {free_spots} Free Spots".format(
+                id=projection[DB_ID_KEY], date=projection[DB_PROJECTIONS_DATE_KEY],
+                hour=projection[DB_PROJECTIONS_HOUR_KEY], movie_type=projection[DB_PROJECTIONS_MOVIE_TYPE_KEY],
+                free_spots=free_spots_count
+            ))
+    print("Projections for movie '{mv_name}'{annexation}:".format(mv_name=movie[DB_MOVIE_NAME_KEY],
+                                                                  annexation=date_annexation))
     print('\n'.join(output_lines))
