@@ -23,13 +23,13 @@ class MainControllerTests(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
     def test_show_movie_projections(self):
-        input = "show movie projections 2"
-        expected_output = """Projections for movie 'Wreck-It Ralph':
-[5] - 2014-04-02 19:30 (2D)
-[6] - 2014-04-02 22:00 (3D)"""
+        user_input = "show movie projections 2"
+        expected_output = """Projections for movie 'Wreck it-Ralph':
+[6] - 2014-04-02 19:30 (2D) - 100 Free Spots
+[5] - 2014-04-02 22:00 (3D) - 98 Free Spots"""
         output = StringIO()
         try:
-            sys.stdin = StringIO(input)
+            sys.stdin = StringIO(user_input)
             sys.stdout = output
             read_spell()
             self.assertTrue(expected_output in output.getvalue())
@@ -38,13 +38,13 @@ class MainControllerTests(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
     def test_show_movie_projections_with_date(self):
-        input = "show movie projections 1 2014-04-01"
+        user_input = "show movie projections 1 2014-04-01"
         expected_output = """Projections for movie 'The Hunger Games: Catching Fire' on date 2014-04-01:
-[1] - 19:00 (3D)
-[2] - 19:10 (2D)"""
+[2] - 19:00 (2D) - 100 Free Spots
+[1] - 19:10 (3D) - 97 Free Spots"""
         output = StringIO()
         try:
-            sys.stdin = StringIO(input)
+            sys.stdin = StringIO(user_input)
             sys.stdout = output
             read_spell()
             self.assertTrue(expected_output in output.getvalue())
