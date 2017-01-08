@@ -5,7 +5,15 @@ from settings.constants import (DB_ID_KEY, DB_MOVIE_NAME_KEY, DB_MOVIE_RATING_KE
 from queries.loader import get_all_movies_ordered_by_date, get_movie_by_id, get_movie_projections_ordered_by_date, get_reservations_by_projection_id
 
 
-def read_spell():
+class Cinema:
+    def __init__(self):
+        self.user = None
+
+    def log_user_in(self):
+        raise NotImplementedError()
+
+
+def read_spell(cinema: Cinema):
     """ Expect a command from the user and do the appropriate action """
     user_input = input()
     while not is_valid_spell(user_input):
@@ -18,7 +26,6 @@ def read_spell():
     elif 'show movie projections' in user_input:
         command_args = user_input.split()
         date = None
-        movie_id = None
         if len(command_args) == 5:
             # Date has been given
             date = command_args[-1]
