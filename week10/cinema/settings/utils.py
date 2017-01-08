@@ -1,5 +1,5 @@
 """ Utility/helper function """
-from settings.constants import MOVIE_HALL_CAPACITY
+from settings.constants import MOVIE_HALL_CAPACITY, DB_RESERVATIONS_COL_KEY, DB_RESERVATIONS_ROW_KEY
 from queries.loader import get_reservations_by_projection_id
 
 
@@ -25,7 +25,14 @@ def get_free_spots_for_a_projection(projection_id):
     9 - - - - - - - - - -
     10- - - - - - - - - -
     """
-    pass
+    movie_hall = create_movie_hall_matrix_representation()
+    reservations = get_reservations_by_projection_id(projection_id)
+    # add a X for each taken spot
+    for reservation in reservations:
+        row, col = reservation[DB_RESERVATIONS_ROW_KEY], reservation[DB_RESERVATIONS_COL_KEY]
+        movie_hall[row][col] = 'X'
+
+    return movie_hall
 
 
 def create_movie_hall_matrix_representation():
@@ -37,6 +44,7 @@ def create_movie_hall_matrix_representation():
     matrix = [[' '] + [str(row) for row in range(1, 11)]]  # create the top row
     # create the other rows
     for row in range(1, 11):
-        matrix.append([str(row)] + ([' '] * 10))
+        matrix.append([str(row)] + (['-'] * 10))
 
     return matrix
+
