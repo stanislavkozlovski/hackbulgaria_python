@@ -2,6 +2,7 @@ CREATE_CLIENTS_TABLE = '''create table if not exists
         clients(id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT,
                 password TEXT,
+                salt TEXT,
                 balance REAL DEFAULT 0,
                 message TEXT)'''
 
