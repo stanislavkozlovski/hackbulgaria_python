@@ -1,7 +1,7 @@
 from models.cinema import Cinema
 from settings.validator import is_valid_spell
 from controllers.projections import get_movie_projections, show_movie_projections
-from controllers.reservation import make_reservation
+from controllers.reservation import make_reservation, cancel_reservation
 from controllers.movie import show_movies
 
 
@@ -28,4 +28,6 @@ def read_spell(cinema: Cinema):
         show_movie_projections(movie, projections, date)
     elif 'make reservation' in user_input:
         make_reservation(cinema)
-
+    elif 'cancel reservation' in user_input:
+        username = ' '.join(user_input.split()[2:])
+        cancel_reservation(cinema, username)

@@ -1,7 +1,7 @@
 from models.cinema import Cinema
 from models.ticket import Ticket
 from settings.utils import get_free_spots_for_a_projection, get_free_spot_count_for_a_projection, print_movie_hall
-from settings.decorators import authenticate
+from settings.decorators import authenticate, authenticate_user
 from settings.validator import is_valid_ticket_count, is_valid_row_or_col
 from settings.constants import (DB_ID_KEY, DB_PROJECTIONS_DATE_KEY, DB_PROJECTIONS_HOUR_KEY,
                                 DB_MOVIE_NAME_KEY, DB_PROJECTIONS_MOVIE_TYPE_KEY)
@@ -9,6 +9,7 @@ from controllers.projections import get_movie_projections, show_movie_projection
 from controllers.movie import show_movies
 from queries.inserter import create_reservations
 from queries.loader import get_movie_by_id
+from queries.deleter import delete_reservations_from_user
 
 
 @authenticate
@@ -159,3 +160,10 @@ def ticket_choice_prompt(cinema, movie, projection, movie_hall, ticket_count: in
                 break
 
     return tickets, to_give_up
+
+
+@authenticate_user
+def cancel_reservation(cinema: Cinema, username: str):
+    user = cinema.user
+    delete_reservations_from_user(user[DB_ID_KEY])
+    print('You have successfully cancelled all your reservations!')
