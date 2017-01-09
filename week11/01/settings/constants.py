@@ -1,7 +1,11 @@
 DB_PATH = "bank.db"
 SPECIAL_SYMBOLS = ['!', '@', '#', '$', '%', '^', '&', '*']
+INVALID_LOGIN_BRUTEFORCE_PROTECTION_COUNT = 5
+DB_ID_KEY = 'id'
 DB_USER_ID_KEY = 'id'
 DB_USER_USERNAME_KEY = 'username'
 DB_USER_PASSWORD_KEY = 'password'
 DB_USER_BALANCE_KEY = 'balance'
 DB_USER_MESSAGE_KEY = 'message'
+DB_USER_LAST_BLOCKED_KEY = 'last_blocked'
+DB_INVALID_LOGINS_INVALID_LOGIN_COUNT_KEY = 'login_count'
