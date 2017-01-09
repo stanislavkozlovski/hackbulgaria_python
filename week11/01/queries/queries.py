@@ -6,7 +6,7 @@ CREATE_CLIENTS_TABLE = '''create table if not exists
                 balance REAL DEFAULT 0,
                 message TEXT)'''
 
-CREATE_USER = "INSERT INTO clients (username, password) values (?, ?)"
+CREATE_USER = "INSERT INTO clients (username, password, salt) values (?, ?, ?)"
 
 UPDATE_CLIENT_SET_MESSAGE = "UPDATE clients SET message = ? WHERE id = ?"
 
