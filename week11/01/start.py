@@ -2,6 +2,7 @@ import getpass
 from validate_email import validate_email
 from settings.validator import is_valid_password
 import sql_manager
+import smtplib
 
 
 def main_menu():
@@ -35,6 +36,14 @@ def main_menu():
                 logged_menu(logged_user)
             else:
                 print("Login failed")
+        elif command.startswith('send-reset-password'):
+            username = command[20:]
+            # TODO:
+            validate_user()
+            generate_token()
+            send_token()
+            save_token()
+            pass
         elif command == 'help':
             print("login - for logging in!")
             print("register - for creating new account!")
@@ -43,6 +52,28 @@ def main_menu():
             return
         else:
             print("Not a valid command")
+
+def send_password_reset_email(sender_username, sender_password, recipient, subject, body):
+    gmail_user = sender_username
+    gmail_pwd = sender_password
+    FROM = sender_username
+    TO = recipient if type(recipient) is list else [recipient]
+    SUBJECT = subject
+    TEXT = body
+
+    # Prepare actual message
+    message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+    """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.ehlo()
+        server.starttls()
+        server.login(gmail_user, gmail_pwd)
+        server.sendmail(FROM, TO, message)
+        server.close()
+        print('successfully sent the mail'
+    except:
+        print("failed to send mail")
 
 
 def logged_menu(logged_user):

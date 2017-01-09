@@ -1,5 +1,7 @@
 import bcrypt
 import sqlite3
+import smtplib
+
 import dateutil.parser as dateparser
 from datetime import datetime
 from queries.queries import (CREATE_CLIENTS_TABLE, UPDATE_CLIENT_SET_MESSAGE, UPDATE_CLIENT_SET_PASSWORD,
