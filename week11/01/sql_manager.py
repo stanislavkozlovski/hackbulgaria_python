@@ -10,7 +10,7 @@ from queries.queries import (CREATE_CLIENTS_TABLE, UPDATE_CLIENT_SET_MESSAGE, UP
 from client import Client
 from settings.constants import (DB_PATH, DB_USER_ID_KEY, DB_USER_USERNAME_KEY, DB_USER_BALANCE_KEY,
                                 DB_USER_MESSAGE_KEY, DB_INVALID_LOGINS_INVALID_LOGIN_COUNT_KEY, DB_ID_KEY,
-                                DB_USER_LAST_BLOCKED_KEY, INVALID_LOGIN_BRUTEFORCE_PROTECTION_COUNT)
+                                DB_USER_LAST_BLOCKED_KEY, INVALID_LOGIN_BRUTEFORCE_PROTECTION_COUNT, DB_USER_EMAIL_KEY)
 conn = sqlite3.connect(DB_PATH)
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
@@ -83,6 +83,7 @@ def login(username, password):
         reset_invalid_logins(user_id)
         return Client(_id=user_id,
                       username=user[DB_USER_USERNAME_KEY],
+                      email=user[DB_USER_EMAIL_KEY],
                       balance=user[DB_USER_BALANCE_KEY],
                       message=user[DB_USER_MESSAGE_KEY])
     else:

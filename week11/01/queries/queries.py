@@ -27,7 +27,7 @@ UPDATE_CLIENT_SET_PASSWORD = "UPDATE clients SET password = ? WHERE id = ?"
 
 UPDATE_CLIENT_LAST_BLOCKED = "UPDATE clients SET last_blocked = ? WHERE id = ?"
 
-SELECT_ONE_USER_WITH_USERNAME_PASSWORD = "SELECT id, username, balance, message FROM clients WHERE username = ? AND password = ? LIMIT 1"
+SELECT_ONE_USER_WITH_USERNAME_PASSWORD = "SELECT id, username, email, salt, balance, message FROM clients WHERE username = ? AND password = ? LIMIT 1"
 
 SELECT_USER_ID_BY_USERNAME = "SELECT id FROM clients WHERE username = ?"
 

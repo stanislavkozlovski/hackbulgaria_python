@@ -1,6 +1,7 @@
 class Client():
-    def __init__(self, _id, username, balance, message):
+    def __init__(self, _id, username, email, balance, message):
         self.__username = username
+        self.__email = email
         self.__balance = balance
         self.__id = _id
         self.__message = message
@@ -8,6 +9,10 @@ class Client():
     @property
     def username(self):
         return self.__username
+
+    @property
+    def email(self):
+        return self.__email
 
     @property
     def balance(self):
