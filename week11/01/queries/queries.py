@@ -3,6 +3,7 @@ CREATE_CLIENTS_TABLE = '''create table if not exists
                 username TEXT,
                 password TEXT,
                 salt TEXT,
+                email TEXT,
                 balance REAL DEFAULT 0,
                 message TEXT,
                 last_blocked TEXT)'''
@@ -12,7 +13,7 @@ CREATE_INVALID_LOGINS_TABLE = '''CREATE TABLE IF NOT EXISTS
                    login_count INTEGER,
                     FOREIGN KEY(ID) REFERENCES USER(ID))'''
 
-CREATE_USER = "INSERT INTO clients (username, password, salt) values (?, ?, ?)"
+CREATE_USER = "INSERT INTO clients (username, password, salt, email) values (?, ?, ?, ?)"
 
 CREATE_INVALID_LOGINS_USER = "INSERT INTO invalid_logins (id, login_count) values (?, 0)"
 

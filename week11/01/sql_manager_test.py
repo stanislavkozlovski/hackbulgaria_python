@@ -12,7 +12,7 @@ class SqlManagerTests(unittest.TestCase):
     def setUp(self):
         self.tester_password = '123AaaA$RffFD'
         sql_manager.create_clients_table()
-        sql_manager.register('Tester', self.tester_password)
+        sql_manager.register('Tester', self.tester_password, 'tester@test.bg')
 
     def tearDown(self):
         sql_manager.cursor.execute('DROP TABLE clients')
@@ -23,7 +23,7 @@ class SqlManagerTests(unittest.TestCase):
         os.remove("bank.db")
 
     def test_register(self):
-        sql_manager.register('Dinko', '12Aa$A4Aa3123')
+        sql_manager.register('Dinko', '12Aa$A4Aa3123', 'dinko@yambol.bg')
 
         sql_manager.cursor.execute('SELECT Count(*)  FROM clients WHERE username = ?', ['Dinko'])
         users_count = sql_manager.cursor.fetchone()
@@ -37,7 +37,7 @@ class SqlManagerTests(unittest.TestCase):
 
     def test_password_hash_on_register(self):
         dinko_pass = '12Aa$A4Aa3123'
-        sql_manager.register('Dinko', dinko_pass)
+        sql_manager.register('Dinko', dinko_pass, 'dinko@yambol.bg')
 
         sql_manager.cursor.execute('SELECT Count(*)  FROM clients WHERE username = ?',
                                    ['Dinko'])

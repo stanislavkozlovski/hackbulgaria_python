@@ -52,11 +52,11 @@ def change_pass(new_pass, logged_user):
     conn.commit()
 
 
-def register(username, password):
+def register(username, password, email):
     # hash the password
     user_salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode(), user_salt)
-    cursor.execute(CREATE_USER, (username, hashed_password, user_salt))
+    cursor.execute(CREATE_USER, (username, hashed_password, user_salt, email))
     # get the user's id
     id = get_user_id(username)
     cursor.execute(CREATE_INVALID_LOGINS_USER, [id])

@@ -1,4 +1,5 @@
 import getpass
+from validate_email import validate_email
 from settings.validator import is_valid_password
 import sql_manager
 
@@ -11,6 +12,11 @@ def main_menu():
 
         if command == 'register':
             username = input("Enter your username: ")
+            email = input('Enter your e-mail: ')
+            while not validate_email(email):
+                print('Your e-mail is invalid!')
+                email = input('Enter your e-mail: ')
+
             password = getpass.getpass("Enter your password: ")
             while not is_valid_password(username, password):
                 print('Your password is invalid!')
