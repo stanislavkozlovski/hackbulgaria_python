@@ -1,7 +1,8 @@
 import bcrypt
 import sqlite3
 from queries.queries import (CREATE_CLIENTS_TABLE, UPDATE_CLIENT_SET_MESSAGE, UPDATE_CLIENT_SET_PASSWORD,
-                            CREATE_USER, SELECT_ONE_USER_WITH_USERNAME_PASSWORD)
+                            CREATE_USER, SELECT_ONE_USER_WITH_USERNAME_PASSWORD, CREATE_INVALID_LOGINS_TABLE,
+                             CREATE_INVALID_LOGINS_USER, SELECT_USER_ID_BY_USERNAME)
 from client import Client
 from settings.constants import (DB_PATH, DB_USER_ID_KEY, DB_USER_USERNAME_KEY, DB_USER_BALANCE_KEY,
                                 DB_USER_MESSAGE_KEY)
@@ -12,10 +13,19 @@ cursor = conn.cursor()
 
 def create_clients_table():
     cursor.execute(CREATE_CLIENTS_TABLE)
+    cursor.execute(CREATE_INVALID_LOGINS_TABLE)
 
 
 def get_user_salt(username):
-    return cursor.execute('SELECT salt FROM clients WHERE username=?', [username]).fetchone()[0]
+    salt = cursor.execute('SELECT salt FROM clients WHERE username=?', [username]).fetchone()
+    if salt is not None:
+        return salt[0]
+
+
+def get_user_id(username):
+    id = cursor.execute(SELECT_USER_ID_BY_USERNAME, [username]).fetchone()
+    if id is not None:
+        return id[0]
 
 
 def change_message(new_message, logged_user):
@@ -37,6 +47,9 @@ def register(username, password):
     user_salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode(), user_salt)
     cursor.execute(CREATE_USER, (username, hashed_password, user_salt))
+    # get the user's id
+    id = get_user_id(username)
+    cursor.execute(CREATE_INVALID_LOGINS_USER, [id])
     conn.commit()
 
 
