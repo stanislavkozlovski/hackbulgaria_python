@@ -13,8 +13,10 @@ cursor = conn.cursor()
 def create_clients_table():
     cursor.execute(CREATE_CLIENTS_TABLE)
 
+
 def get_user_salt(username):
     return cursor.execute('SELECT salt FROM clients WHERE username=?', [username]).fetchone()[0]
+
 
 def change_message(new_message, logged_user):
     cursor.execute(UPDATE_CLIENT_SET_MESSAGE, (new_message, logged_user.id))

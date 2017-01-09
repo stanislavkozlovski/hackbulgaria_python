@@ -1,3 +1,4 @@
+import getpass
 from settings.validator import is_valid_password
 import sql_manager
 
@@ -10,17 +11,17 @@ def main_menu():
 
         if command == 'register':
             username = input("Enter your username: ")
-            password = input("Enter your password: ")
+            password = getpass.getpass("Enter your password: ")
             while not is_valid_password(username, password):
                 print('Your password is invalid!')
-                password = input("Enter your password: ")
+                password = getpass.getpass("Enter your password: ")
 
             sql_manager.register(username, password)
 
             print("Registration Successful")
         elif command == 'login':
             username = input("Enter your username: ")
-            password = input("Enter your password: ")
+            password = getpass.getpass("Enter your password: ")
 
             logged_user = sql_manager.login(username, password)
 
