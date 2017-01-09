@@ -36,6 +36,10 @@ class SqlManagerTests(unittest.TestCase):
         logged_user = sql_manager.login('Tester', '123567')
         self.assertFalse(logged_user)
 
+    def test_login_sql_injection(self):
+        logged_user = sql_manager.login('Tester', "' OR 1 = 1 --")
+        self.assertFalse(logged_user)
+
     def test_change_message(self):
         logged_user = sql_manager.login('Tester', '123')
         new_message = "podaivinototam"
