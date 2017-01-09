@@ -3,6 +3,7 @@ from settings.validator import is_valid_spell
 from controllers.projections import get_movie_projections, show_movie_projections
 from controllers.reservation import make_reservation, cancel_reservation
 from controllers.movie import show_movies
+from controllers.help import general_help, command_help
 
 
 def read_spell(cinema: Cinema):
@@ -31,3 +32,11 @@ def read_spell(cinema: Cinema):
     elif 'cancel reservation' in user_input:
         username = ' '.join(user_input.split()[2:])
         cancel_reservation(cinema, username)
+    elif user_input == 'exit':
+        raise SystemExit
+    elif user_input.startswith('help'):
+        if user_input == 'help':
+            general_help()
+        else:
+            command = user_input[5:].strip()
+            command_help(command)
