@@ -16,7 +16,7 @@ def read_spell(cinema: Cinema):
     # TODO: Move to a dictionary/something else
     if user_input == 'show movies':
         show_movies()
-    elif 'show movie projections' in user_input:
+    elif user_input.startswith('show movie projections'):
         command_args = user_input.split()
         date = None
         if len(command_args) == 5:
@@ -27,9 +27,9 @@ def read_spell(cinema: Cinema):
             movie_id = command_args[-1]
         movie, projections = get_movie_projections(movie_id, date)
         show_movie_projections(movie, projections, date)
-    elif 'make reservation' in user_input:
+    elif user_input.startswith('make reservation'):
         make_reservation(cinema)
-    elif 'cancel reservation' in user_input:
+    elif user_input.startswith('cancel reservation'):
         username = ' '.join(user_input.split()[2:])
         cancel_reservation(cinema, username)
     elif user_input == 'exit':
