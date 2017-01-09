@@ -2,14 +2,13 @@ import sys
 import unittest
 import os
 sys.path.append("..")
+
 if os._exists('bank.db'):
     os.remove("bank.db")
-
 import sql_manager
 
 
 class SqlManagerTests(unittest.TestCase):
-
     def setUp(self):
         self.tester_password = '123AaaA$RffFD'
         sql_manager.create_clients_table()
@@ -17,6 +16,7 @@ class SqlManagerTests(unittest.TestCase):
 
     def tearDown(self):
         sql_manager.cursor.execute('DROP TABLE clients')
+        sql_manager.cursor.execute('DROP TABLE invalid_logins')
 
     @classmethod
     def tearDownClass(cls):
@@ -66,7 +66,7 @@ class SqlManagerTests(unittest.TestCase):
         Logging with the wrong password should set the invalid logins to 1, but logging in with the correct one
         afterwards should reset it to 0
         """
-        logged_user = sql_manager.login('Tester', '12Aa$3EedX3')
+        logged_user = sql_manager.login('Tester', '12Aa$3EedddX3')
         self.assertFalse(logged_user)
         # assert that the invalid login table has been updated
         sql_manager.cursor.execute('SELECT login_count FROM invalid_logins WHERE id = ?',
@@ -80,7 +80,16 @@ class SqlManagerTests(unittest.TestCase):
                                    [sql_manager.get_user_id('Tester')])
 
         invalid_logins = sql_manager.cursor.fetchone()[0]
-        self.assertEqual(invalid_logins, 1)
+        self.assertEqual(invalid_logins, 0)
+
+    def test_bruteforce_protection_5_wrong_logins_one_valid(self):
+        """ The system should deny the last valid login attempt because the bruteforce protection has been triggered"""
+        for _ in range(5):
+            logged_user = sql_manager.login('Tester', '12Aa$3EedddX3')
+            self.assertFalse(logged_user)
+        # valid login
+        logged_user = sql_manager.login('Tester', self.tester_password)
+        self.assertFalse(logged_user)
 
     def test_login_sql_injection(self):
         logged_user = sql_manager.login('Tester', "' OR 1 = 1 --")
