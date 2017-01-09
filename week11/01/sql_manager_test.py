@@ -2,6 +2,8 @@ import sys
 import unittest
 import os
 sys.path.append("..")
+if os._exists('bank.db'):
+    os.remove("bank.db")
 
 import sql_manager
 
@@ -27,6 +29,11 @@ class SqlManagerTests(unittest.TestCase):
         users_count = sql_manager.cursor.fetchone()
 
         self.assertEqual(users_count[0], 1)
+        # assert that the invalid login table is populated with the user
+        sql_manager.cursor.execute('SELECT Count(*) FROM invalid_logins WHERE id = ?', [sql_manager.get_user_id('Dinko')])
+
+        invalid_logins_count = sql_manager.cursor.fetchone()
+        self.assertEqual(invalid_logins_count[0], 1)
 
     def test_password_hash_on_register(self):
         dinko_pass = '12Aa$A4Aa3123'
@@ -47,6 +54,33 @@ class SqlManagerTests(unittest.TestCase):
     def test_login_wrong_password(self):
         logged_user = sql_manager.login('Tester', '12Aa$3EedX3')
         self.assertFalse(logged_user)
+        # assert that the invalid login table has been updated
+        sql_manager.cursor.execute('SELECT login_count FROM invalid_logins WHERE id = ?',
+                                   [sql_manager.get_user_id('Tester')])
+
+        invalid_logins = sql_manager.cursor.fetchone()[0]
+        self.assertEqual(invalid_logins, 1)
+
+    def test_login_wrong_password_login_right_password_valid_invalid_logins(self):
+        """
+        Logging with the wrong password should set the invalid logins to 1, but logging in with the correct one
+        afterwards should reset it to 0
+        """
+        logged_user = sql_manager.login('Tester', '12Aa$3EedX3')
+        self.assertFalse(logged_user)
+        # assert that the invalid login table has been updated
+        sql_manager.cursor.execute('SELECT login_count FROM invalid_logins WHERE id = ?',
+                                   [sql_manager.get_user_id('Tester')])
+
+        invalid_logins = sql_manager.cursor.fetchone()[0]
+        self.assertEqual(invalid_logins, 1)
+        logged_user = sql_manager.login('Tester', self.tester_password)
+        self.assertEqual(logged_user.username, 'Tester')
+        sql_manager.cursor.execute('SELECT login_count FROM invalid_logins WHERE id = ?',
+                                   [sql_manager.get_user_id('Tester')])
+
+        invalid_logins = sql_manager.cursor.fetchone()[0]
+        self.assertEqual(invalid_logins, 1)
 
     def test_login_sql_injection(self):
         logged_user = sql_manager.login('Tester', "' OR 1 = 1 --")
