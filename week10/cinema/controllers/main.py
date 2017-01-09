@@ -92,46 +92,25 @@ def make_reservation(cinema: Cinema):
     ticket_count = int(ticket_count)
 
     # show the movies and let the user choose one
-    movie_id, to_give_up = movie_choice_prompt()
+    movie, to_give_up = movie_choice_prompt()
     if to_give_up:
         return
-
+    movie_id = movie[DB_ID_KEY]
     # show the projections for the movie
     movie, projections = get_movie_projections(movie_id)
     if len(projections) == 0:
         print('There are no projections for that movie, we apologize for the inconvenience.')
         return
+
     # let the user choose a projection and get the movie hall (seats) for the projection
     projection, movie_hall, to_give_up = projection_choice_prompt(movie, projections, ticket_count)
     if to_give_up:
         return
-    tickets = {}  # type: {int:Ticket}
-    for i in range(ticket_count):
-        # loop until the user chooses a valid ticket
-        while True:
-            print("Please pick a spot for ticket #{}".format(i + 1))
-            print_movie_hall(movie_hall)
-            row = input("Choose a row: (1-10): ")
-            while not is_valid_row_or_col(row):
-                print('The row you entered is invalid.')
-                row = input("Choose a row: (1-10): ")
-            row = int(row)
-            col = input("Choose a cow: (1-10): ")
-            while not is_valid_row_or_col(col):
-                print('The col you entered is invalid.')
-                col = input("Choose a col: (1-10): ")
-            col = int(col)
-            if movie_hall[row][col] == 'X':
-                print('The spot you choose is taken!')
-            else:
-                # take the seat and add the ticket
-                movie_hall[row][col] = 'X'
-                ticket = Ticket(row, col, movie_name=movie[DB_MOVIE_NAME_KEY], projection_id=projection[DB_ID_KEY],
-                                proj_type=projection[DB_PROJECTIONS_MOVIE_TYPE_KEY],
-                                date=projection[DB_PROJECTIONS_DATE_KEY], hour=projection[DB_PROJECTIONS_HOUR_KEY],
-                                owner_id=cinema.user[DB_ID_KEY])
-                tickets[i + 1] = ticket
-                break
+
+    tickets, to_give_up = ticket_choice_prompt(cinema, movie, projection, movie_hall, ticket_count)
+    if to_give_up:
+        return
+
     # finalize order
     print(
         'You have chosen to create {reservation_count} reservations for the movie {movie_name} on {date}{time}'.format(
@@ -199,3 +178,55 @@ def movie_choice_prompt():
         movie = get_movie_by_id(movie_id)
 
     return movie, to_give_up
+
+
+def ticket_choice_prompt(cinema, movie, projection, movie_hall, ticket_count: int):
+    """
+    Prompt the user to choose the seats for each ticket he wants to buy
+    :param cinema: An object of class Cinema
+    :param movie: A sqlite3 Row object for a movie from the Movie DB table
+    :param projection: A sqlite3 Row object for a projection from the Projections DB table
+    :param movie_hall: A 11x11 matrix representing the free seats in the movie hall
+    :param ticket_count: The count of tickets the user wants to buy
+    :return: A dictionary type: {ticket_idx:a Ticket object}
+    """
+    to_give_up = False
+    tickets = {}  # type: {int:Ticket}
+    for i in range(ticket_count):
+        # loop until the user chooses a valid ticket
+        while True:
+            print("Please pick a spot for ticket #{}".format(i + 1))
+            print_movie_hall(movie_hall)
+
+            # Get the row/col for a seat and validate them
+            row = input("Choose a row: (1-10): ")
+            while not is_valid_row_or_col(row):
+                if row == 'give up':
+                    to_give_up = True
+                    return None, to_give_up
+                print('The row you entered is invalid.')
+                row = input("Choose a row: (1-10): ")
+            row = int(row)
+
+            col = input("Choose a cow: (1-10): ")
+            while not is_valid_row_or_col(col):
+                if col == 'give up':
+                    to_give_up = True
+                    return None, to_give_up
+                print('The col you entered is invalid.')
+                col = input("Choose a col: (1-10): ")
+            col = int(col)
+
+            if movie_hall[row][col] == 'X':
+                print('The spot you chose is taken!')
+            else:
+                # take the seat and add the ticket
+                movie_hall[row][col] = 'X'
+                ticket = Ticket(row, col, movie_name=movie[DB_MOVIE_NAME_KEY], projection_id=projection[DB_ID_KEY],
+                                proj_type=projection[DB_PROJECTIONS_MOVIE_TYPE_KEY],
+                                date=projection[DB_PROJECTIONS_DATE_KEY], hour=projection[DB_PROJECTIONS_HOUR_KEY],
+                                owner_id=cinema.user[DB_ID_KEY])
+                tickets[i + 1] = ticket
+                break
+
+    return tickets, to_give_up
