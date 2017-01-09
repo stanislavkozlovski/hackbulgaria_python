@@ -13,8 +13,7 @@ def main_menu():
 
             sql_manager.register(username, password)
 
-            print("Registration Successfull")
-
+            print("Registration Successful")
         elif command == 'login':
             username = input("Enter your username: ")
             password = input("Enter your password: ")
@@ -25,14 +24,12 @@ def main_menu():
                 logged_menu(logged_user)
             else:
                 print("Login failed")
-
         elif command == 'help':
             print("login - for logging in!")
             print("register - for creating new account!")
             print("exit - for closing program!")
-
         elif command == 'exit':
-            break
+            return
         else:
             print("Not a valid command")
 

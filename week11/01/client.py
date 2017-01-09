@@ -1,21 +1,26 @@
 class Client():
-    def __init__(self, id, username, balance, message):
+    def __init__(self, _id, username, balance, message):
         self.__username = username
         self.__balance = balance
-        self.__id = id
+        self.__id = _id
         self.__message = message
 
-    def get_username(self):
+    @property
+    def username(self):
         return self.__username
 
-    def get_balance(self):
+    @property
+    def balance(self):
         return self.__balance
 
-    def get_id(self):
+    @property
+    def id(self):
         return self.__id
 
-    def get_message(self):
+    @property
+    def message(self):
         return self.__message
 
-    def set_message(self, new_message):
+    @message.setter
+    def message(self, new_message):
         self.__message = new_message

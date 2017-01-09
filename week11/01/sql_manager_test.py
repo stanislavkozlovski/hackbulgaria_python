@@ -30,7 +30,7 @@ class SqlManagerTests(unittest.TestCase):
 
     def test_login(self):
         logged_user = sql_manager.login('Tester', '123')
-        self.assertEqual(logged_user.get_username(), 'Tester')
+        self.assertEqual(logged_user.username, 'Tester')
 
     def test_login_wrong_password(self):
         logged_user = sql_manager.login('Tester', '123567')
@@ -40,7 +40,7 @@ class SqlManagerTests(unittest.TestCase):
         logged_user = sql_manager.login('Tester', '123')
         new_message = "podaivinototam"
         sql_manager.change_message(new_message, logged_user)
-        self.assertEqual(logged_user.get_message(), new_message)
+        self.assertEqual(logged_user.message, new_message)
 
     def test_change_password(self):
         logged_user = sql_manager.login('Tester', '123')
@@ -48,7 +48,7 @@ class SqlManagerTests(unittest.TestCase):
         sql_manager.change_pass(new_password, logged_user)
 
         logged_user_new_password = sql_manager.login('Tester', new_password)
-        self.assertEqual(logged_user_new_password.get_username(), 'Tester')
+        self.assertEqual(logged_user_new_password.username, 'Tester')
 
 if __name__ == '__main__':
     unittest.main()
