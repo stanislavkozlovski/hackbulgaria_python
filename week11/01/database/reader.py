@@ -1,7 +1,8 @@
 """ All DB read operations go here """
 from database.main import conn, cursor
 from queries.queries import (SELECT_ONE_USER_WITH_USERNAME, SELECT_USER_ID_BY_USERNAME,
-                             SELECT_INVALID_LOGINS, SELECT_USER_PASSWORD_RESET_TOKEN, SELECT_USER_BALANCE)
+                             SELECT_INVALID_LOGINS, SELECT_USER_PASSWORD_RESET_TOKEN, SELECT_USER_BALANCE,
+                             SELECT_TAN_CODES_BY_USER_ID)
 
 
 def fetch_user_by_name(username):
@@ -36,3 +37,8 @@ def fetch_user_password_reset_token(username):
 def fetch_invalid_login(_id):
     invalid_login = cursor.execute(SELECT_INVALID_LOGINS, [_id]).fetchone()
     return invalid_login
+
+
+def fetch_user_tan_codes(user_id):
+    tan_codes = cursor.execute(SELECT_TAN_CODES_BY_USER_ID, [user_id]).fetchall()
+    return tan_codes

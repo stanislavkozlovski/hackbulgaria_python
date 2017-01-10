@@ -54,4 +54,6 @@ CREATE_TAN_CODE = "INSERT INTO tan_codes (user_id, tan_code) values (?, ?)"
 
 SELECT_TAN_CODE_BY_TAN_CODE = "SELECT * FROM tan_codes WHERE tan_code = ?"
 
-DELETE_TAN_CODE_BY_ID = "DELETE FROM tan_codes WHERE id = ?"
+SELECT_TAN_CODES_BY_USER_ID = "SELECT * FROM tan_codes WHERE user_id = ?"
+
+DELETE_TAN_CODE_BY_TAN_CODE = "DELETE FROM tan_codes WHERE tan_code = ?"
