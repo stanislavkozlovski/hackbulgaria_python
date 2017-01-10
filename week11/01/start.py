@@ -106,11 +106,25 @@ def logged_menu(logged_user):
         elif command == 'show-message':
             print(logged_user.message)
 
+        elif command.startswith('deposit'):
+            amount = command.split()[-1]
+            try:
+                amount = float(amount)
+                logged_user.deposit_money(amount)
+                print('{:.2f} was successfully added to your account!'.format(amount))
+            except ValueError:
+                print('Invalid deposit amount!')
+
+        elif command == 'display-balance':
+            print(logged_user.balance)
+
         elif command == 'help':
             print("info - for showing account info")
+            print('deposit <amount> - for depositing money')
             print("changepass - for changing passowrd")
             print("change-message - for changing users message")
             print("show-message - for showing users message")
+            print("display-balance - for displaying your current balance")
 
 
 def main():

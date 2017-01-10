@@ -1,4 +1,6 @@
-class Client():
+from database.updater import update_user_balance
+
+class Client:
     def __init__(self, _id, username, email, balance, message):
         self.__username = username
         self.__email = email
@@ -29,3 +31,7 @@ class Client():
     @message.setter
     def message(self, new_message):
         self.__message = new_message
+
+    def deposit_money(self, amount: float):
+        self.__balance += amount
+        update_user_balance(self.__id, self.__balance)
