@@ -125,6 +125,14 @@ def logged_menu(logged_user):
             except ValueError:
                 print('Invalid withdraw amount!')
 
+        elif command == 'generate-tan-codes':
+            password = getpass.getpass("Enter your password: ")
+            logged_user = sql_manager.login(logged_user.username, password)
+            if logged_user:
+                logged_user.generate_tan_codes()
+            else:
+                print("Login failed")
+
         elif command == 'display-balance':
             print(logged_user.balance)
 
@@ -136,6 +144,7 @@ def logged_menu(logged_user):
             print("change-message - for changing users message")
             print("show-message - for showing users message")
             print("display-balance - for displaying your current balance")
+            print("generate-tan-codes - generates and sends 10 TAN codes to your e-mail")
 
 
 def main():
