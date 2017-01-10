@@ -16,8 +16,9 @@ CREATE_INVALID_LOGINS_TABLE = '''CREATE TABLE IF NOT EXISTS
 
 CREATE_TAN_CODES_TABLE = '''CREATE TABLE IF NOT EXISTS
     tan_codes(id INTEGER PRIMARY KEY,
-              tan_code INTEGER,
-              FOREIGN KEY(ID) REFERENCES USER(ID))'''
+              user_id INTEGER,
+              tan_code TEXT,
+              FOREIGN KEY(user_id) REFERENCES USER(ID))'''
 
 CREATE_USER = "INSERT INTO clients (username, password, salt, email) values (?, ?, ?, ?)"
 
@@ -49,7 +50,7 @@ SELECT_USER_LAST_BLOCKED_BY_USERNAME = 'SELECT last_blocked FROM clients WHERE u
 
 SELECT_USER_PASSWORD_RESET_TOKEN = "SELECT reset_code FROM clients WHERE username = ?"
 
-CREATE_TAN_CODE = "INSERT INTO tan_codes (id, tan_code) values (?, ?)"
+CREATE_TAN_CODE = "INSERT INTO tan_codes (user_id, tan_code) values (?, ?)"
 
 SELECT_TAN_CODE_BY_TAN_CODE = "SELECT * FROM tan_codes WHERE tan_code = ?"
 
