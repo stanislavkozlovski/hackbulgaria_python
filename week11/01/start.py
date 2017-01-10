@@ -3,7 +3,7 @@ from validate_email import validate_email
 from settings.validator import is_valid_password, validate_user
 import sql_manager
 from utils.password_reset import (generate_password_reset_token, send_password_reset_token,
-                                  save_password_reset_token)
+                                  save_password_reset_token, fetch_user_password_reset_token)
 
 
 def main_menu():
@@ -39,7 +39,6 @@ def main_menu():
                 print("Login failed")
         elif command.startswith('send-reset-password'):
             username = command[20:]
-            # TODO:
             user_exists, user = validate_user(username)
             if not user_exists:
                 print('No user with the username {} exists!'.format(username))
@@ -49,7 +48,30 @@ def main_menu():
                 print('There was an error with sending the e-mail!')
                 return
             save_password_reset_token(user, reset_token)
-            pass
+        elif command.startswith('reset-password'):
+            username = command[15:]
+            user_exists, user = validate_user(username)
+            if not user_exists:
+                print('No user with the username {} exists!'.format(username))
+                return
+
+            reset_token = fetch_user_password_reset_token(username)
+            if reset_token is None:
+                print('There is no reset token for the user!')
+                return
+
+            given_reset_token = input('Please enter your reset token: ')
+            if given_reset_token != reset_token:
+                print('Invalid reset token!')
+                return
+
+            new_password = getpass.getpass('Enter your new password: ')
+            while not is_valid_password(username, new_password):
+                new_password = getpass.getpass('Enter your new password: ')
+
+            sql_manager.reset_user_password_reset_token(user)
+            sql_manager.change_pass(logged_user=user, new_pass=new_password)
+            print('You have successfully reset your password!')
         elif command == 'help':
             print("login - for logging in!")
             print("register - for creating new account!")

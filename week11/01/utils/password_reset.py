@@ -1,8 +1,10 @@
 """ Functions used to reset the password of a user"""
-from settings.constants import DB_ID_KEY, DB_USER_EMAIL_KEY
-from database.updater import update_user_password_reset_token
 import smtplib
 import uuid
+
+from settings.constants import DB_ID_KEY, DB_USER_EMAIL_KEY
+from database.updater import update_user_password_reset_token
+from database.reader import fetch_user_password_reset_token as fetch_user_reset_token
 
 
 def generate_password_reset_token():
@@ -44,3 +46,7 @@ def send_password_reset_email(sender_username, sender_password, recipient, subje
 def save_password_reset_token(user, token):
     user_id = user[DB_ID_KEY]
     update_user_password_reset_token(user_id, token)
+
+
+def fetch_user_password_reset_token(username):
+    return fetch_user_reset_token(username)

@@ -1,5 +1,6 @@
 from settings.constants import SPECIAL_SYMBOLS
-from sql_manager import fetch_user_by_name
+from database.reader import fetch_user_by_name
+
 
 def is_valid_password(username, password):
     """

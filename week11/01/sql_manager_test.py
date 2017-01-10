@@ -30,7 +30,7 @@ class SqlManagerTests(unittest.TestCase):
 
         self.assertEqual(users_count[0], 1)
         # assert that the invalid login table is populated with the user
-        sql_manager.cursor.execute('SELECT Count(*) FROM invalid_logins WHERE id = ?', [sql_manager.get_user_id('Dinko')])
+        sql_manager.cursor.execute('SELECT Count(*) FROM invalid_logins WHERE id = ?', [sql_manager.fetch_user_id('Dinko')])
 
         invalid_logins_count = sql_manager.cursor.fetchone()
         self.assertEqual(invalid_logins_count[0], 1)
@@ -56,7 +56,7 @@ class SqlManagerTests(unittest.TestCase):
         self.assertFalse(logged_user)
         # assert that the invalid login table has been updated
         sql_manager.cursor.execute('SELECT login_count FROM invalid_logins WHERE id = ?',
-                                   [sql_manager.get_user_id('Tester')])
+                                   [sql_manager.fetch_user_id('Tester')])
 
         invalid_logins = sql_manager.cursor.fetchone()[0]
         self.assertEqual(invalid_logins, 1)
@@ -70,14 +70,14 @@ class SqlManagerTests(unittest.TestCase):
         self.assertFalse(logged_user)
         # assert that the invalid login table has been updated
         sql_manager.cursor.execute('SELECT login_count FROM invalid_logins WHERE id = ?',
-                                   [sql_manager.get_user_id('Tester')])
+                                   [sql_manager.fetch_user_id('Tester')])
 
         invalid_logins = sql_manager.cursor.fetchone()[0]
         self.assertEqual(invalid_logins, 1)
         logged_user = sql_manager.login('Tester', self.tester_password)
         self.assertEqual(logged_user.username, 'Tester')
         sql_manager.cursor.execute('SELECT login_count FROM invalid_logins WHERE id = ?',
-                                   [sql_manager.get_user_id('Tester')])
+                                   [sql_manager.fetch_user_id('Tester')])
 
         invalid_logins = sql_manager.cursor.fetchone()[0]
         self.assertEqual(invalid_logins, 0)

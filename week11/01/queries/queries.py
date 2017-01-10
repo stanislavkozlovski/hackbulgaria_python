@@ -37,3 +37,5 @@ SELECT_ONE_USER_WITH_USERNAME = "SELECT * FROM clients WHERE username = ?;"
 SELECT_USER_ID_BY_USERNAME = "SELECT id FROM clients WHERE username = ?"
 
 SELECT_USER_LAST_BLOCKED_BY_USERNAME = 'SELECT last_blocked FROM clients WHERE username = ?'
+
+SELECT_USER_PASSWORD_RESET_TOKEN = "SELECT reset_code FROM clients WHERE username = ?"
