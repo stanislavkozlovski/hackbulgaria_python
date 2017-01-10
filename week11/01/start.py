@@ -1,8 +1,11 @@
 import getpass
 from validate_email import validate_email
 from settings.validator import is_valid_password, validate_user
+from settings.constants import DB_USER_EMAIL_KEY, DB_ID_KEY
+from database.updater import update_user_password_reset_token
 import sql_manager
 import smtplib
+import uuid
 
 
 def main_menu():
@@ -39,10 +42,15 @@ def main_menu():
         elif command.startswith('send-reset-password'):
             username = command[20:]
             # TODO:
-            validate_user()
-            generate_token()
-            send_token()
-            save_token()
+            user_exists, user = validate_user(username)
+            if not user_exists:
+                print('No user with the username {} exists!'.format(username))
+            reset_token = generate_password_reset_token()
+            email_was_sent = send_password_reset_token(user, reset_token)
+            if not email_was_sent:
+                print('There was an error with sending the e-mail!')
+                return
+            save_password_reset_token(user, reset_token)
             pass
         elif command == 'help':
             print("login - for logging in!")
@@ -52,6 +60,18 @@ def main_menu():
             return
         else:
             print("Not a valid command")
+
+
+def generate_password_reset_token():
+    return uuid.uuid4().hex
+
+
+def send_password_reset_token(user, token):
+    email = user[DB_USER_EMAIL_KEY]
+    email_is_sent = send_password_reset_email('placeholder', 'placeholder', recipient=email, subject='Reset your password',
+                              body='You have requested a password reset. Please use this token {}'.format(token))
+    return email_is_sent
+
 
 def send_password_reset_email(sender_username, sender_password, recipient, subject, body):
     gmail_user = sender_username
@@ -71,10 +91,15 @@ def send_password_reset_email(sender_username, sender_password, recipient, subje
         server.login(gmail_user, gmail_pwd)
         server.sendmail(FROM, TO, message)
         server.close()
-        print('successfully sent the mail'
+        print('successfully sent the mail')
+        return True
     except:
         print("failed to send mail")
+        return False
 
+def save_password_reset_token(user, token):
+    user_id = user[DB_ID_KEY]
+    update_user_password_reset_token(user_id, token)
 
 def logged_menu(logged_user):
     print("Welcome you are logged in as: " + logged_user.username)

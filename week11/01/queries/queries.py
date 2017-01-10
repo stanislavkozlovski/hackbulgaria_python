@@ -6,6 +6,7 @@ CREATE_CLIENTS_TABLE = '''create table if not exists
                 email TEXT,
                 balance REAL DEFAULT 0,
                 message TEXT,
+                reset_code TEXT,
                 last_blocked TEXT)'''
 
 CREATE_INVALID_LOGINS_TABLE = '''CREATE TABLE IF NOT EXISTS
@@ -26,6 +27,8 @@ UPDATE_CLIENT_SET_MESSAGE = "UPDATE clients SET message = ? WHERE id = ?"
 UPDATE_CLIENT_SET_PASSWORD = "UPDATE clients SET password = ? WHERE id = ?"
 
 UPDATE_CLIENT_LAST_BLOCKED = "UPDATE clients SET last_blocked = ? WHERE id = ?"
+
+UPDATE_CLIENT_RESET_TOKEN = "UPDATE clients SET reset_code = ? WHERE id = ?"
 
 SELECT_ONE_USER_WITH_USERNAME_PASSWORD = "SELECT id, username, email, salt, balance, message FROM clients WHERE username = ? AND password = ? LIMIT 1"
 
