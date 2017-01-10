@@ -110,7 +110,13 @@ def logged_menu(logged_user):
             amount = command.split()[-1]
             try:
                 amount = float(amount)
+                tan_code = input(">Enter TAN code: ")
+                if not logged_user.is_valid_tan_code(tan_code):
+                    print('Invalid TAN code!')
+                    return
                 logged_user.deposit_money(amount)
+                logged_user.consume_tan_code(tan_code)
+
                 print('{:.2f} was successfully added to your account!'.format(amount))
             except ValueError:
                 print('Invalid deposit amount!')
@@ -119,9 +125,14 @@ def logged_menu(logged_user):
             amount = command.split()[-1]
             try:
                 amount = float(amount)
-                did_withdraw = logged_user.withdraw_money(amount)
-                if did_withdraw:
-                    print('{:.2f} was successfully withdrawn to your account!'.format(amount))
+                tan_code = input(">Enter TAN code: ")
+                if not logged_user.is_valid_tan_code(tan_code):
+                    print('Invalid TAN code!')
+                else:
+                    did_withdraw = logged_user.withdraw_money(amount)
+                    if did_withdraw:
+                        logged_user.consume_tan_code(tan_code)
+                        print('{:.2f} was successfully withdrawn to your account!'.format(amount))
             except ValueError:
                 print('Invalid withdraw amount!')
 
