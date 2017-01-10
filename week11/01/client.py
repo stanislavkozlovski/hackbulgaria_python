@@ -35,3 +35,12 @@ class Client:
     def deposit_money(self, amount: float):
         self.__balance += amount
         update_user_balance(self.__id, self.__balance)
+
+    def withdraw_money(self, amount: float):
+        if self.__balance < amount:
+            print('You cannot withdraw more money than you have!')
+            return False
+        self.__balance -= amount
+        update_user_balance(self.__id, self.__balance)
+
+        return True

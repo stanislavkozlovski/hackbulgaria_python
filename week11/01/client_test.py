@@ -38,6 +38,21 @@ class ClientTests(unittest.TestCase):
         self.test_client.deposit_money(1.1)
         self.assertEqual(self.test_client.balance, self.client_balance + 1.1)
 
+    def test_client_withdraw_amount_valid_amount(self):
+        """ Should withdraw the money"""
+        self.assertEqual(self.test_client.balance, self.client_balance)
+        did_withdraw = self.test_client.withdraw_money(1.1)
+        self.assertTrue(did_withdraw)
+        self.assertEqual(self.test_client.balance, self.client_balance - 1.1)
+
+    def test_client_withdraw_amount_invvalid_amount(self):
+        """ Should NOT withdraw any money"""
+        self.assertEqual(self.test_client.balance, self.client_balance)
+        # we're trying to withdraw more than we have
+        did_withdraw = self.test_client.withdraw_money(self.client_balance + 1)
+        self.assertFalse(did_withdraw)
+        self.assertEqual(self.test_client.balance, self.client_balance)
+
 
 if __name__ == '__main__':
     unittest.main()

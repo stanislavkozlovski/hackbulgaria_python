@@ -115,12 +115,23 @@ def logged_menu(logged_user):
             except ValueError:
                 print('Invalid deposit amount!')
 
+        elif command.startswith('withdraw'):
+            amount = command.split()[-1]
+            try:
+                amount = float(amount)
+                did_withdraw = logged_user.withdraw_money(amount)
+                if did_withdraw:
+                    print('{:.2f} was successfully withdrawn to your account!'.format(amount))
+            except ValueError:
+                print('Invalid withdraw amount!')
+
         elif command == 'display-balance':
             print(logged_user.balance)
 
         elif command == 'help':
             print("info - for showing account info")
             print('deposit <amount> - for depositing money')
+            print('withdraw <amount> - for withdrawing money')
             print("changepass - for changing passowrd")
             print("change-message - for changing users message")
             print("show-message - for showing users message")
