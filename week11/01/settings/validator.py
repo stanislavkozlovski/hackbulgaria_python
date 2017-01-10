@@ -1,5 +1,5 @@
 from settings.constants import SPECIAL_SYMBOLS
-
+from sql_manager import fetch_user_by_name
 
 def is_valid_password(username, password):
     """
@@ -19,3 +19,7 @@ def is_valid_password(username, password):
             has_number = True
 
     return len(password) > 8 and (has_capital_letter and has_special_symbol and has_number) and username not in password
+
+def validate_user(username):
+    """ Return a boolean value indicating if the given user exists"""
+    return fetch_user_by_name(username) is not None

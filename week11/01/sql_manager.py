@@ -8,7 +8,7 @@ from queries.queries import (CREATE_CLIENTS_TABLE, UPDATE_CLIENT_SET_MESSAGE, UP
                             CREATE_USER, SELECT_ONE_USER_WITH_USERNAME_PASSWORD, CREATE_INVALID_LOGINS_TABLE,
                              CREATE_INVALID_LOGINS_USER, SELECT_USER_ID_BY_USERNAME, SELECT_INVALID_LOGINS,
                              UPDATE_INVALID_LOGINS_SET_INVALID_LOGIN_COUNT, SELECT_USER_LAST_BLOCKED_BY_USERNAME,
-                             UPDATE_CLIENT_LAST_BLOCKED)
+                             UPDATE_CLIENT_LAST_BLOCKED, SELECT_ONE_USER_WITH_USERNAME)
 from client import Client
 from settings.constants import (DB_PATH, DB_USER_ID_KEY, DB_USER_USERNAME_KEY, DB_USER_BALANCE_KEY,
                                 DB_USER_MESSAGE_KEY, DB_INVALID_LOGINS_INVALID_LOGIN_COUNT_KEY, DB_ID_KEY,
@@ -22,6 +22,9 @@ def create_clients_table():
     cursor.execute(CREATE_CLIENTS_TABLE)
     cursor.execute(CREATE_INVALID_LOGINS_TABLE)
 
+def fetch_user_by_name(username):
+    user = cursor.execute(SELECT_ONE_USER_WITH_USERNAME, [username]).fetchone()
+    return user
 
 def get_user_salt(username):
     salt = cursor.execute('SELECT salt FROM clients WHERE username=?', [username]).fetchone()

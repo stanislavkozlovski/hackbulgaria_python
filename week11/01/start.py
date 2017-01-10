@@ -1,6 +1,6 @@
 import getpass
 from validate_email import validate_email
-from settings.validator import is_valid_password
+from settings.validator import is_valid_password, validate_user
 import sql_manager
 import smtplib
 
