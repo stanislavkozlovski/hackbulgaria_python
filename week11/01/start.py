@@ -139,7 +139,7 @@ def logged_menu(logged_user):
 
 
 def main():
-    sql_manager.create_clients_table()
+    sql_manager.create_tables()
     main_menu()
 
 if __name__ == '__main__':

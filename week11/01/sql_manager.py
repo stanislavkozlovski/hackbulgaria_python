@@ -5,7 +5,8 @@ from queries.queries import (CREATE_CLIENTS_TABLE, UPDATE_CLIENT_SET_MESSAGE, UP
                              CREATE_USER, SELECT_ONE_USER_WITH_USERNAME_PASSWORD, CREATE_INVALID_LOGINS_TABLE,
                              CREATE_INVALID_LOGINS_USER, SELECT_USER_ID_BY_USERNAME, SELECT_INVALID_LOGINS,
                              UPDATE_INVALID_LOGINS_SET_INVALID_LOGIN_COUNT, SELECT_USER_LAST_BLOCKED_BY_USERNAME,
-                             UPDATE_CLIENT_LAST_BLOCKED, SELECT_ONE_USER_WITH_USERNAME, UPDATE_CLIENT_RESET_TOKEN)
+                             UPDATE_CLIENT_LAST_BLOCKED, SELECT_ONE_USER_WITH_USERNAME, UPDATE_CLIENT_RESET_TOKEN,
+                             CREATE_TAN_CODES_TABLE)
 from database.reader import fetch_user_salt, fetch_user_id, fetch_invalid_login
 from database.updater import update_user_password, update_user_last_blocked, update_invalid_login_login_count
 from client import Client
@@ -15,9 +16,10 @@ from settings.constants import (DB_PATH, DB_USER_ID_KEY, DB_USER_USERNAME_KEY, D
 from database.main import cursor, conn
 
 
-def create_clients_table():
+def create_tables():
     cursor.execute(CREATE_CLIENTS_TABLE)
     cursor.execute(CREATE_INVALID_LOGINS_TABLE)
+    cursor.execute(CREATE_TAN_CODES_TABLE)
 
 
 def change_message(new_message, logged_user):
