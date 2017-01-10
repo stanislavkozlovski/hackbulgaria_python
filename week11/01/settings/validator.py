@@ -22,4 +22,5 @@ def is_valid_password(username, password):
 
 def validate_user(username):
     """ Return a boolean value indicating if the given user exists"""
-    return fetch_user_by_name(username) is not None
+    user = fetch_user_by_name(username)
+    return user is not None, user
