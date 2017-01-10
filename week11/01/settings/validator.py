@@ -21,6 +21,7 @@ def is_valid_password(username, password):
 
     return len(password) > 8 and (has_capital_letter and has_special_symbol and has_number) and username not in password
 
+
 def validate_user(username):
     """ Return a boolean value indicating if the given user exists"""
     user = fetch_user_by_name(username)

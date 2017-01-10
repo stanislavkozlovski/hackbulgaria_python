@@ -56,7 +56,7 @@ def main_menu():
                 return
 
             reset_token = fetch_user_password_reset_token(username)
-            if reset_token is None:
+            if not reset_token:
                 print('There is no reset token for the user!')
                 return
 
