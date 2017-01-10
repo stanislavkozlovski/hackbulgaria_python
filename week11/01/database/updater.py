@@ -1,7 +1,7 @@
 """ Update calls to the DB go here """
 from database.main import conn, cursor
 from queries.queries import (UPDATE_CLIENT_RESET_TOKEN, UPDATE_CLIENT_SET_PASSWORD, UPDATE_CLIENT_LAST_BLOCKED,
-                             UPDATE_INVALID_LOGINS_SET_INVALID_LOGIN_COUNT)
+                             UPDATE_INVALID_LOGINS_SET_INVALID_LOGIN_COUNT, UPDATE_CLIENT_BALANCE)
 
 
 def update_user_password_reset_token(user_id, reset_token):
@@ -11,6 +11,11 @@ def update_user_password_reset_token(user_id, reset_token):
 
 def update_user_password(user_id, new_password):
     cursor.execute(UPDATE_CLIENT_SET_PASSWORD, (new_password, user_id))
+    conn.commit()
+
+
+def update_user_balance(user_id, new_balance: float):
+    cursor.execute(UPDATE_CLIENT_BALANCE, [new_balance, user_id])
     conn.commit()
 
 

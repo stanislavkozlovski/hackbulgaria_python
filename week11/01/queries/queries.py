@@ -30,11 +30,15 @@ UPDATE_CLIENT_LAST_BLOCKED = "UPDATE clients SET last_blocked = ? WHERE id = ?"
 
 UPDATE_CLIENT_RESET_TOKEN = "UPDATE clients SET reset_code = ? WHERE id = ?"
 
+UPDATE_CLIENT_BALANCE = "UPDATE clients SET balance = ? WHERE id = ?"
+
 SELECT_ONE_USER_WITH_USERNAME_PASSWORD = "SELECT id, username, email, salt, balance, message FROM clients WHERE username = ? AND password = ? LIMIT 1"
 
 SELECT_ONE_USER_WITH_USERNAME = "SELECT * FROM clients WHERE username = ?;"
 
 SELECT_USER_ID_BY_USERNAME = "SELECT id FROM clients WHERE username = ?"
+
+SELECT_USER_BALANCE = "SELECT balance FROM clients WHERE id = ?"
 
 SELECT_USER_LAST_BLOCKED_BY_USERNAME = 'SELECT last_blocked FROM clients WHERE username = ?'
 
