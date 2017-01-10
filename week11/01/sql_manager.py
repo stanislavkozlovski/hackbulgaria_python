@@ -7,12 +7,13 @@ from queries.queries import (CREATE_CLIENTS_TABLE, UPDATE_CLIENT_SET_MESSAGE, UP
                              UPDATE_INVALID_LOGINS_SET_INVALID_LOGIN_COUNT, SELECT_USER_LAST_BLOCKED_BY_USERNAME,
                              UPDATE_CLIENT_LAST_BLOCKED, SELECT_ONE_USER_WITH_USERNAME, UPDATE_CLIENT_RESET_TOKEN,
                              CREATE_TAN_CODES_TABLE)
-from database.reader import fetch_user_salt, fetch_user_id, fetch_invalid_login
+from database.reader import fetch_user_salt, fetch_user_id, fetch_invalid_login, fetch_user_tan_codes
 from database.updater import update_user_password, update_user_last_blocked, update_invalid_login_login_count
 from client import Client
 from settings.constants import (DB_PATH, DB_USER_ID_KEY, DB_USER_USERNAME_KEY, DB_USER_BALANCE_KEY,
                                 DB_USER_MESSAGE_KEY, DB_INVALID_LOGINS_INVALID_LOGIN_COUNT_KEY, DB_ID_KEY,
-                                DB_USER_LAST_BLOCKED_KEY, INVALID_LOGIN_BRUTEFORCE_PROTECTION_COUNT, DB_USER_EMAIL_KEY)
+                                DB_USER_LAST_BLOCKED_KEY, INVALID_LOGIN_BRUTEFORCE_PROTECTION_COUNT, DB_USER_EMAIL_KEY,
+                                DB_TAN_CODES_TAN_CODE_KEY)
 from database.main import cursor, conn
 
 
@@ -63,9 +64,12 @@ def login(username, password):
     if user:
         # successful login, reset the invalid_logins table
         reset_invalid_logins(user_id)
+
+        tan_codes = [row[DB_TAN_CODES_TAN_CODE_KEY] for row in fetch_user_tan_codes(user_id)]
         return Client(_id=user_id,
                       username=user[DB_USER_USERNAME_KEY],
                       email=user[DB_USER_EMAIL_KEY],
+                      tan_codes=tan_codes,
                       balance=user[DB_USER_BALANCE_KEY],
                       message=user[DB_USER_MESSAGE_KEY])
     else:
