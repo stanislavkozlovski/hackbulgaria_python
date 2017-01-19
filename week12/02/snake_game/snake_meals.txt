@@ -1,0 +1,20 @@
+The Python ate a mcdonalds	at 2017-01-19 13:43:43.700872
+
+The Python ate a garbage	at 2017-01-19 13:43:43.700970
+
+The Python ate a MEAT	at 2017-01-19 13:43:43.701051
+
+The Python ate a Mashed Potatoes	at 2017-01-19 13:43:43.701130
+
+The Python ate a Brocolli	at 2017-01-19 13:43:43.701210
+
+The Python ate mcdonalds	at 2017-01-19 13:44:04.252207
+
+The Python ate garbage	at 2017-01-19 13:44:04.252330
+
+The Python ate MEAT	at 2017-01-19 13:44:04.252444
+
+The Python ate Mashed Potatoes	at 2017-01-19 13:44:04.252557
+
+The Python ate Brocolli	at 2017-01-19 13:44:04.252668
+
