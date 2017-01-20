@@ -102,3 +102,43 @@ The Python moved RIGHT	at 2017-01-19 13:44:04.253053
 
 The Python moved UP	at 2017-01-19 13:44:04.253411
 
+The Python moved UP	at 2017-01-19 22:40:07.328785
+
+The Python moved UP	at 2017-01-19 22:40:07.328994
+
+The Python moved LEFT	at 2017-01-19 22:40:07.329226
+
+The Python moved LEFT	at 2017-01-19 22:40:07.329310
+
+The Python moved LEFT	at 2017-01-19 22:40:07.329391
+
+The Python moved LEFT	at 2017-01-19 22:40:07.329472
+
+The Python moved LEFT	at 2017-01-19 22:40:07.329552
+
+The Python moved UP	at 2017-01-19 22:40:07.329604
+
+The Python moved RIGHT	at 2017-01-19 22:40:07.329783
+
+The Python moved UP	at 2017-01-19 22:40:07.330209
+
+The Python moved UP	at 2017-01-20 16:03:58.719339
+
+The Python moved UP	at 2017-01-20 16:03:58.719563
+
+The Python moved LEFT	at 2017-01-20 16:03:58.719830
+
+The Python moved LEFT	at 2017-01-20 16:03:58.719915
+
+The Python moved LEFT	at 2017-01-20 16:03:58.719994
+
+The Python moved LEFT	at 2017-01-20 16:03:58.720073
+
+The Python moved LEFT	at 2017-01-20 16:03:58.720151
+
+The Python moved UP	at 2017-01-20 16:03:58.720219
+
+The Python moved RIGHT	at 2017-01-20 16:03:58.720425
+
+The Python moved UP	at 2017-01-20 16:03:58.720802
+

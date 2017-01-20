@@ -18,3 +18,23 @@ The Python ate Mashed Potatoes	at 2017-01-19 13:44:04.252557
 
 The Python ate Brocolli	at 2017-01-19 13:44:04.252668
 
+The Python ate mcdonalds	at 2017-01-19 22:40:07.329038
+
+The Python ate garbage	at 2017-01-19 22:40:07.329262
+
+The Python ate MEAT	at 2017-01-19 22:40:07.329343
+
+The Python ate Mashed Potatoes	at 2017-01-19 22:40:07.329424
+
+The Python ate Brocolli	at 2017-01-19 22:40:07.329504
+
+The Python ate mcdonalds	at 2017-01-20 16:03:58.719653
+
+The Python ate garbage	at 2017-01-20 16:03:58.719866
+
+The Python ate MEAT	at 2017-01-20 16:03:58.719946
+
+The Python ate Mashed Potatoes	at 2017-01-20 16:03:58.720025
+
+The Python ate Brocolli	at 2017-01-20 16:03:58.720103
+
