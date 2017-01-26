@@ -1,17 +1,7 @@
-""" Utility/helper function """
-import getpass
-from settings.constants import MOVIE_HALL_CAPACITY, DB_RESERVATIONS_COL_KEY, DB_RESERVATIONS_ROW_KEY
-from queries.loader import get_reservations_by_projection_id
-from queries.loader import get_user_by_username_and_password
+""" Utility/helper functions """
 
 
-def get_free_spot_count_for_a_projection(projection_id):
-    """ Returns the number of free spots for a movie projection """
-    reservations = get_reservations_by_projection_id(projection_id)
-    return MOVIE_HALL_CAPACITY - len(reservations)
-
-
-def get_free_spots_for_a_projection(projection_id):
+def get_free_spots_for_a_projection(projection):
     """
     Given a projection ID, returns a matrix representing the free and taken seats
     ex:
@@ -28,10 +18,10 @@ def get_free_spots_for_a_projection(projection_id):
     10- - - - - - - - - -
     """
     movie_hall = create_movie_hall_matrix_representation()
-    reservations = get_reservations_by_projection_id(projection_id)
+    reservations = projection.reservations
     # add a X for each taken spot
     for reservation in reservations:
-        row, col = reservation[DB_RESERVATIONS_ROW_KEY], reservation[DB_RESERVATIONS_COL_KEY]
+        row, col = reservation.row, reservation.col
         movie_hall[row][col] = 'X'
 
     return movie_hall
@@ -71,22 +61,3 @@ def create_movie_hall_matrix_representation():
     return matrix
 
 
-def log_user():
-    """ Log in a user to the system"""
-    print('Please log in:')
-    username = input('>Username ')
-    password = getpass.getpass()
-
-    # fetch from the DB
-    user = get_user_by_username_and_password(username, password)
-    while user is None:
-        print("Invalid username/password! Would you like to log in again?(y/n)")
-        choice = input()
-        if choice not in ['y', 'yes', 'Y', 'Yes']:
-            return None  # user has given up on logging in
-
-        username = input('>Username ')
-        password = getpass.getpass()
-        user = get_user_by_username_and_password(username, password)
-
-    return user

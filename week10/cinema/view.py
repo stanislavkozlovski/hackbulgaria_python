@@ -1,3 +1,4 @@
+from models import user, movie, projection, reservations  # to load them
 from models.cinema import Cinema
 from settings.validator import is_valid_spell
 from controllers.projections import get_movie_projections, show_movie_projections

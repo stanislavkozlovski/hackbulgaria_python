@@ -1,8 +1,9 @@
-import unittest
 import sys
+import unittest
 from io import StringIO
-from controllers.main import read_spell, Cinema
+
 from settings.constants import DB_USERS_USERNAME_KEY
+from view import read_spell, Cinema
 
 
 class MainControllerTests(unittest.TestCase):
@@ -135,7 +136,7 @@ class MainControllerTests(unittest.TestCase):
             sys.stdout = output
             self.cinema.log_user_in()
             self.assertTrue(expected_output in output.getvalue())
-            self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username)
+            self.assertEqual(self.cinema.user.username, self.valid_username)
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
@@ -168,7 +169,7 @@ class MainControllerTests(unittest.TestCase):
             self.cinema.log_user_in()
             self.assertTrue(expected_output_2 in output.getvalue())
             # validate that we're still logged in as Rositsa
-            self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username)
+            self.assertEqual(self.cinema.user.username, self.valid_username)
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__
@@ -191,7 +192,7 @@ class MainControllerTests(unittest.TestCase):
             self.assertTrue(expected_output_2 in output.getvalue())
             self.assertTrue(expected_output_1 in output.getvalue())
             # validate that we're still logged in as Slavyana
-            self.assertEqual(self.cinema.user[DB_USERS_USERNAME_KEY], self.valid_username2)
+            self.assertEqual(self.cinema.user.username, self.valid_username2)
         finally:
             sys.stdin = sys.__stdin__
             sys.stdout = sys.__stdout__

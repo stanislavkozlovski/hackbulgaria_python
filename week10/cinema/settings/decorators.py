@@ -24,10 +24,10 @@ def authenticate_user(func):
     def _auth(*args, **kwargs):
         cinema = args[0]
         username = args[1]
-        if (not cinema.has_logged_user()) or cinema.user[DB_USERS_USERNAME_KEY] != username:
+        if (not cinema.has_logged_user()) or cinema.user.username != username:
             print('You have to be logged in as {u} to do that!'.format(u=username))
             cinema.log_user_in()
-            if (not cinema.has_logged_user()) or cinema.user[DB_USERS_USERNAME_KEY] != username:
+            if (not cinema.has_logged_user()) or cinema.user.username != username:
                 print('You have to be logged in as {u} to do that!'.format(u=username))
                 return
     return _auth

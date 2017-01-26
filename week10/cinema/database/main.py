@@ -1,10 +1,11 @@
 from settings.constants import DB_NAME
-from queries.queries import CREATE_TABLES
-import sqlite3
+import sqlalchemy
 
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-connection = sqlite3.connect(DB_NAME)
-connection.row_factory = sqlite3.Row
-cursor = connection.cursor()
+engine = sqlalchemy.create_engine('sqlite:////{DB_NAME}'.format(DB_NAME=DB_NAME))
+Session = sessionmaker(bind=engine)
+session = Session()
+Base = declarative_base()
 
-cursor.executescript(CREATE_TABLES)
