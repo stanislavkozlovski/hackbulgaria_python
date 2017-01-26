@@ -1,7 +1,7 @@
 import getpass
 from validate_email import validate_email
 from settings.validator import is_valid_password, validate_user
-import sql_manager
+import controller
 from utils.password_reset import (generate_password_reset_token, send_password_reset_token,
                                   save_password_reset_token, fetch_user_password_reset_token)
 
@@ -19,19 +19,19 @@ def main_menu():
                 print('Your e-mail is invalid!')
                 email = input('Enter your e-mail: ')
 
-            password = getpass.getpass("Enter your password: ")
+            password = input("Enter your password: ")
             while not is_valid_password(username, password):
                 print('Your password is invalid!')
-                password = getpass.getpass("Enter your password: ")
+                password = input("Enter your password: ")
 
-            sql_manager.register(username, password, email)
+            controller.register(username, password, email)
 
             print("Registration Successful")
         elif command == 'login':
             username = input("Enter your username: ")
-            password = getpass.getpass("Enter your password: ")
+            password = input("Enter your password: ")
 
-            logged_user = sql_manager.login(username, password)
+            logged_user = controller.login(username, password)
 
             if logged_user:
                 logged_menu(logged_user)
@@ -47,7 +47,7 @@ def main_menu():
             if not email_was_sent:
                 print('There was an error with sending the e-mail!')
                 return
-            save_password_reset_token(user, reset_token)
+            user.reset_code = reset_token
         elif command.startswith('reset-password'):
             username = command[15:]
             user_exists, user = validate_user(username)
@@ -55,7 +55,7 @@ def main_menu():
                 print('No user with the username {} exists!'.format(username))
                 return
 
-            reset_token = fetch_user_password_reset_token(username)
+            reset_token = user.reset_code
             if not reset_token:
                 print('There is no reset token for the user!')
                 return
@@ -65,12 +65,12 @@ def main_menu():
                 print('Invalid reset token!')
                 return
 
-            new_password = getpass.getpass('Enter your new password: ')
+            new_password = input('Enter your new password: ')
             while not is_valid_password(username, new_password):
-                new_password = getpass.getpass('Enter your new password: ')
+                new_password = input('Enter your new password: ')
 
-            sql_manager.reset_user_password_reset_token(user)
-            sql_manager.change_pass(logged_user=user, new_pass=new_password)
+            user.reset_code = ''
+            user.password = new_password
             print('You have successfully reset your password!')
         elif command == 'help':
             print("login - for logging in!")
@@ -89,7 +89,7 @@ def logged_menu(logged_user):
 
         if command == 'info':
             print("You are: " + logged_user.username)
-            print("Your id is: " + str(logged_user.id))
+            print("Your id is: " + str(logged_user.id_))
             print("Your balance is:" + str(logged_user.balance) + '$')
 
         elif command == 'changepass':
@@ -97,11 +97,12 @@ def logged_menu(logged_user):
             while not is_valid_password(logged_user.username, new_pass):
                 print('Your password is invalid!')
                 new_pass = input("Enter your new password: ")
-            sql_manager.change_pass(new_pass, logged_user)
+            controller.change_password(logged_user, new_pass)
+            logged_user.password = new_pass
 
         elif command == 'change-message':
             new_message = input("Enter your new message: ")
-            sql_manager.change_message(new_message, logged_user)
+            logged_user.message = new_message
 
         elif command == 'show-message':
             print(logged_user.message)
@@ -111,11 +112,11 @@ def logged_menu(logged_user):
             try:
                 amount = float(amount)
                 tan_code = input(">Enter TAN code: ")
-                if not logged_user.is_valid_tan_code(tan_code):
+                if not controller.is_valid_tan_code(logged_user, tan_code):
                     print('Invalid TAN code!')
                     return
-                logged_user.deposit_money(amount)
-                logged_user.consume_tan_code(tan_code)
+                controller.deposit_money(logged_user, amount)
+                controller.consume_tan_code(tan_code)
 
                 print('{:.2f} was successfully added to your account!'.format(amount))
             except ValueError:
@@ -126,21 +127,21 @@ def logged_menu(logged_user):
             try:
                 amount = float(amount)
                 tan_code = input(">Enter TAN code: ")
-                if not logged_user.is_valid_tan_code(tan_code):
+                if not controller.is_valid_tan_code(logged_user, tan_code):
                     print('Invalid TAN code!')
                 else:
-                    did_withdraw = logged_user.withdraw_money(amount)
+                    did_withdraw = controller.withdraw_money(logged_user, amount)
                     if did_withdraw:
-                        logged_user.consume_tan_code(tan_code)
+                        controller.consume_tan_code(tan_code)
                         print('{:.2f} was successfully withdrawn to your account!'.format(amount))
             except ValueError:
                 print('Invalid withdraw amount!')
 
         elif command == 'generate-tan-codes':
-            password = getpass.getpass("Enter your password: ")
-            logged_user = sql_manager.login(logged_user.username, password)
+            password = input("Enter your password: ")
+            logged_user = controller.login(logged_user.username, password)
             if logged_user:
-                logged_user.generate_tan_codes()
+                controller.generate_tan_codes(logged_user)
             else:
                 print("Login failed")
 
@@ -159,7 +160,7 @@ def logged_menu(logged_user):
 
 
 def main():
-    sql_manager.create_tables()
+    # sql_manager.create_tables()
     main_menu()
 
 if __name__ == '__main__':

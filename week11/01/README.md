@@ -4,7 +4,7 @@
 
 Your first task is to set up the project! You can find the code within that folder.
 
-Then run the program from `start.py`.
+Then run the program from `view.py`.
 
 __Try to run the tests.__ If everything is OK you are ready to continue.
 

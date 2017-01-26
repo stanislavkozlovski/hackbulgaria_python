@@ -1,5 +1,6 @@
 from settings.constants import SPECIAL_SYMBOLS
-from database.reader import fetch_user_by_name
+from database.main import session
+from database.models import Client
 
 
 def is_valid_password(username, password):
@@ -24,5 +25,5 @@ def is_valid_password(username, password):
 
 def validate_user(username):
     """ Return a boolean value indicating if the given user exists"""
-    user = fetch_user_by_name(username)
+    user = session.query(Client).filter_by(name=username)
     return user is not None, user
