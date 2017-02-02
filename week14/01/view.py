@@ -1,8 +1,12 @@
-from controller import fetch_number_of_teams_in_room, fetch_teams_using_technology, fetch_team_by_name, add_skill_to_team, fetch_teams_by_mentor
+from controller import (fetch_number_of_teams_in_room, fetch_teams_using_technology, fetch_team_by_name, add_skill_to_team,
+                        fetch_teams_by_mentor, get_mentor_rooms, fetch_mentor_by_name, get_teams_and_schedule)
 from constants import InvalidMentor
+from datetime import timedelta
+import prettytable
+from prettytable import PrettyTable
 
 
-def help():
+def display_help():
     print('Available commands:')
     print('\tTeams in room {room number}')
     print('\t\tPrints the number of teams in the given room.')
@@ -12,6 +16,10 @@ def help():
     print('\t\tAdds the given technology to the technology stack of the given team.')
     print('\tShow teams mentored by {mentor name}')
     print('\t\tShows the teams that are mentored by the given mentor.')
+    print('\tShow rooms visited by {mentor name} {DESC or ASC}')
+    print('\t\tShows the rooms that will be visited by the given mentor, in ascending or descending order')
+    print('\tShow schedule')
+    print('\t\tShows the schedule for each team.')
 
 
 def eval_command(command: str):
@@ -51,6 +59,36 @@ def eval_command(command: str):
         except InvalidMentor as e:
             print(str(e))
             return
+    elif command.startswith('Show rooms visited by ') and (command.endswith('ASC') or command.endswith('DESC')):
+        command_args = command.split()
+        mentor_name = ' '.join(command_args[4:-1])
+        order = command_args[-1]
+        is_descending = True if order == 'DESC' else False
+
+        mentor = fetch_mentor_by_name(mentor_name)
+        if mentor is None:
+            print(f'There is no mentor called {mentor_name}!')
+
+        rooms = list(get_mentor_rooms(mentor, descending=is_descending))
+        if len(rooms) < 1:
+            print(f"{mentor_name} does not have any rooms to visit.")
+            return
+
+        rooms_annexation = '\n\t'.join(rooms)
+        print(f'Rooms visited by {mentor_name}:\n\t{rooms_annexation}')
+    elif command == 'Show schedule':
+        teams = get_teams_and_schedule()
+        table = prettytable.PrettyTable(['Time', 'Name', 'Room'], border=True, hrules=prettytable.ALL)
+        for team in teams:
+            table.add_row([team.time, team.name, team.room])
+
+        print(table)
+    elif command == 'help':
+        display_help()
+    else:
+        print('Invalid command!')
+        print('Type "help" to see the available commands.')
+
 
 
 def main():

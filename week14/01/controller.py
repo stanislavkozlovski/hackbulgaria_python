@@ -1,6 +1,8 @@
 from db import session
 from models import Team, TeamTechs, Tech, TeamMentors, Mentor
 from constants import InvalidMentor
+from datetime import timedelta
+
 
 def fetch_number_of_teams_in_room(room):
     number_of_teams_in_room = session.query(Team).filter_by(room=room).count()
@@ -40,6 +42,10 @@ def fetch_teams_ordered_by_room() -> [Team]:
     return session.query(Team).order_by(Team.room).all()
 
 
+def fetch_mentor_by_name(mentor_name) -> Mentor or None:
+    return session.query(Mentor).filter_by(name=mentor_name).one_or_none()
+
+
 def get_mentor_rooms(mentor: Mentor, descending=False):
     rooms = sorted([team.room for team in mentor.teams])
 
@@ -47,3 +53,15 @@ def get_mentor_rooms(mentor: Mentor, descending=False):
         return reversed(rooms)
 
     return rooms
+
+
+def get_teams_and_schedule():
+    """ Returns each team with a time in which it should present """
+    start_time = timedelta(hours=19)
+    time_to_add = timedelta(minutes=15)
+    teams = session.query(Team).all()
+
+    for team in teams:
+        team.time = str(start_time)
+        start_time += time_to_add
+        yield team
