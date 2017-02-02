@@ -25,12 +25,6 @@ def load_technologies(technologies):
     return loaded_technologies
 
 
-def save_technologies(technologies):
-    db.session.add_all(technologies)
-    db.session.commit()
-    db.session.flush()
-
-
 def load_teams_and_team_tech(raw_teams_json):
     loaded_teams: [Team] = []
     loaded_team_techs: [TeamTechs] = []
