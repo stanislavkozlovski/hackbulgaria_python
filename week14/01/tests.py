@@ -67,17 +67,17 @@ class TestLoaders(unittest.TestCase):
 
         tech_one = team_techs[0]
         self.assertTrue(isinstance(tech_one, TeamTechs))
-        self.assertEqual(tech_one.team_id, team_one['name'])
+        self.assertEqual(tech_one.team_name, team_one['name'])
         self.assertEqual(tech_one.tech_id, team_one['technologies_full'][0]['name'])
 
         tech_two = team_techs[1]
         self.assertTrue(isinstance(tech_two, TeamTechs))
-        self.assertEqual(tech_two.team_id, team_one['name'])
+        self.assertEqual(tech_two.team_name, team_one['name'])
         self.assertEqual(tech_two.tech_id, team_one['technologies_full'][1]['name'])
 
         tech_three = team_techs[2]
         self.assertTrue(isinstance(tech_three, TeamTechs))
-        self.assertEqual(tech_three.team_id, team_two['name'])
+        self.assertEqual(tech_three.team_name, team_two['name'])
         self.assertEqual(tech_three.tech_id, team_two['technologies_full'][0]['name'])
 
 if __name__ == '__main__':

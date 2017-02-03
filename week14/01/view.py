@@ -2,6 +2,7 @@ from controller import (fetch_number_of_teams_in_room, fetch_teams_using_technol
                         fetch_teams_by_mentor, get_mentor_rooms, fetch_mentor_by_name, get_teams_and_schedule)
 from constants import InvalidMentor
 from datetime import timedelta
+from load_models import load_all_models
 import prettytable
 from prettytable import PrettyTable
 
@@ -28,14 +29,15 @@ def eval_command(command: str):
         teams_in_room = fetch_number_of_teams_in_room(wanted_room)
         print(f'There are a total of {teams_in_room} teams in {wanted_room}.')
     elif command.startswith('Teams using ') and not command.endswith(' '):
-        wanted_tech = command.split()[2:]
-        teams = fetch_teams_using_technology(wanted_tech)
+        wanted_tech = ' '.join(command.split()[2:])
+        team_names = fetch_teams_using_technology(wanted_tech)
 
-        if len(teams) == 0:
+        if len(team_names) == 0:
             print(f'There are no teams using {wanted_tech}.')
             return
 
-        print(f'The teams that use {wanted_tech} are {" ".join([team.name for team in teams])}')
+        teams_annexation: str = '\n\t'.join([tn for tn in team_names])
+        print(f'The teams that use {wanted_tech} are \n\t{teams_annexation}')
     elif command.startswith('Add technology ') and ' to team ' in command and not command.endswith(' '):
         command_args = command.split()
         tech = command_args[2]
@@ -90,8 +92,8 @@ def eval_command(command: str):
         print('Type "help" to see the available commands.')
 
 
-
 def main():
+    load_all_models()
     command = input()
     while command != 'exit':
         eval_command(command)

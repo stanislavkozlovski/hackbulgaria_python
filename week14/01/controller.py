@@ -10,7 +10,7 @@ def fetch_number_of_teams_in_room(room):
 
 
 def fetch_teams_using_technology(tech):
-    teams = [team.team_id for team in session.query(TeamTechs).filter_by(tech_id=tech).all()]
+    teams = [team.team_name for team in session.query(TeamTechs).filter_by(tech_name=tech).all()]
     return teams
 
 
@@ -25,7 +25,7 @@ def fetch_team_by_name(team_name):
 
 
 def add_skill_to_team(team_name, tech_name):
-    session.add(TeamTechs(team_id=team_name, tech_id=tech_name))
+    session.add(TeamTechs(team_name=team_name, tech_name=tech_name))
     session.commit()
     session.flush()
 

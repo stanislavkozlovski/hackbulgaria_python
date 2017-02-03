@@ -21,8 +21,8 @@ class Tech(Base):
 class TeamTechs(Base):
     __tablename__ = 'team_technologies'
 
-    team_id = Column(String(100), ForeignKey('team.name'), primary_key=True)
-    tech_id = Column(String(100), ForeignKey('technologies.name'), primary_key=True)
+    team_name = Column(String(100), ForeignKey('team.name'), primary_key=True)
+    tech_name = Column(String(100), ForeignKey('technologies.name'), primary_key=True)
 
 
 class Mentor(Base):

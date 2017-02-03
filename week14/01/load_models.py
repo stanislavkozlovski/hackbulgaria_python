@@ -34,7 +34,7 @@ def load_teams_and_team_tech(raw_teams_json):
 
         for tech in team["technologies_full"]:
             tech_name = tech['name']
-            team_tech = TeamTechs(team_id=tm.name, tech_id=tech_name)
+            team_tech = TeamTechs(team_name=tm.name, tech_name=tech_name)
             loaded_team_techs.append(team_tech)
 
     return loaded_teams, loaded_team_techs
