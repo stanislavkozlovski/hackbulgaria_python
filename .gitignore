@@ -5,6 +5,11 @@ __pycache__/
 venv/
 .idea/
 
+**/bin/
+**/include/
+**/lib/
+**/share/
+**/selenium/
 # C extensions
 *.so
 Northwind.sl3

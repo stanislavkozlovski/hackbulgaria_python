@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <title>CS Grad Helper</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        width: 800px;
+        margin:auto;
+      }
+
+      .float-container:after {
+        content:"";
+        display:block;
+        clear:both;
+      }
+
+      .form-container {
+        margin:10px;
+        padding:10px;
+        border: 1px solid grey;
+      }
+
+      .col-4 {
+        margin-left: 2px;
+        margin-right: 2px;
+        width: 33%;
+        float:left;
+      }
+        .error_msg {
+            color: red;
+            font-weight: bold;
+            font-size: 24px;
+        }
+    </style>
+  </head>
+  <body>
+  {% if error_msg %}
+      <h1 class="error_msg">{{ error_msg }}</h1>
+  {% endif %}
+    <div class="float-container">
+      <div class="col-4" id="factorial_container">
+        <div class="form-container">
+          <form action="{% url 'calc_n_factorial' %}" method="POST">
+            <p>Calculate n!</p>
+            <label>Enter n:</label>
+            <input type="number" name="n_fac" value="{{ wanted_n_fac }}"/>
+            <input type="submit" value="Go!" />
+              {% csrf_token %}
+            <p>Result is: {{ n_factorial }}</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-4" id="fibonacci_container">
+      <div class="form-container">
+          <form action="{% url 'calc_first_n_fibonacci' %}" method="POST">
+            {% csrf_token %}
+            <p>Find nth fibonacci.</p>
+            <label>Enter n:</label>
+            <input type="number"  name="n_fib" value="{{ wanted_n_fibonaccis }}"/>
+            <input type="submit" value="Go!" />
+            <p>Result is: {{ fibonaccis }}</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-4" id="primes_container">
+        <div class="form-container">
+          <form action="{% url 'calc_first_n_primes' %}" method="POST">
+            {% csrf_token %}
+            <p>List first n prime numbers.</p>
+            <label>Enter n:</label>
+            <input type="number" name="n_primes" value="{{ wanted_n_primes }}"/>
+            <input type="submit" value="Go!" />
+            <p>Result is: {{ primes }}</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-4" id="rle_container">
+        <div class="form-container">
+          <form action="{% url 'rl_encode' %}" method="POST">
+            {% csrf_token %}
+            <p>Encode <a href="https://en.wikipedia.org/wiki/Run-length_encoding">RLE.</a></p>
+            <label>Enter string:</label>
+            <input type="text" name="str_to_encode" value="{{ wanted_enc_str }}"/>
+            <input type="submit" value="Go!" />
+            <p>RLE is: {{ encoded_str }}</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-4" id="some_container">
+        <div class="form-container">
+          <form action="{% url 'rl_decode' %}" method="POST">
+            {% csrf_token %}
+            <p>Decode <a href="https://en.wikipedia.org/wiki/Run-length_encoding">RLE.</a></p>
+            <label>Enter RLE string:</label>
+            <input type="text" name="str_to_decode" value="{{ wanted_dec_str }}"/>
+            <input type="submit" value="Go!" />
+            <p>Decoded string is: {{ decoded_str }}</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
