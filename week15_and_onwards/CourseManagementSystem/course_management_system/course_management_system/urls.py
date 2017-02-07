@@ -16,6 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from course_management_app import views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^course/new/', views.new_course, name='new_course'),
 ]

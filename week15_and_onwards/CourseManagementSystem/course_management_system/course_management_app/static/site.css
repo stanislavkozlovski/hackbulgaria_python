@@ -1,0 +1,11 @@
+.has-error {
+    font-weight: bold;
+    font-size: 30px;
+    color: red;
+}
+.errorlist {
+    list-style: none;
+    font-weight: bold;
+    font-size: 30px;
+    color: red;
+}
