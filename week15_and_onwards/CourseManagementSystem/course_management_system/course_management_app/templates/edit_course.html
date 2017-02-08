@@ -2,7 +2,9 @@
 {% block body %}
     <div class="row">
         <div class="col-md-6 col-md-offset-3 jumbotron">
-            <h2 class="text-center modal-header">Add a new course</h2>
+            <h2 class="text-center edit-header">Edit Course</h2>
+            <h2 class="text-center course-header">{{ course.name }}</h2>
+
 
             <div class="text-center">
                 <form action="{% url 'edit_course' course.name %}" method="POST">
@@ -17,5 +19,41 @@
                 </form>
             </div>
         </div>
+    </div>
+
+    <link rel="stylesheet" href="/static/lectures-minified.css" type="text/css">
+    <script src="/static/lectures.js"></script>
+
+    <div class="tabbed-view" style="margin-left: 250px">
+        <ul class="tab-menu">
+            <li class="tab-item">
+                <h4 class="selected"> Course Details </h4>
+            </li>
+        </ul>
+        <section id="course-detail">
+
+            <ul class="lesson-list">
+            {% for lecture in course.lecture_set.all %}
+                <li>
+                    <div class="lesson-info">
+                        <div class="lesson-title">
+                            Lesson <span class="lessonCount">{{ forloop.counter }} - </span>
+                            <p><a href="{{ lecture.get_absolute_url }}">{{ lecture.name }}</a></p>
+                        </div>
+                        <div class="lesson-time">
+                            <img src="http://dt9ph4xofvj87.cloudfront.net/user/sites/shawacademy.com/themes/mytheme/images/icons/generic/line/black/calendar.svg"
+                                 width="17" height="14" alt="calendar">
+                            <p class="on-demand-course-true">Week: {{ lecture.week }}</p>
+                        </div>
+
+                    </div>
+
+                    <div class="lesson-details" style="display: inline-block;">
+                        <p><a href="{{ lecture.url }}">{{ lecture.url }}</a></p>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
     </div>
 {% endblock %}

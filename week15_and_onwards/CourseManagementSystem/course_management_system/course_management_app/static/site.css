@@ -9,3 +9,22 @@
     font-size: 30px;
     color: red;
 }
+
+.edit-header {
+    min-height: 18.428571429px;
+}
+
+.course-header {
+    min-height: 18.428571429px;
+    font-size: 30px;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.course-description {
+    margin-bottom: 5px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgba(111,104,113,0.55);
+}

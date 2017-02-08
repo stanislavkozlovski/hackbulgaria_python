@@ -16,7 +16,7 @@
         <tbody>
             {% for course in courses %}
                 <tr>
-                    <td>{{ course.name }}</td>
+                    <td><a href="{{ course.get_absolute_url }}">{{ course.name }}</a></td>
                     <td>{{ course.description }}</td>
                     <td>{{ course.start_date|date:"d M Y" }}</td>
                     <td>{{ course.end_date|date:"d M Y" }}</td>

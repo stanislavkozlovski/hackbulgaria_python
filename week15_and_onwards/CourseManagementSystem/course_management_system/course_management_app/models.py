@@ -14,7 +14,7 @@ class Course(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('view_course', args=[self.id])
+        return reverse('view_course', args=[self.name])
 
 
 class Lecture(models.Model):

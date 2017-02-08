@@ -4,7 +4,12 @@
     <link rel="stylesheet" href="/static/lectures-minified.css" type="text/css">
     <script src="/static/lectures.js"></script>
 
-    <div class="tabbed-view">
+    <h2 class="text-center course-header">{{ course.name }}</h2>
+    <p class="text-center course-description"><em>{{ course.description }}</em></p>
+    <p class="text-center">Starts: {{ course.start_date|date:"d M Y" }}</p>
+    <p class="text-center">Ends: {{ course.end_date|date:"d M Y" }}</p>
+
+    <div class="tabbed-view" style="margin-left: 250px">
         <ul class="tab-menu">
             <li class="tab-item">
                 <h4 class="selected"> Course Details </h4>
