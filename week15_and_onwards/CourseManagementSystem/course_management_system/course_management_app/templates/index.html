@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load timedelta_filter %}
+
 {% block body %}
     <table class="table table-hover">
         <thead>
@@ -10,5 +12,17 @@
                 <th>Approximate Duration</th>
             </tr>
         </thead>
+
+        <tbody>
+            {% for course in courses %}
+                <tr>
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.description }}</td>
+                    <td>{{ course.start_date|date:"d M Y" }}</td>
+                    <td>{{ course.end_date|date:"d M Y" }}</td>
+                    <td>{{ course.duration|timedelta:"{days} days" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock %}

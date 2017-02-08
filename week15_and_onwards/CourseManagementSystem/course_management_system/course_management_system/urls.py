@@ -20,5 +20,13 @@ from course_management_app import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', views.index, name='index'),
     url(r'^course/new/', views.new_course, name='new_course'),
+    url(r'^course/edit/(.+)/', views.edit_course, name='edit_course'),
+    url(r'^course/(.+)/$', views.view_course, name='view_course'),
+    url(r'^lecture/new/', views.new_lecture, name='new_lecture'),
+    url(r'^lecture/(\d+)$', views.view_lecture, name='view_lecture'),
+    url(r'^lecture/edit/(\d+)/$', views.edit_lecture, name='edit_lecture'),
+    url(r'.*', views.redirect_404),
 ]
+

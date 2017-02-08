@@ -1,6 +1,5 @@
-from django.forms import models, fields as dj_field
-
-from course_management_app.models import Course
+from django.forms import models, fields as dj_field, widgets
+from course_management_app.models import Course, Lecture
 
 
 class CourseForm(models.ModelForm):
@@ -16,4 +15,16 @@ class CourseForm(models.ModelForm):
             'end_date': dj_field.TextInput(attrs={
                 'class': 'datepicker'
             })
+        }
+
+
+class LectureForm(models.ModelForm):
+    class Meta:
+        model = Lecture
+        fields = ('name', 'week', 'course', 'url', )
+        widgets = {
+            'name': dj_field.TextInput(),
+            'week': dj_field.NumberInput(),
+            'course': widgets.Select(),
+            'url': dj_field.TextInput()
         }

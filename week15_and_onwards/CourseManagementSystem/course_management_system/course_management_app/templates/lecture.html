@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block body %}
+    <div class="technology">
+        <section id="courseinfo">
+            <h1 id="course-label">{{ lecture.name }}</h1>
+            <h4>Week: <em>{{ lecture.week }}</em></h4>
+            <span id="course-detail">
+                <a href="{{ lecture.course.get_absolute_url }}">Course: <em>{{ lecture.course.name }}</em></a>
+            </span>
+            <span id="course-detail" style="display: block;">
+                Resources: <a href="https://{{ lecture.url }}">{{ lecture.url }}</a>
+            </span>
+        </section>
+    </div>
+{% endblock %}
