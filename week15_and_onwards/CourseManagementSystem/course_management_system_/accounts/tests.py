@@ -39,15 +39,15 @@ class RegisterTests(TestCase):
         self.client.post('/accounts/register', data={
             'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
         })
-
+        user = User.objects.first()
         self.assertIn('user', self.client.session)
         orig_sess_user = self.client.session['user']
 
         # Try to register again
         response: HttpResponse = self.client.post('/accounts/register', data={
             'email': 'thebestman22@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
-        })
-        self.assertRedirects(response, '/profile')
+        }, follow=True)
+        self.assertRedirects(response, f'/accounts/{user.id}')
         # assert we have not logged in as somebody else
         self.assertEqual(self.client.session['user'], orig_sess_user)
 
@@ -56,12 +56,14 @@ class RegisterTests(TestCase):
         self.client.post('/accounts/register', data={
             'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
         })
+        orig_sess_user = self.client.session['user']
         self.assertIn('user', self.client.session)
+        user = User.objects.first()
 
         response: HttpResponse = self.client.get('/accounts/register', data={
             'email': 'thebestman22@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
-        })
-        self.assertRedirects(response, '/profile')
+        }, follow=True)
+        self.assertRedirects(response, f'/accounts/{user.id}')
         self.assertEqual(self.client.session['user'], orig_sess_user)
 
     def test_invalid_email_should_not_register(self):
@@ -83,8 +85,9 @@ class RegisterTests(TestCase):
         # Try to create a second identical one
         response = self.client.post('/accounts/register', data={
             'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
-        })
-        self.assertRedirects(response, '/accounts/register')
+        }, follow=True)
+        # Should redirect to the user's profile
+        self.assertRedirects(response, '/accounts/1')
         self.assertEqual(User.objects.count(), 1)  # Should not have added another user
 
     def test_invalid_password_should_not_register(self):
@@ -129,11 +132,13 @@ class LoginTests(TestCase):
         self.client.post('/accounts/register', data={
             'email': 'newman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': self.user_password
         })
+        user = User.objects.last()
 
         self.assertIn('user', self.client.session)  # We are logged in
         orig_sess_user = self.client.session['user']
-        response: HttpResponse = self.client.post('/accounts/login', data={'email': 'mee@abv.bg', 'password': '1234567'})
-        self.assertRedirects(response, '/profile')
+        response: HttpResponse = self.client.post('/accounts/login', data={'email': 'mee@abv.bg', 'password': '1234567'},
+                                                  follow=True)
+        self.assertRedirects(response, f'/accounts/{user.id}')
         # assert we have not logged in as somebody else
         self.assertEqual(self.client.session['user'], orig_sess_user)
 
@@ -141,10 +146,10 @@ class LoginTests(TestCase):
         self.client.post('/accounts/register', data={
             'email': 'newman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': self.user_password
         })
-
+        user = User.objects.last()
         self.assertIn('user', self.client.session)  # We are logged in
-        response: HttpResponse = self.client.get('/accounts/login')
-        self.assertRedirects(response, '/profile')
+        response: HttpResponse = self.client.get('/accounts/login', follow=True)
+        self.assertRedirects(response, f'/accounts/{user.id}')
 
     def test_invalid_email_should_not_login(self):
         response: HttpResponse = self.client.post('/accounts/login', data={'email': 'mee@abv.bg', 'password': '1234567'})

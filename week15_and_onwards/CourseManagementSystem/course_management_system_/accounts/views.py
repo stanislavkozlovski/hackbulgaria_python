@@ -7,8 +7,10 @@ from django.core import serializers
 from accounts.forms import UserForm, LoginForm
 from accounts.models import User
 
+from accounts.decorators import anon_required
 
-# Create your views here.
+
+@anon_required(redirect_url='/accounts/profile')
 def register(request: HttpRequest):
     """ Registers a user """
     if request.method == 'POST':
@@ -24,6 +26,7 @@ def register(request: HttpRequest):
     return render(request, 'register.html', context={'form': UserForm()})
 
 
+@anon_required(redirect_url='/accounts/profile')
 def login(request: HttpRequest):
     """ Logs a user in"""
     if request.method == 'POST':
@@ -57,3 +60,6 @@ def profile(request: HttpRequest, profile_id):
 
     return render(request, 'profile.html', context={'user': potential_user})
 
+
+def my_profile(request: HttpRequest):
+    return redirect(f'/accounts/{next(serializers.deserialize("json", request.session["user"])).object.id}')
