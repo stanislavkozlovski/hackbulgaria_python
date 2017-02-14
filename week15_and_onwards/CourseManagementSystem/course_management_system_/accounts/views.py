@@ -50,5 +50,10 @@ def login(request: HttpRequest):
 
 def profile(request: HttpRequest, profile_id):
     """ Opens the profile of a user """
-    return render(request, 'base.html')
+    try:
+        potential_user = User.objects.get(id=profile_id)
+    except User.DoesNotExist:
+        return redirect('/')
+
+    return render(request, 'profile.html', context={'user': potential_user})
 
