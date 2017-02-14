@@ -5,7 +5,7 @@
             <h2 class="text-center modal-header">Add a new course</h2>
 
             <div class="text-center">
-                <form action="/accounts/register/" method="POST">
+                <form action="{% url 'register' %}" method="POST">
                     {% csrf_token %}
                     {{ form }}
                     <input type="submit" value="Register">
