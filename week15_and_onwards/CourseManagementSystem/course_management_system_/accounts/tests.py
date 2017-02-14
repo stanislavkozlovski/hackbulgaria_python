@@ -1,4 +1,6 @@
 from django.test import TestCase
+from django.http import HttpResponse
+
 from accounts.models import User
 
 
@@ -70,3 +72,40 @@ class RegisterTests(TestCase):
 
         self.assertRedirects(response, '/accounts/register')
         self.assertEqual(User.objects.count(), 0)
+
+
+class LoginTests(TestCase):
+    def setUp(self):
+        # register a user
+        self.user_email = 'thebestman@abv.bg'
+        self.user_password = 'Lalala123'
+
+        self.client.post('/accounts/register', data={
+            'email': self.user_email, 'first_name': 'What', 'last_name': 'Huh', 'password': self.user_password
+        })
+        self.user = User.objects.first()
+
+    def test_login_get_page(self):
+        response: HttpResponse = self.client.get('/accounts/login')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'login.html')
+
+    def test_invalid_email_should_not_login(self):
+        response: HttpResponse = self.client.post('/accounts/login', data={'email': 'mee@abv.bg', 'password': '1234567'})
+
+        self.assertRedirects(response, '/accounts/login')
+        self.assertNotIn('user', self.client.session)
+
+    def test_invalid_password_should_not_login(self):
+        response: HttpResponse = self.client.post('/accounts/login', data={'email': self.user_email, 'password': '1234567'})
+
+        self.assertRedirects(response, '/accounts/login')
+        self.assertNotIn('user', self.client.session)
+
+    def test_valid_login(self):
+        response: HttpResponse = self.client.post('/accounts/login',
+                                                  data={'email': self.user_email, 'password': self.user_password})
+
+        self.assertRedirects(response, f'/accounts/{self.user.id}')
+        self.assertIn('user', self.client.session)
