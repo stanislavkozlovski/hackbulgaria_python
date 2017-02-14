@@ -1,5 +1,6 @@
 import crypt
 
+from django import forms
 from django.forms import models, fields as dj_field, widgets, PasswordInput
 
 from accounts.models import User
@@ -21,3 +22,7 @@ class UserForm(models.ModelForm):
         self.instance.password = crypt.crypt(self.instance.password, self.instance.salt)
         return super().save(commit)
 
+
+class LoginForm(forms.Form):
+    email = dj_field.EmailField(widget=dj_field.EmailInput(attrs={'class': 'form-control'}))
+    password = dj_field.CharField(widget=PasswordInput(attrs={'class': 'form-control'}))

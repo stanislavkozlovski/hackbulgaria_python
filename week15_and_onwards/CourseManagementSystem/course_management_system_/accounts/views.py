@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.core import serializers
 
-from accounts.forms import UserForm
+from accounts.forms import UserForm, LoginForm
 
 
 # Create your views here.
@@ -21,6 +21,15 @@ def register(request: HttpRequest):
     return render(request, 'register.html', context={'form': UserForm()})
 
 
+def login(request: HttpRequest):
+    """ Logs a user in"""
+    if request.method == 'POST':
+        pass
+
+    return render(request, 'login.html', context={'form': LoginForm()})
+
+
 def profile(request: HttpRequest, profile_id):
     """ Opens the profile of a user """
     return render(request, 'base.html')
+
