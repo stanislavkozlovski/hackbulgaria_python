@@ -34,6 +34,36 @@ class RegisterTests(TestCase):
         # Should be encrypted
         self.assertNotEqual(registered_user.password, 'Lalala123')
 
+    def test_logged_in_register_post_should_redirect(self):
+        # Original registration
+        self.client.post('/accounts/register', data={
+            'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
+        })
+
+        self.assertIn('user', self.client.session)
+        orig_sess_user = self.client.session['user']
+
+        # Try to register again
+        response: HttpResponse = self.client.post('/accounts/register', data={
+            'email': 'thebestman22@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
+        })
+        self.assertRedirects(response, '/profile')
+        # assert we have not logged in as somebody else
+        self.assertEqual(self.client.session['user'], orig_sess_user)
+
+    def test_logged_in_register_GET_should_redirect(self):
+        # Original registration
+        self.client.post('/accounts/register', data={
+            'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
+        })
+        self.assertIn('user', self.client.session)
+
+        response: HttpResponse = self.client.get('/accounts/register', data={
+            'email': 'thebestman22@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
+        })
+        self.assertRedirects(response, '/profile')
+        self.assertEqual(self.client.session['user'], orig_sess_user)
+
     def test_invalid_email_should_not_register(self):
         response = self.client.post('/accounts/register', data={
             'email':'123', 'first_name':'What', 'last_name':'Huh', 'password':'Lala'
@@ -95,6 +125,27 @@ class LoginTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
 
+    def test_logged_in_post_should_redirect_to_profile(self):
+        self.client.post('/accounts/register', data={
+            'email': 'newman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': self.user_password
+        })
+
+        self.assertIn('user', self.client.session)  # We are logged in
+        orig_sess_user = self.client.session['user']
+        response: HttpResponse = self.client.post('/accounts/login', data={'email': 'mee@abv.bg', 'password': '1234567'})
+        self.assertRedirects(response, '/profile')
+        # assert we have not logged in as somebody else
+        self.assertEqual(self.client.session['user'], orig_sess_user)
+
+    def test_logged_in_GET_should_redirect_to_profile(self):
+        self.client.post('/accounts/register', data={
+            'email': 'newman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': self.user_password
+        })
+
+        self.assertIn('user', self.client.session)  # We are logged in
+        response: HttpResponse = self.client.get('/accounts/login')
+        self.assertRedirects(response, '/profile')
+
     def test_invalid_email_should_not_login(self):
         response: HttpResponse = self.client.post('/accounts/login', data={'email': 'mee@abv.bg', 'password': '1234567'})
 
@@ -114,3 +165,25 @@ class LoginTests(TestCase):
 
         self.assertRedirects(response, f'/accounts/{self.user.id}')
         self.assertIn('user', self.client.session)
+
+
+class ProfileTests(TestCase):
+    def setUp(self):
+        # Create a user
+        self.client.post('/accounts/register', data={
+            'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
+        })
+        self.user = User.objects.first()
+
+    def test_template_used(self):
+        response: HttpResponse = self.client.get(f'/accounts/{self.user.id}')
+        self.assertTemplateUsed(response, 'profile.html')
+
+    def test_redirects_when_not_logged_in(self):
+        # Imitate logging out
+        s = self.client.session
+        del s['user']
+        s.save()
+
+        response: HttpResponse = self.client.get(f'/accounts/{self.user.id}')
+        self.assertRedirects(response, '/login')
