@@ -16,7 +16,7 @@ class RegisterTests(TestCase):
 
         self.assertTemplateUsed(response, 'register.html')
         self.assertEqual(response.status_code, 200)
-        
+
     def test_register_post(self):
         response = self.client.post('/accounts/register/', data={
             'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
@@ -37,15 +37,31 @@ class RegisterTests(TestCase):
             'email':'123', first_name:'What', last_name:'Huh', password:'Lala'
         })
 
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, '/accounts/register')
         self.assertEqual(User.objects.count(), 0)
+
+    def test_duplicate_email_should_not_register(self):
+        # Create the first user
+        response = self.client.post('/accounts/register/', data={
+            'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
+        })
+
+        self.assertRedirects(response, '/profile')
+        self.assertEqual(User.objects.count(), 1)
+
+        # Try to create a second identical one
+        response = self.client.post('/accounts/register/', data={
+            'email': 'thebestman@abv.bg', 'first_name': 'What', 'last_name': 'Huh', 'password': 'Lalala123'
+        })
+        self.assertRedirects(response, '/accounts/register')
+        self.assertEqual(User.objects.count(), 1)  # Should not have added another user
 
     def test_invalid_password_should_not_register(self):
         response = self.client.post('/accounts/register', data={
             'email': 'mem@abv.bg', first_name: 'What', last_name: 'Huh', password: 'La'
         })
 
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, '/accounts/register')
         self.assertEqual(User.objects.count(), 0)
 
     def test_no_firstname_should_not_register(self):
@@ -53,5 +69,5 @@ class RegisterTests(TestCase):
             'email': '123', first_name: '', last_name: 'Huh', password: 'Lala'
         })
 
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, '/accounts/register')
         self.assertEqual(User.objects.count(), 0)
