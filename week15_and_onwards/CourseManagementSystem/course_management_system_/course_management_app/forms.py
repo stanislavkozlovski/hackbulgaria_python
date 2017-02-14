@@ -1,4 +1,4 @@
-from django.forms import models, fields as dj_field, widgets
+from django.forms import models, fields as dj_field, widgets, PasswordInput
 from course_management_app.models import Course, Lecture
 
 
