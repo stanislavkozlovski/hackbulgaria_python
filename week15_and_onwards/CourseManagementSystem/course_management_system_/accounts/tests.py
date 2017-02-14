@@ -84,6 +84,10 @@ class LoginTests(TestCase):
             'email': self.user_email, 'first_name': 'What', 'last_name': 'Huh', 'password': self.user_password
         })
         self.user = User.objects.first()
+        # Hacky way to remove a variable from the session
+        ss = self.client.session
+        del ss['user']
+        ss.save()
 
     def test_login_get_page(self):
         response: HttpResponse = self.client.get('/accounts/login')
@@ -95,6 +99,7 @@ class LoginTests(TestCase):
         response: HttpResponse = self.client.post('/accounts/login', data={'email': 'mee@abv.bg', 'password': '1234567'})
 
         self.assertRedirects(response, '/accounts/login')
+
         self.assertNotIn('user', self.client.session)
 
     def test_invalid_password_should_not_login(self):
