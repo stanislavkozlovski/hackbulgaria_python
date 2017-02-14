@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'timedeltatemplatefilter',
     'course_management_app',
+    'accounts',
 ]
 
 MIDDLEWARE = [
