@@ -29,11 +29,13 @@ def new_course(request: HttpRequest):
     return render(request, 'new_course.html', {'form': CourseForm()})
 
 
+@teacher_required(redirect_url='/')
 def new_lecture(request: HttpRequest):
     if request.method == 'POST':
         form = LectureForm(data=request.POST)
 
         if not form.is_valid():
+            print(form.errors)
             return render(request, 'new_lecture.html', {'form': form})
 
         lecture = form.save()
