@@ -78,6 +78,7 @@ def view_course(request: HttpRequest, course_name):
     return render(request, 'course.html', {'course': course})
 
 
+@teacher_required(redirect_url='/')
 def edit_course(request: HttpRequest, course_name):
     course = Course.objects.filter(name=course_name).first()
 
