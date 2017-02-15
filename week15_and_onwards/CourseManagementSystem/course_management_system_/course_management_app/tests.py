@@ -110,3 +110,42 @@ class LectureTests(TestCase):
         self.assertEqual(Lecture.objects.count(), 0)
         course = Course.objects.first()
         self.assertEqual(course.lecture_set.count(), 0)
+
+    def test_edit_lecture(self):
+        self.client.post('/lecture/new/', data={'name': 'Loops', 'week': '1',
+                                                'course': str(self.course.id),
+                                                'url': 'http://what.com/?sup=nothing'})
+        lecture: Lecture = Lecture.objects.first()
+        orig_url = lecture.url
+        orig_week = lecture.week
+        self.client.post(f'/lecture/edit/{lecture.id}/', data={'name': 'EditedLoops', 'week': '1',
+                                                               'course': str(self.course.id),
+                                                               'url': 'http://what.com/?sup=nothing'})
+
+        lecture.refresh_from_db()
+
+        self.assertEqual(lecture.name, 'EditedLoops')
+        self.assertEqual(lecture.url, orig_url)
+        self.assertEqual(lecture.week, orig_week)
+
+    def test_non_teacher_should_not_edit_lecture(self):
+        # create the lecture
+        self.client.post('/lecture/new/', data={'name': 'Loops', 'week': '1',
+                                                'course': str(self.course.id),
+                                                'url': 'http://what.com/?sup=nothing'})
+        # 'Log in' as a non-teacher user
+        self.user = User.objects.create(email='NotATeacher@abv.bg', password='waytooreal', first_name='Corny')
+
+        sess = self.client.session
+        sess['user'] = serializers.serialize('json', [self.user])
+        sess.save()
+
+        lecture: Lecture = Lecture.objects.first()
+        orig_name = lecture.name
+        response = self.client.post(f'/lecture/edit/{lecture.id}/', data={'name': 'EditedLoops', 'week': '1',
+                                                               'course': str(self.course.id),
+                                                               'url': 'http://what.com/?sup=nothing'})
+
+        self.assertRedirects(response, '/')
+        lecture.refresh_from_db()
+        self.assertEqual(lecture.name, orig_name)

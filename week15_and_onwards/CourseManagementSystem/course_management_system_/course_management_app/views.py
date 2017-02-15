@@ -44,6 +44,7 @@ def new_lecture(request: HttpRequest):
     return render(request, 'new_lecture.html', {'form': LectureForm()})
 
 
+@teacher_required(redirect_url='/')
 def edit_lecture(request: HttpRequest, lecture_id):
     lecture = Lecture.objects.get(id=lecture_id)
 
