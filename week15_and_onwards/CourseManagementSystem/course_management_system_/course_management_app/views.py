@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 
 from course_management_app.forms import CourseForm, LectureForm
 from course_management_app.models import Course, Lecture
+from accounts.decorators import teacher_required
 
 
 def index(request: HttpRequest):
@@ -16,6 +17,7 @@ def index(request: HttpRequest):
 
 
 # Create your views here.
+@teacher_required(redirect_url='/')
 def new_course(request: HttpRequest):
     if request.method == 'POST':
         form = CourseForm(data=request.POST)
@@ -23,7 +25,6 @@ def new_course(request: HttpRequest):
             return render(request, 'new_course.html', {'form': form})
 
         course = form.save()
-
         return redirect(f'/course/{course.id}')
     return render(request, 'new_course.html', {'form': CourseForm()})
 
