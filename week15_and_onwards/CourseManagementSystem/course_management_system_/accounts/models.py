@@ -11,3 +11,18 @@ class User(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     salt = models.CharField(max_length=80)
+
+    def is_teacher(self):
+        return hasattr(self, 'teacher')
+
+    def is_student(self):
+        return hasattr(self, 'student')
+
+
+class Teacher(models.Model):
+    user_email = models.OneToOneField(User, primary_key=True, related_name='teacher')
+    courses = models.CharField(max_length=10)  # Temporary
+
+
+class Student(models.Model):
+    user_email = models.OneToOneField(User, primary_key=True, related_name='student')

@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.core import serializers
 
 from accounts.forms import UserForm, LoginForm
-from accounts.models import User
+from accounts.models import User, Teacher
 
 from accounts.decorators import anon_required, login_required
 

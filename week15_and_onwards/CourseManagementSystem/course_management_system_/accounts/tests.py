@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.http import HttpResponse
 
-from accounts.models import User
+from accounts.models import User, Student, Teacher
 
 
 # Create your tests here.
@@ -10,6 +10,24 @@ class UserModelTests(TestCase):
         user = User.objects.create(email='someguy@abv.bg', password='123')
         with self.assertRaises(Exception):
             User.objects.create(email='someguy@abv.bg', password='123')
+
+    def test_is_teacher(self):
+        user = User.objects.create(email='someguy@abv.bg', password='123')
+        self.assertFalse(user.is_teacher())
+
+    def test_is_teacher_true(self):
+        user = User.objects.create(email='someguy@abv.bg', password='123')
+        Teacher.objects.create(user_email=user)
+        self.assertTrue(user.is_teacher())
+
+    def test_is_student(self):
+        user = User.objects.create(email='someguy@abv.bg', password='123')
+        self.assertFalse(user.is_student())
+
+    def test_is_student_true(self):
+        user = User.objects.create(email='someguy@abv.bg', password='123')
+        Student.objects.create(user_email=user)
+        self.assertTrue(user.is_student())
 
 
 class RegisterTests(TestCase):
