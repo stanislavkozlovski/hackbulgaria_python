@@ -7,7 +7,7 @@ from django.core import serializers
 from accounts.forms import UserForm, LoginForm
 from accounts.models import User
 
-from accounts.decorators import anon_required
+from accounts.decorators import anon_required, login_required
 
 
 @anon_required(redirect_url='/accounts/profile')
@@ -51,6 +51,7 @@ def login(request: HttpRequest):
     return render(request, 'login.html', context={'form': LoginForm()})
 
 
+@login_required(redirect_url='/accounts/login')
 def profile(request: HttpRequest, profile_id):
     """ Opens the profile of a user """
     try:
@@ -61,5 +62,6 @@ def profile(request: HttpRequest, profile_id):
     return render(request, 'profile.html', context={'user': potential_user})
 
 
+@login_required(redirect_url='/accounts/login')
 def my_profile(request: HttpRequest):
-    return redirect(f'/accounts/{next(serializers.deserialize("json", request.session["user"])).object.id}')
+    return redirect(f'/accounts/{request.user.id}')

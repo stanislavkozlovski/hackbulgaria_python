@@ -188,7 +188,20 @@ class ProfileTests(TestCase):
         # Imitate logging out
         s = self.client.session
         del s['user']
+        if hasattr(self.client, 'user'):
+            delattr(self.client, 'user')
         s.save()
 
         response: HttpResponse = self.client.get(f'/accounts/{self.user.id}')
-        self.assertRedirects(response, '/login')
+        self.assertRedirects(response, '/accounts/login')
+
+    def test_myprofile_redirects_when_not_logged_in(self):
+        # Imitate logging out
+        s = self.client.session
+        del s['user']
+        if hasattr(self.client, 'user'):
+            delattr(self.client, 'user')
+        s.save()
+
+        response: HttpResponse = self.client.get(f'/accounts/profile')
+        self.assertRedirects(response, '/accounts/login')
